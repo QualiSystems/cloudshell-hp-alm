@@ -15,7 +15,7 @@ namespace CSRAgent
   [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("AlmCsRemoteAgent1152")]
   public class CSRAgent : ServicedComponent, IRAgent
   {
-    private string m_status;
+    private string m_status ;
     private string m_descr;
     private string m_serverName;
     private string m_projectName;
@@ -30,6 +30,7 @@ namespace CSRAgent
     private string m_testSetInfo;
     private string m_testInstID;
     private string m_testInstName;
+    private string m_test;
 
     public int get_status(ref string descr, ref string status)
     {
