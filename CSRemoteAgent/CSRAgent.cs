@@ -30,6 +30,7 @@ namespace CSRAgent
     private string m_testSetInfo;
     private string m_testInstID;
     private string m_testInstName;
+    private string m_test;
 
     public int get_status(ref string descr, ref string status)
     {
