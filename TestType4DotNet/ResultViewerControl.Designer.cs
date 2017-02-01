@@ -1,4 +1,4 @@
-﻿namespace CTSAddin
+﻿namespace  CTSAddin
 {
   partial class ResultViewerControl
   {
