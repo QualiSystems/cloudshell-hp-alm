@@ -10,10 +10,10 @@ using TDAPIOLELib;
 [assembly: System.EnterpriseServices.Description("a C# version remote agent for alm 11.52")]
 [assembly: ApplicationAccessControl(false)]
 
-namespace CSRemoteAgent
+namespace CSRAgent
 {
   [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("AlmCsRemoteAgent1152")]
-  public class CSRemoteAgent : ServicedComponent, IRemoteAgent
+  public class CSRAgent : ServicedComponent, IRAgent
   {
     private string m_status;
     private string m_descr;

@@ -1,4 +1,4 @@
-﻿namespace CustomTestTypeAddin
+﻿namespace CTSAddin
 {
   partial class ResultViewerControl
   {

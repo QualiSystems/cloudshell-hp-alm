@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 
-namespace CustomTestTypeAddin
+namespace CTSAddin
 {
   /// <summary>
   /// Handles display of test run results in the ALM user interface. This component is optional.

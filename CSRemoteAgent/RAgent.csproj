@@ -8,7 +8,7 @@
     <ProjectGuid>{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSRemoteAgent</RootNamespace>
+    <RootNamespace>CSRAgent</RootNamespace>
     <AssemblyName>RemoteAgent</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,7 +35,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>RemoteAgent.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>RAgent.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="interop.OTAClient">
@@ -57,12 +57,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSRemoteAgent.cs" />
-    <Compile Include="IRemoteAgent.cs" />
+    <Compile Include="CSRAgent.cs" />
+    <Compile Include="IRAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RemoteAgent.snk" />
+    <None Include="RAgent.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

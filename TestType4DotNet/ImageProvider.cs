@@ -1,6 +1,6 @@
 ﻿using HP.ALM.QC.UI.Modules.Shared.Api;
 
-namespace CustomTestTypeAddin
+namespace CTSAddin
 {
     /// <summary>
     /// Gets the test type's icons for display in the user interface.

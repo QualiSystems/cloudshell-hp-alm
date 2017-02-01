@@ -2,7 +2,7 @@
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 
-namespace CustomTestTypeAddin
+namespace CTSAddin
 {
    /// <summary>
     /// Handles displaying test scripts from the project repository in the ALM user interface.

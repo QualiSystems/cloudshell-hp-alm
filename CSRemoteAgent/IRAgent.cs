@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 /// <summary>
 /// Handles communication between ALM and the testing tool.
 /// </summary>
-namespace CSRemoteAgent
+namespace CSRAgent
 {
     /// <summary>
     /// Handles communication between ALM and the testing tool.
@@ -18,11 +18,11 @@ namespace CSRemoteAgent
     /// to write results and other data to ALM.
     /// </remarks> 
   [Guid("A33D1851-2BFA-4844-B42C-15A3AC202E8B"), ComVisible(true)]
-  public interface IRemoteAgent
+  public interface IRAgent
   {
 
     /// <summary>
-    /// Get the current status of the testing tool.
+    /// Gets the current status of the testing tool.
     /// </summary>
    /// <remarks>During test execution, ALM checks the status of the testing tool and displays this information. This enables the tester to monitor the test’s progress at each stage of the run.</remarks>
     /// <param name="descr">The testing tool’s current status.</param>
