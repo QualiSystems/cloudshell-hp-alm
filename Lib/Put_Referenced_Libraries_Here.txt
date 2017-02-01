@@ -1,0 +1,1 @@
+See the Custom Test Type Developer Guide for a list of the references the solution requires.
