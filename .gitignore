@@ -2,3 +2,4 @@ CSRemoteAgent/bin/*
 CSRemoteAgent/obj/*
 TestType4DotNet/bin/*
 TestType4DotNet/obj/*
+*.exe
