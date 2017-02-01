@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TDAPIOLELib;
 
@@ -15,9 +16,10 @@ namespace CSRAgent
   [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("AlmCsRemoteAgent1152")]
   public class CSRAgent : ServicedComponent, IRAgent
   {
+    private Dictionary<string, string> Params = new Dictionary<string, string>();
     private string m_status ;
     private string m_descr;
-    private string m_serverName;
+   /* private string m_serverName;
     private string m_projectName;
     private string m_domainName;
     private string m_userName;
@@ -30,7 +32,7 @@ namespace CSRAgent
     private string m_testSetInfo;
     private string m_testInstID;
     private string m_testInstName;
-    private string m_test;
+    private string m_test;*/
 
     public int get_status(ref string descr, ref string status)
     {
@@ -50,7 +52,7 @@ namespace CSRAgent
     {
       MessageBox.Show(string.Format(
         "Running test: id-{0}, name-{1}, user-{2}, server-{3}, domain-{4}, project-{5}, host-{6}",
-        m_testID, m_testName, m_userName, m_serverName, m_domainName, m_projectName, m_hostName));
+        Params["test_id"], Params["test_name"], Params["user_name"], Params["TDAPI_host_name"], Params["domain_name"], Params["project_name"], Params["host_name"]));
 
       // post the run
       PostRun("Passed");
@@ -63,12 +65,12 @@ namespace CSRAgent
     private void PostRun(string runStatus)
     {
       TDConnection conn = new TDConnectionClass();
-      conn.InitConnectionEx(m_serverName);
-      conn.ConnectProjectEx(m_domainName, m_projectName, m_userName, m_password);
+      conn.InitConnectionEx(Params["TDAPI_host_name"]);
+      conn.ConnectProjectEx(Params["domain_name"], Params["project_name"], Params["user_name"], Params["password"]);
 
-      Run run = (((((((conn.TestSetFactory as TestSetFactory)[m_testSetID]) as TestSet).TSTestFactory as TSTestFactory)[m_testInstID]) as TSTest).RunFactory as RunFactory).AddItem("scottyRun") as Run;
-      run["RN_TESTER_NAME"] = m_userName;
-      run["RN_HOST"] = m_hostName;
+      Run run = (((((((conn.TestSetFactory as TestSetFactory)[Params["test_set_id"]]) as TestSet).TSTestFactory as TSTestFactory)[Params["testcycle_id_integer"]]) as TSTest).RunFactory as RunFactory).AddItem("scottyRun") as Run;
+      run["RN_TESTER_NAME"] = Params["user_name"];
+      run["RN_HOST"] = Params["host_name"];
       run.Status = runStatus;
       run.Post();
     }
@@ -81,7 +83,8 @@ namespace CSRAgent
     public int set_value(string prm_name, string prm_value)
     {
       //MessageBox.Show("set value param:" + prm_name + " value: " + "prm_value");
-      switch (prm_name)
+      Params.Add(prm_name, prm_value);
+      /*switch (prm_name)
       {
         case "host_name":
           m_hostName = prm_value;
@@ -122,7 +125,7 @@ namespace CSRAgent
         case "tstest_name":
           m_testInstName = prm_value;
           break;
-      }
+      }*/
       return 0;
     }
 
