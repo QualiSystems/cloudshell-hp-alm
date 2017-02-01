@@ -49,7 +49,7 @@
       this.PerformLayout();
 
     }
-
+//comment
     #endregion
 
     private System.Windows.Forms.TextBox m_textBox;
