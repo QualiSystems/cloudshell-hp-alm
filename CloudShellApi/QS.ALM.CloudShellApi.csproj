@@ -32,6 +32,9 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\AlmCloudShell.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,6 +50,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestNode.cs" />
     <Compile Include="TestStatus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\AlmCloudShell.snk">
+      <Link>AlmCloudShell.snk</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
