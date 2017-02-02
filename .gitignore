@@ -2,3 +2,5 @@ CSRemoteAgent/bin/*
 CSRemoteAgent/obj/*
 TestType4DotNet/bin/*
 TestType4DotNet/obj/*
+CloudShellApi/obj/*
+CloudShellApi/bin/*
