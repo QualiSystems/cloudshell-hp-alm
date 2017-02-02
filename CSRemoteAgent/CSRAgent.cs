@@ -16,23 +16,10 @@ namespace CSRAgent
   [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("AlmCsRemoteAgent1152")]
   public class CSRAgent : ServicedComponent, IRAgent
   {
-    private Dictionary<string, string> Params = new Dictionary<string, string>();
+    ALMCon m_ALMCon = new ALMCon();
     private string m_status ;
     private string m_descr;
-   /* private string m_serverName;
-    private string m_projectName;
-    private string m_domainName;
-    private string m_userName;
-    private string m_password;
-    private string m_hostName;
-    private string m_testPath;
-    private string m_testName;
-    private string m_testID;
-    private string m_testSetID;
-    private string m_testSetInfo;
-    private string m_testInstID;
-    private string m_testInstName;
-    private string m_test;*/
+   
 
     public int get_status(ref string descr, ref string status)
     {
@@ -52,8 +39,11 @@ namespace CSRAgent
     {
       MessageBox.Show(string.Format(
         "Running test: id-{0}, name-{1}, user-{2}, server-{3}, domain-{4}, project-{5}, host-{6}",
-        Params["test_id"], Params["test_name"], Params["user_name"], Params["TDAPI_host_name"], Params["domain_name"], Params["project_name"], Params["host_name"]));
-
+        m_ALMCon.getValue("test_id"),  m_ALMCon.getValue("test_name"),  m_ALMCon.getValue("user_name"), 
+        m_ALMCon.getValue("TDAPI_host_name"),  m_ALMCon.getValue("domain_name"),m_ALMCon.getValue("project_name"),  m_ALMCon.getValue("host_name")));
+      m_ALMCon.OpenCon();
+      List LTestData = new List();
+      LTestData = m_ALMCon.conn.get_Fields(m_ALMCon.getValue("test_set_id"));
       // post the run
       PostRun("Passed");
       //Process.GetCurrentProcess().Kill();
@@ -64,69 +54,27 @@ namespace CSRAgent
 
     private void PostRun(string runStatus)
     {
-      TDConnection conn = new TDConnectionClass();
-      conn.InitConnectionEx(Params["TDAPI_host_name"]);
-      conn.ConnectProjectEx(Params["domain_name"], Params["project_name"], Params["user_name"], Params["password"]);
+      /*TDConnection conn = new TDConnectionClass();
+      conn.InitConnectionEx( m_ALMCon.getValue("TDAPI_host_name"));
+      conn.ConnectProjectEx( m_ALMCon.getValue("domain_name"),  m_ALMCon.getValue("project_name"),  m_ALMCon.getValue("user_name"),  m_ALMCon.getValue("password"));
+*/
+      m_ALMCon.OpenCon();
 
-      Run run = (((((((conn.TestSetFactory as TestSetFactory)[Params["test_set_id"]]) as TestSet).TSTestFactory as TSTestFactory)[Params["testcycle_id_integer"]]) as TSTest).RunFactory as RunFactory).AddItem("scottyRun") as Run;
-      run["RN_TESTER_NAME"] = Params["user_name"];
-      run["RN_HOST"] = Params["host_name"];
+      Run run = (((((((m_ALMCon.conn.TestSetFactory as TestSetFactory)[ m_ALMCon.getValue("test_set_id")]) as TestSet).TSTestFactory as TSTestFactory)[ m_ALMCon.getValue("testcycle_id_integer")]) as TSTest).RunFactory as RunFactory).AddItem("scottyRun") as Run;
+      run["RN_TESTER_NAME"] =  m_ALMCon.getValue("user_name");
+      run["RN_HOST"] =  m_ALMCon.getValue("host_name");
       run.Status = runStatus;
       run.Post();
     }
 
-    public int get_value(string prm_name, string prm_value)
+    public int get_value(string prm_name, ref string prm_value)
     {
-        return 0;
+        return m_ALMCon.getValue(prm_name,ref prm_value);
     }
 
     public int set_value(string prm_name, string prm_value)
     {
-      //MessageBox.Show("set value param:" + prm_name + " value: " + "prm_value");
-      Params.Add(prm_name, prm_value);
-      /*switch (prm_name)
-      {
-        case "host_name":
-          m_hostName = prm_value;
-          break;
-        case "TDAPI_host_name":
-          m_serverName = prm_value;
-          break;
-        case "project_name":
-          m_projectName = prm_value;
-          break;
-        case "domain_name":
-          m_domainName = prm_value;
-          break;
-        case "user_name":
-          m_userName = prm_value;
-          break;
-        case "password":
-          m_password = prm_value;
-          break;
-        case "test_path":
-          m_testPath = prm_value;
-          break;
-        case "test_name":
-          m_testName = prm_value;
-          break;
-        case "test_id":
-          m_testID = prm_value;
-          break;
-        case "test_set_id":
-          m_testSetID = prm_value;
-          break;
-        case "test_set":
-          m_testSetInfo = prm_value;
-          break;
-        case "testcycle_id_integer":
-          m_testInstID = prm_value;
-          break;
-        case "tstest_name":
-          m_testInstName = prm_value;
-          break;
-      }*/
-      return 0;
+      return m_ALMCon.setValue(prm_name, prm_value);
     }
 
     public int stop()
