@@ -4,3 +4,8 @@ TestType4DotNet/bin/*
 TestType4DotNet/obj/*
 CloudShellApi/obj/*
 CloudShellApi/bin/*
+Tester/obj/*
+Tester/bin/*
+packages/*
+!repositories.config
+*.suo

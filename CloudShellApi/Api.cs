@@ -2,16 +2,16 @@
 
 namespace QS.ALM.CloudShellApi
 {
-    public class Api
+    public static class Api
     {
-        public TestNode GetTestsRoot()
+        public static TestNode GetTestsRoot()
         {
             var root = new TestNode("Root");
             root.Children.AddRange(new[] {new TestNode("Dummy test1"), new TestNode("Dummy test2")});
             return root;
         }
 
-        public bool RunTest(string testPath, out string error)
+        public static bool RunTest(string testPath, out string error)
         {
             Logger.Info("Run test: " + testPath);
 
@@ -36,7 +36,7 @@ namespace QS.ALM.CloudShellApi
             return success;
         }
 
-        public TestStatus GetTestStatus(string testPath)
+        public static TestStatus GetTestStatus(string testPath)
         {
             if (testPath.ToLower() == "root\\dummy test1")
                 return TestStatus.Running;
