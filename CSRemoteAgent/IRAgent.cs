@@ -146,7 +146,7 @@ namespace CSRAgent
     /// </param>
     /// <param name="prm_value">Output. The value.</param>
     /// <returns>0 if the call succeeds, otherwise an error code.</returns>
-    int get_value(string prm_name, string prm_value);
+    int get_value(string prm_name, ref string prm_value);
   }
 }
 
