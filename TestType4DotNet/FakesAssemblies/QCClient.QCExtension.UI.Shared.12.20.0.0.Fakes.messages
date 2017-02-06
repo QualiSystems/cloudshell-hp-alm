@@ -1,0 +1,1 @@
+C:\hp\hp\1\cloudshell-hp-alm\TestType4DotNet\Fakes\QCClient.QCExtension.UI.Shared.fakes : error : assembly C:\hp\hp\1\cloudshell-hp-alm\Lib\QCClient.QCExtension.UI.Shared.dll failed to load properly Could not resolve assembly 'QCClient.UI.Api, Version=12.20.0.0, Culture=neutral, PublicKeyToken=792843134cf0407a'. Are you missing an assembly reference?

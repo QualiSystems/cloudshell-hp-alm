@@ -1,0 +1,6 @@
+C:\hp\hp\1\cloudshell-hp-alm\CloudShellApi\bin\Debug\QS.ALM.CloudShellApi.dll
+C:\hp\hp\1\cloudshell-hp-alm\CloudShellApi\bin\Debug\QS.ALM.CloudShellApi.pdb
+C:\hp\hp\1\cloudshell-hp-alm\CloudShellApi\bin\Debug\log4net.dll
+C:\hp\hp\1\cloudshell-hp-alm\CloudShellApi\bin\Debug\log4net.xml
+C:\hp\hp\1\cloudshell-hp-alm\CloudShellApi\obj\Debug\QS.ALM.CloudShellApi.dll
+C:\hp\hp\1\cloudshell-hp-alm\CloudShellApi\obj\Debug\QS.ALM.CloudShellApi.pdb
