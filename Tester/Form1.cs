@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using QS.ALM.CloudShellApi;
+using CTSAddin;
 
 namespace Tester
 {
@@ -17,6 +18,12 @@ namespace Tester
 
             if (!Api.RunTest(txtTestPath.Text, out error))
                 MessageBox.Show(error);
+        }
+
+        private void BrouseButton_Click(object sender, EventArgs e)
+        {
+            TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm();
+            BrouseForm.ShowDialog();
         }
     }
 }

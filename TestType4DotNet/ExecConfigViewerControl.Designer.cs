@@ -28,30 +28,44 @@
     /// </summary>
     private void InitializeComponent()
     {
-      this.m_textBox = new System.Windows.Forms.TextBox();
-      this.SuspendLayout();
-      // 
-      // m_textBox
-      // 
-      this.m_textBox.Location = new System.Drawing.Point(45, 53);
-      this.m_textBox.Name = "m_textBox";
-      this.m_textBox.Size = new System.Drawing.Size(435, 22);
-      this.m_textBox.TabIndex = 0;
-      // 
-      // ExecConfigViewerControl
-      // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.m_textBox);
-      this.Name = "ExecConfigViewerControl";
-      this.Size = new System.Drawing.Size(540, 162);
-      this.ResumeLayout(false);
-      this.PerformLayout();
+            this.m_textBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // m_textBox
+            // 
+            this.m_textBox.Location = new System.Drawing.Point(34, 43);
+            this.m_textBox.Margin = new System.Windows.Forms.Padding(2);
+            this.m_textBox.Name = "m_textBox";
+            this.m_textBox.Size = new System.Drawing.Size(327, 20);
+            this.m_textBox.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(64, 136);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(37, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Config";
+            // 
+            // ExecConfigViewerControl
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.m_textBox);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Name = "ExecConfigViewerControl";
+            this.Size = new System.Drawing.Size(405, 202);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
     }
 
     #endregion
 
     private System.Windows.Forms.TextBox m_textBox;
+    private System.Windows.Forms.Label label1;
   }
 }

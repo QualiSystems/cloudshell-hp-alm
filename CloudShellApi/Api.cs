@@ -4,10 +4,26 @@ namespace QS.ALM.CloudShellApi
 {
     public static class Api
     {
+        public static TestNode[] GetNodes(string parentPath)
+        {
+            if (parentPath == null || parentPath == "")
+            return new[] { new TestNode("local", TypeNode.Folder), new TestNode("shared", TypeNode.Folder) };
+
+            if (parentPath == "local")
+                return new[] { new TestNode("Folder1", TypeNode.Folder), new TestNode("Folder2", TypeNode.Folder), new TestNode("test1", TypeNode.Test) };
+
+            if (parentPath == "local\\folder1")
+                return new[] { new TestNode("test3", TypeNode.Test) };
+
+            return null;
+
+        }
+
+
         public static TestNode GetTestsRoot()
         {
-            var root = new TestNode("Root");
-            root.Children.AddRange(new[] {new TestNode("Dummy test1"), new TestNode("Dummy test2")});
+            var root = new TestNode("Root", TypeNode.Folder);
+            root.Children.AddRange(new[] {new TestNode("Dummy test1", TypeNode.Test), new TestNode("Dummy test2", TypeNode.Test)});
             return root;
         }
 
