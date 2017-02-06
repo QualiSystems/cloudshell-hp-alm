@@ -1,4 +1,4 @@
-﻿namespace CTSAddin
+﻿namespace  CTSAddin
 {
   partial class ResultViewerControl
   {
@@ -49,7 +49,7 @@
       this.PerformLayout();
 
     }
-
+//comment
     #endregion
 
     private System.Windows.Forms.TextBox m_textBox;
