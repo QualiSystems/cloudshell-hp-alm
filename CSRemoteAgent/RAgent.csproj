@@ -57,6 +57,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ALMCon.cs" />
+    <Compile Include="CStatus.cs" />
     <Compile Include="CSRAgent.cs" />
     <Compile Include="IRAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
