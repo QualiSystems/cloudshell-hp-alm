@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="QCClient.QCExtension.UI.Shared, Version=12.20.0.0, Culture=neutral, PublicKeyToken=792843134cf0407a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\MyTestQCTree\Lib\QCClient.QCExtension.UI.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="QS.ALM.CloudShellApi">
       <HintPath>..\CloudShellApi\bin\Debug\QS.ALM.CloudShellApi.dll</HintPath>
     </Reference>

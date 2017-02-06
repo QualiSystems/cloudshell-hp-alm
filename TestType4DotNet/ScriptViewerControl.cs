@@ -50,7 +50,30 @@ namespace CTSAddin
     /// <param name="test">Output. An ALM Open Test Architecture ITest object.</param>
     public void ShowTest(HP.ALM.QC.OTA.Entities.Api.ITest test)
     {
-      m_textBox.Text = "Showing test " + test.Name + " in project " + m_tdc.ProjectName;
+      m_TextBoxPath.Text = "Showing test " + test.Name + " in project " + m_tdc.ProjectName;
+    }
+
+    private void ButtonBrowse_Click(object sender, System.EventArgs e)
+    {
+        TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm(m_TextBoxPath.Text);
+        BrouseForm.ShowDialog();
+    }
+
+    private void ButtonRefresh_Click(object sender, System.EventArgs e)
+    {
+        string message = "Are you sure you would like to refresh the \r\ntest parameters ?";
+        string caption = "Refresh";
+        MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
+        DialogResult result;
+
+        // Displays the MessageBox.
+
+        result = MessageBox.Show(message, caption, buttons);
+
+        if (result == System.Windows.Forms.DialogResult.Yes)
+        {
+
+        }
     }
   }
 }
