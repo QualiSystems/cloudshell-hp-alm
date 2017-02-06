@@ -54,5 +54,10 @@ namespace CTSAddin
     {
       m_textBox.Text = "Showing test instance" + testInstance.Name + " in project " + m_tdc.ProjectName;
     }
+
+    private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+    {
+
+    }
   }
 }

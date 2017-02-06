@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CTSAddin</RootNamespace>
     <AssemblyName>CustomTestType</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\CustomTestType.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -38,6 +41,21 @@
     <AssemblyOriginatorKeyFile>..\AlmCloudShell.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Infragistics4.Shared.v12.2">
+      <HintPath>..\Lib\Infragistics4.Shared.v12.2.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.Misc.v12.2">
+      <HintPath>..\Lib\Infragistics4.Win.Misc.v12.2.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraWinEditors.v12.2">
+      <HintPath>..\Lib\Infragistics4.Win.UltraWinEditors.v12.2.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraWinTree.v12.2">
+      <HintPath>..\Lib\Infragistics4.Win.UltraWinTree.v12.2.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.v12.2">
+      <HintPath>..\Lib\Infragistics4.Win.v12.2.dll</HintPath>
+    </Reference>
     <Reference Include="interop.OTAClient, Version=11.51.9999.0, Culture=neutral, PublicKeyToken=792843134cf0407a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -60,6 +78,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\OTAClient.Entities.dll</HintPath>
     </Reference>
+    <Reference Include="QCClient.Library, Version=12.20.0.0, Culture=neutral, PublicKeyToken=792843134cf0407a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\QCClient.Library.dll</HintPath>
+    </Reference>
     <Reference Include="QCClient.QCExtension.OTA, Version=11.51.0.0, Culture=neutral, PublicKeyToken=792843134cf0407a, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\QCClient.QCExtension.OTA.dll</HintPath>
@@ -67,6 +89,15 @@
     <Reference Include="QCClient.QCExtension.UI.Shared, Version=12.20.0.0, Culture=neutral, PublicKeyToken=792843134cf0407a, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Users\Motico\Documents\Visual Studio 2013\Projects\LeanFT\Lib\QCClient.QCExtension.UI.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="QCClient.UI.Components.3rdParty">
+      <HintPath>..\Lib\QCClient.UI.Components.3rdParty.dll</HintPath>
+    </Reference>
+    <Reference Include="QCClient.UI.Components.Api">
+      <HintPath>..\Lib\QCClient.UI.Components.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="QS.ALM.CloudShellApi">
+      <HintPath>..\CloudShellApi\bin\Debug\QS.ALM.CloudShellApi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -104,6 +135,13 @@
     <Compile Include="ScriptViewerControl.Designer.cs">
       <DependentUpon>ScriptViewerControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestShellTestsBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestShellTestsBrowserForm.Designer.cs">
+      <DependentUpon>TestShellTestsBrowserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UltraTreeNodeWithStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ExecConfigViewerControl.resx">
@@ -118,6 +156,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptViewerControl.resx">
       <DependentUpon>ScriptViewerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestShellTestsBrowserForm.resx">
+      <DependentUpon>TestShellTestsBrowserForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
