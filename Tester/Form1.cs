@@ -10,6 +10,10 @@ namespace Tester
         public Form1()
         {   
             InitializeComponent();
+
+            ScriptViewerControl scriptControl = new ScriptViewerControl();
+            PanelScriptView.Controls.Add(scriptControl);
+            scriptControl.Dock = DockStyle.Fill;
         }
 
         private void btnRunTest_Click(object sender, EventArgs e)
@@ -18,12 +22,6 @@ namespace Tester
 
             if (!Api.RunTest(txtTestPath.Text, out error))
                 MessageBox.Show(error);
-        }
-
-        private void BrouseButton_Click(object sender, EventArgs e)
-        {
-            TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm();
-            BrouseForm.ShowDialog();
         }
     }
 }

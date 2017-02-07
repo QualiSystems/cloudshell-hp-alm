@@ -117,4 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="LabelText1.Text" xml:space="preserve">
+    <value>Clicking the browse button will allow to choose the TestShell
+test. Once pressing on the 'OK' button the test case
+parameters can be found in the parameters tab. You can
+change the test by opening the dialog again and chosing a
+different test.</value>
+  </data>
 </root>

@@ -30,7 +30,7 @@
         {
             this.btnRunTest = new System.Windows.Forms.Button();
             this.txtTestPath = new System.Windows.Forms.TextBox();
-            this.BrouseButton = new System.Windows.Forms.Button();
+            this.PanelScriptView = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // btnRunTest
@@ -49,25 +49,23 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTestPath.Location = new System.Drawing.Point(93, 15);
             this.txtTestPath.Name = "txtTestPath";
-            this.txtTestPath.Size = new System.Drawing.Size(179, 20);
+            this.txtTestPath.Size = new System.Drawing.Size(521, 20);
             this.txtTestPath.TabIndex = 1;
             // 
-            // BrouseButton
+            // PanelScriptView
             // 
-            this.BrouseButton.Location = new System.Drawing.Point(93, 120);
-            this.BrouseButton.Name = "BrouseButton";
-            this.BrouseButton.Size = new System.Drawing.Size(75, 23);
-            this.BrouseButton.TabIndex = 2;
-            this.BrouseButton.Text = "Brouse";
-            this.BrouseButton.UseVisualStyleBackColor = true;
-            this.BrouseButton.Click += new System.EventHandler(this.BrouseButton_Click);
+            this.PanelScriptView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PanelScriptView.Location = new System.Drawing.Point(0, 0);
+            this.PanelScriptView.Name = "PanelScriptView";
+            this.PanelScriptView.Size = new System.Drawing.Size(626, 354);
+            this.PanelScriptView.TabIndex = 6;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Controls.Add(this.BrouseButton);
+            this.ClientSize = new System.Drawing.Size(626, 354);
+            this.Controls.Add(this.PanelScriptView);
             this.Controls.Add(this.txtTestPath);
             this.Controls.Add(this.btnRunTest);
             this.Name = "Form1";
@@ -81,7 +79,7 @@
 
         private System.Windows.Forms.Button btnRunTest;
         private System.Windows.Forms.TextBox txtTestPath;
-        private System.Windows.Forms.Button BrouseButton;
+        private System.Windows.Forms.Panel PanelScriptView;
     }
 }
 

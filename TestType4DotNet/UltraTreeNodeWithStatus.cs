@@ -7,14 +7,14 @@ using Infragistics.Win.UltraWinTree;
 
 namespace CTSAddin
 {
-    enum StatusNode
+    public enum StatusNode
     {
         Test,
         NotFilled,//status folder node
         Filled    //status folder node
     }
 
-    class UltraTreeNodeWithStatus
+    public class UltraTreeNodeWithStatus
     {
         public UltraTreeNode Node { get; set; }
         public StatusNode Status { get; set; }

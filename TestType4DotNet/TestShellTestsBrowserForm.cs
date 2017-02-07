@@ -20,33 +20,55 @@ namespace CTSAddin
             InitializeComponent();
             AddQCTree();
         }
-        private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree TestsBrouserQcTree;
-        private Dictionary<string, UltraTreeNodeWithStatus> DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
-        private UltraTreeNodeWithStatus SelectedNode = null;//node selecter in tree
-        enum StatusNode
+        public TestShellTestsBrowserForm(string path)
         {
-            Test,
-            NotFilled,//status folder node
-            Filled    //status folder node
+            InitializeComponent();
+            AddQCTree();
+            SelectPath(path);
         }
 
-        class UltraTreeNodeWithStatus
+        private void SelectPath(string path)
         {
-            public UltraTreeNode Node { get; set; }
-            public StatusNode Status { get; set; }
-
-            public UltraTreeNodeWithStatus(UltraTreeNode node, StatusNode status)
+            if (path != null && path != "")
             {
-                Node = node;
-                Status = status;
+                path = path.ToLower();
+                string[] arrPath = path.Split(new char[] { '/', '\\' });
+                string curPath = "";
+                UltraTreeNodeWithStatus tmpNode = null;
+                for(int i = 0; i < arrPath.Length; ++i)
+                {
+                    if (curPath != "")
+                    {
+                        curPath += "\\";
+                    }
+                    AddLayerToTree(curPath += arrPath[i]);
+                    m_DictonaryNodes.TryGetValue(curPath, out tmpNode);
+                    if (tmpNode != null)
+                    {
+                        tmpNode.Node.Expanded = true;
+                    }
+                }
+
+                m_DictonaryNodes.TryGetValue(curPath, out tmpNode);
+                if (tmpNode != null)
+                {
+                    tmpNode.Node.Selected = true;
+                }
             }
         }
+
+        private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
+        private Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
+        public UltraTreeNodeWithStatus SelectedNode { get; private set;}//node selecter in tree
+
         private void AddQCTree()
-        {            
-            TreeViewPanel.Controls.Add(TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
-            TestsBrouserQcTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TestsBrouserQcTree.BeforeExpand += new Infragistics.Win.UltraWinTree.BeforeNodeChangedEventHandler(this.TestsBrouserQcTree_BeforeExpand);
-            this.TestsBrouserQcTree.AfterSelect += new Infragistics.Win.UltraWinTree.AfterNodeSelectEventHandler(this.TestsBrouserQcTree_AfterSelect);
+        {
+            TreeViewPanel.Controls.Add(m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
+            m_TestsBrouserQcTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            m_TestsBrouserQcTree.HideSelection = false;
+            this.m_TestsBrouserQcTree.BeforeExpand += new Infragistics.Win.UltraWinTree.BeforeNodeChangedEventHandler(this.TestsBrouserQcTree_BeforeExpand);
+            this.m_TestsBrouserQcTree.AfterSelect += new Infragistics.Win.UltraWinTree.AfterNodeSelectEventHandler(this.TestsBrouserQcTree_AfterSelect);
+            this.m_TestsBrouserQcTree.TabIndex = 0;
             AddLayerToTree("");//add layer root
         }
 
@@ -54,7 +76,9 @@ namespace CTSAddin
         {
             if (e.NewSelections.Count > 0)
             {
-                DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath, out SelectedNode);//TestsBrouserQcTree.Focused
+                UltraTreeNodeWithStatus tmpNode;
+                m_DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath, out tmpNode);
+                SelectedNode = tmpNode;
                 if (SelectedNode.Status == StatusNode.Test)
                 {
                     ButtonOK.Enabled = true;
@@ -84,8 +108,8 @@ namespace CTSAddin
             }
             if(path != "")
             {
-                path = path.ToLower();                
-                DictonaryNodes.TryGetValue(path, out node);
+                path = path.ToLower();
+                m_DictonaryNodes.TryGetValue(path, out node);
             }
 
             if (node == null || node.Status == StatusNode.NotFilled)
@@ -104,20 +128,20 @@ namespace CTSAddin
                         UltraTreeNode ultraTreeNode;
                         if(node == null)
                         {
-                           ultraTreeNode = TestsBrouserQcTree.AddRow(newPatn, nameNode);//add layer root
+                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(newPatn, nameNode);//add layer root
                         }
                         else
                         {
-                            ultraTreeNode = TestsBrouserQcTree.AddRow(node.Node, newPatn, nameNode);
+                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(node.Node, newPatn, nameNode);
                         }
 
                         if (nodeTmp.Type == TypeNode.Folder)
                         {
-                            DictonaryNodes.Add( newPatn, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.NotFilled));
+                            m_DictonaryNodes.Add(newPatn, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.NotFilled));
                         }
                         else
                         {
-                            DictonaryNodes.Add(newPatn, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
+                            m_DictonaryNodes.Add(newPatn, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
                             ultraTreeNode.Expanded = true;//for remove picture plus near node
                         }
                     }
@@ -127,11 +151,6 @@ namespace CTSAddin
                     node.Status = StatusNode.Filled;
                 }
             }
-        }
-
-        private void lButtonCancel_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)
