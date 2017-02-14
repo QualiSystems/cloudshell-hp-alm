@@ -85,7 +85,7 @@ namespace QS.ALM.CloudShellApi
 
         private static Level ReadVerbosity()
         {
-            var verbosity = Config.Verbosity;
+            var verbosity = SettingsFile.Verbosity;
 
             switch (verbosity.ToLower())
             {
