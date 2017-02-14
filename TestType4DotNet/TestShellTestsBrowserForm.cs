@@ -13,25 +13,49 @@ using QS.ALM.CloudShellApi;
 
 namespace CTSAddin
 {
+    /// <summary>
+    /// Class dialog Form for present tree control for selecting test.
+    /// </summary>
     public partial class TestShellTestsBrowserForm : Form
     {
+        //private string m_CurrentTestPath = null;
+        private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
+        private Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
+        /// <summary>
+        /// Current node, selected in tree.
+        /// </summary>
+        public UltraTreeNodeWithStatus SelectedNode { get; private set; }
+
+        /// <summary>
+        /// Create form and try to select node in tree control by incomming path.
+        /// </summary>
+        /// <param name="path"></param>
         public TestShellTestsBrowserForm()
         {
-            InitializeComponent();
-            AddQCTree();
+            InitializeComponent();            
         }
-        public TestShellTestsBrowserForm(string path)
+        /// <summary>
+        /// Show Dialog Form if path root for tree control from server reading success. Return choosen test's path.
+        /// </summary>
+        /// <returns></returns>
+        public string TryShowDialog(string path)
         {
-            InitializeComponent();
-            AddQCTree();
-            SelectPath(path);
+            if (AddQCTree() && SelectPath(path))
+            {
+                ShowDialog();
+                return SelectedNode.Node.FullPath; ;// m_CurrentTestPath;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        private void SelectPath(string path)
+        private bool SelectPath(string path)
         {
             if (path != null && path != "")
             {
-                path = path.ToLower();
+                //path = path.ToLower();
                 string[] arrPath = path.Split(new char[] { '/', '\\' });
                 string curPath = "";
                 UltraTreeNodeWithStatus tmpNode = null;
@@ -41,35 +65,49 @@ namespace CTSAddin
                     {
                         curPath += "\\";
                     }
-                    AddLayerToTree(curPath += arrPath[i]);
+                    if (!AddLayerToTree(curPath += arrPath[i]))//Check if need, added layer to tree control from server
+                    {
+                        return true;
+                    }
                     m_DictonaryNodes.TryGetValue(curPath, out tmpNode);
                     if (tmpNode != null)
                     {
-                        tmpNode.Node.Expanded = true;
+                        tmpNode.Node.Expanded = true;//open current node
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
-
                 m_DictonaryNodes.TryGetValue(curPath, out tmpNode);
                 if (tmpNode != null)
                 {
                     tmpNode.Node.Selected = true;
                 }
             }
-        }
+            return true;
+        }      
 
-        private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
-        private Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
-        public UltraTreeNodeWithStatus SelectedNode { get; private set;}//node selecter in tree
-
-        private void AddQCTree()
+        private bool AddQCTree()
         {
-            TreeViewPanel.Controls.Add(m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
-            m_TestsBrouserQcTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            m_TestsBrouserQcTree.HideSelection = false;
-            this.m_TestsBrouserQcTree.BeforeExpand += new Infragistics.Win.UltraWinTree.BeforeNodeChangedEventHandler(this.TestsBrouserQcTree_BeforeExpand);
-            this.m_TestsBrouserQcTree.AfterSelect += new Infragistics.Win.UltraWinTree.AfterNodeSelectEventHandler(this.TestsBrouserQcTree_AfterSelect);
-            this.m_TestsBrouserQcTree.TabIndex = 0;
-            AddLayerToTree("");//add layer root
+            string contentError = "";
+            bool isStatusServerOk = false;
+            Api.Login("http://192.168.42.35:9000", "application/x-www-form-urlencoded", "admin", "admin", "Global", out contentError, out isStatusServerOk);
+            if (isStatusServerOk)
+            {
+                TreeViewPanel.Controls.Add(m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
+                m_TestsBrouserQcTree.Dock = System.Windows.Forms.DockStyle.Fill;
+                m_TestsBrouserQcTree.HideSelection = false;
+                m_TestsBrouserQcTree.BeforeExpand += new BeforeNodeChangedEventHandler(TestsBrouserQcTree_BeforeExpand);
+                m_TestsBrouserQcTree.AfterSelect += new AfterNodeSelectEventHandler(TestsBrouserQcTree_AfterSelect);
+                m_TestsBrouserQcTree.TabIndex = 0;
+                return AddLayerToTree("");//add layer root
+            }
+            else
+            {
+                MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
+            }
+            return false;
         }
 
         private void TestsBrouserQcTree_AfterSelect(object sender, SelectEventArgs e)
@@ -99,23 +137,48 @@ namespace CTSAddin
             AddLayerToTree(e.TreeNode.FullPath);            
         }
 
-        private void AddLayerToTree(string path)
+        private bool AddLayerToTree(string path)
         {            
             UltraTreeNodeWithStatus node = null;
+            string contentError = "";
+            bool IsStatusServerOk = false;
             if(path == null)
             {
                 path = "";
             }
             if(path != "")
             {
-                path = path.ToLower();
                 m_DictonaryNodes.TryGetValue(path, out node);
+                if(node == null)
+                {
+                    MessageBox.Show("Path '" + path + "' not exist.", "Error", MessageBoxButtons.OK);
+                    return false;
+                }
             }
-
-            if (node == null || node.Status == StatusNode.NotFilled)
+            if (node == null || node.Status == StatusNode.NotFilled)//Or root or data about it layer yet not read from server.
             {
-                TestNode[] arrNodes = Api.GetNodes(path);
-                if(arrNodes != null && arrNodes.Length != 0)
+                TestNode[] arrNodes = Api.GetNodes(path, out contentError, out IsStatusServerOk);
+                if (path == "")// for root
+                {
+                    if (!IsStatusServerOk)
+                    {
+                        MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
+                        return false;
+                    }
+                }
+                else if (!IsStatusServerOk)
+                {
+                    if (contentError == "")
+                    {
+                        MessageBox.Show("Some unknown error !!!", "Error", MessageBoxButtons.OK);
+                    }
+                    else
+                    {
+                        MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
+                    }
+                    return false;
+                }
+                if(arrNodes != null && arrNodes.Length > 0)
                 {
                     if(path != "")
                     {
@@ -123,7 +186,7 @@ namespace CTSAddin
                     }
                     foreach(TestNode nodeTmp in arrNodes)
                     {
-                        string nameNode = nodeTmp.Name.ToLower();                       
+                        string nameNode = nodeTmp.Name;                       
                         string newPatn = path + nameNode;
                         UltraTreeNode ultraTreeNode;
                         if(node == null)
@@ -132,7 +195,7 @@ namespace CTSAddin
                         }
                         else
                         {
-                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(node.Node, newPatn, nameNode);
+                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(node.Node, newPatn, nameNode);//Insert node to tree control under node.Node.
                         }
 
                         if (nodeTmp.Type == TypeNode.Folder)
@@ -142,7 +205,7 @@ namespace CTSAddin
                         else
                         {
                             m_DictonaryNodes.Add(newPatn, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
-                            ultraTreeNode.Expanded = true;//for remove picture plus near node
+                            ultraTreeNode.Expanded = true;//For remove picture plus near node in tree control.
                         }
                     }
                 }
@@ -151,12 +214,18 @@ namespace CTSAddin
                     node.Status = StatusNode.Filled;
                 }
             }
+            return true;
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)
         {
-            string keyTest = SelectedNode.Node.FullPath;
+            //m_CurrentTestPath = SelectedNode.Node.FullPath;
             this.Close();
+        }
+
+        private void ButtonCancel_Click(object sender, EventArgs e)
+        {
+            //m_CurrentTestPath = null;
         }
     }
 }

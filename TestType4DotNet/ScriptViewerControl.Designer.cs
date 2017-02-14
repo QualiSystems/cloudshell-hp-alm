@@ -42,9 +42,10 @@
             this.m_TextBoxPath.Location = new System.Drawing.Point(104, 31);
             this.m_TextBoxPath.Margin = new System.Windows.Forms.Padding(2);
             this.m_TextBoxPath.Name = "m_TextBoxPath";
+            this.m_TextBoxPath.ReadOnly = true;
             this.m_TextBoxPath.Size = new System.Drawing.Size(474, 20);
             this.m_TextBoxPath.TabIndex = 0;
-            this.m_TextBoxPath.Text = "local\\folder1\\test3";
+            this.m_TextBoxPath.Text = "Shared/Folder 1/Test B sleep 20 seconds";
             // 
             // labelTestPath
             // 
