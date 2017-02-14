@@ -1,22 +1,152 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
+using System.Collections.Generic;
+using RestSharp;
+using RestSharp.Authenticators;
+using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace QS.ALM.CloudShellApi
 {
     public static class Api
     {
-        public static TestNode[] GetNodes(string parentPath)
+        private static RestClient m_RestClient = null;
+        private static string m_Authorization = "";
+
+        private static string m_UrlStringServer = "";
+        private static string m_UserName = "";
+        private static string m_UserPassword = "";
+        private static string m_LoginContentType = "";
+        private static string m_Domain = "";
+
+        public static void Login ( string urlString, string contentType, string username, string password,
+                                  string domain, out string contentError, out bool isSuccess)
         {
-            if (parentPath == null || parentPath == "")
-            return new[] { new TestNode("local", TypeNode.Folder), new TestNode("shared", TypeNode.Folder) };
+            m_UrlStringServer = urlString;
+            m_UserName = username;
+            m_UserPassword = password;
+            m_Domain = domain;
+            m_LoginContentType = contentType;
+            RestClient client;
+            isSuccess = false;
+            string connectProperty = "url = '" + urlString + "', domain = '" + domain +
+                                        "', username = '" + username + "'." + System.Environment.NewLine;
+            try
+            {
+                client = new RestClient(urlString);
+            }
+            catch (System.Exception e)
+            {
+                contentError = connectProperty + e.Message;                
+                return;
+            }
 
-            if (parentPath == "local")
-                return new[] { new TestNode("Folder1", TypeNode.Folder), new TestNode("Folder2", TypeNode.Folder), new TestNode("test1", TypeNode.Test) };
+            var request = new RestRequest("/api/Auth/Login", Method.PUT);
+            request.AddHeader("Content-Type", contentType);
+            request.AddJsonBody(new { username = username, password = password, domain = domain});
 
-            if (parentPath == "local\\folder1")
-                return new[] { new TestNode("test3", TypeNode.Test) };
+            IRestResponse res;
+            try
+            {
+                res = client.Execute(request);
+            }
+            catch (System.Exception e)
+            {
+                contentError = connectProperty + e.Message;
+                return;
+            }
 
-            return null;
+            if ((int)res.StatusCode >= 200 && (int)res.StatusCode < 300)
+            {
+                m_RestClient = client;
+                m_Authorization = "Basic " + res.Content.Trim(new char[] { '\"' });
+                isSuccess = true;
+                contentError = "";
+                return;
+            }
+            else if (res.StatusCode == 0)
+            {
+                contentError = connectProperty + "Connect With Server Error";
+            }
+            else
+            {
+                contentError = connectProperty + res.Content;
+            }
+            m_RestClient = null;
+            m_Authorization = "";
+        }
 
+        public static TestNode[] GetNodes(string parentPath, out string contentError, out bool isSuccess)
+        {
+            if(m_RestClient == null || m_Authorization == "")
+            {
+                Login(m_UrlStringServer, m_LoginContentType, m_UserName, m_UserPassword,
+                                            m_Domain, out contentError, out isSuccess);
+                if(m_RestClient == null || m_Authorization == "")
+                {
+                    return null;
+                }
+            }
+
+            var request = new RestRequest("/api/Scheduling/Explorer/" + parentPath, Method.GET);
+            request.AddHeader("Authorization", m_Authorization);
+            IRestResponse res;
+            try
+            {
+                res = m_RestClient.Execute(request);
+            }
+            catch (System.Exception e)
+            {
+                contentError = e.Message;
+                isSuccess = false;
+                return null;
+            }
+            isSuccess = true;            
+            
+            if ((int)res.StatusCode < 200 || (int)res.StatusCode >= 300)
+            {
+                contentError = "Error " + ((int)res.StatusCode).ToString() + System.Environment.NewLine + res.Content;
+                isSuccess = false;
+                return null;
+            }
+
+            string content = res.Content.Trim(new char[] { '[', ']' });
+            if(content == "")
+            {
+                contentError = "";
+                return null;
+            }
+
+            ArrAPIExplorerResult arrAPIExplorerResult = null;
+            try
+            {
+                arrAPIExplorerResult = JsonConvert.DeserializeObject<ArrAPIExplorerResult>(content);
+            }
+            catch (System.Exception e)
+            {
+                contentError = e.Message;
+                isSuccess = false;
+                return null;
+            }
+
+            TestNode[] arrTestNode = new TestNode[arrAPIExplorerResult.Children.Length];
+
+
+            for (int i = 0; i < arrAPIExplorerResult.Children.Length; ++i )
+            {
+                if (arrAPIExplorerResult.Children[i].Type == "Folder")
+                {
+                    arrTestNode[i] = new TestNode(arrAPIExplorerResult.Children[i].Name, TypeNode.Folder);
+                }
+                else
+                {
+                    arrTestNode[i] = new TestNode(arrAPIExplorerResult.Children[i].Name, TypeNode.Test);
+                }
+            }
+            contentError = "";
+            return arrTestNode;
         }
 
 

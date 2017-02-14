@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 
@@ -55,16 +56,23 @@ namespace CTSAddin
 
     private void ButtonBrowse_Click(object sender, System.EventArgs e)
     {
-        TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm(m_TextBoxPath.Text);
-        BrouseForm.ShowDialog();
+        TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm();
+        string path;
+        path = BrouseForm.TryShowDialog(m_TextBoxPath.Text);
+        if(path != null)
+        {
+            m_TextBoxPath.Text = path;
+        }
     }
 
     private void ButtonRefresh_Click(object sender, System.EventArgs e)
     {
-        string message = "Are you sure you would like to refresh the \r\ntest parameters ?";
+        string message = "Are you sure you would like to refresh the" + Environment.NewLine + "test parameters ?";
         string caption = "Refresh";
         MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
         DialogResult result;
+
+        
 
         // Displays the MessageBox.
 
