@@ -65,6 +65,7 @@
     <Compile Include="Api.cs" />
     <Compile Include="APIExplorerResult.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="SettingsFile.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
