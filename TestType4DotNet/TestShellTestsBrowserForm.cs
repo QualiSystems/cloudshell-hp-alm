@@ -19,7 +19,7 @@ namespace CTSAddin
     public partial class TestShellTestsBrowserForm : Form
     {
         //private string m_CurrentTestPath = null;
-        Api m_Api;
+        readonly Api m_Api;
         private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
         private Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
         /// <summary>
@@ -43,7 +43,7 @@ namespace CTSAddin
             if (AddQCTree() && SelectPath(path))
             {
                 ShowDialog();
-                return m_SelectedNode == null ? null : m_SelectedNode.Node.FullPath; ;// m_CurrentTestPath;
+                return m_SelectedNode == null ? null : m_SelectedNode.Node.FullPath.Replace('\\', '/');
             }
             else
             {
@@ -55,16 +55,15 @@ namespace CTSAddin
         {
             if (path != null && path != "")
             {
-                path = path.Replace('/', '\\');
-                //path = path.ToLower();
-                string[] arrPath = path.Split(new char[] { '/', '\\' });
+                path = path.Replace('\\', '/');
+                string[] arrPath = path.Split(new char[] { '\\', '/' });
                 string curPath = "";
                 UltraTreeNodeWithStatus tmpNode = null;
                 for(int i = 0; i < arrPath.Length; ++i)
                 {
                     if (curPath != "")
                     {
-                        curPath += "\\";
+                        curPath += "/";
                     }
                     if (!AddLayerToTree(curPath += arrPath[i]))//Check if need, added layer to tree control from server
                     {
@@ -105,7 +104,7 @@ namespace CTSAddin
             if (e.NewSelections.Count > 0)
             {
                 UltraTreeNodeWithStatus tmpNode;
-                m_DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath, out tmpNode);
+                m_DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath.Replace('\\', '/'), out tmpNode);
                 m_SelectedNode = tmpNode;
                 if (m_SelectedNode.Status == StatusNode.Test)
                 {
@@ -124,7 +123,7 @@ namespace CTSAddin
 
         private void TestsBrouserQcTree_BeforeExpand(object sender, CancelableNodeEventArgs e)
         {
-            AddLayerToTree(e.TreeNode.FullPath);            
+            AddLayerToTree(e.TreeNode.FullPath.Replace('\\', '/'));            
         }
 
         private bool AddLayerToTree(string path)
@@ -138,7 +137,7 @@ namespace CTSAddin
             }
             if(path != "")
             {
-                path = path.Replace('/', '\\');
+                path = path.Replace('\\', '/');
                 m_DictonaryNodes.TryGetValue(path, out node);
                 if(node == null)
                 {
@@ -177,7 +176,7 @@ namespace CTSAddin
                 {
                     if(path != "")
                     {
-                        path += "\\";
+                        path += "/";
                     }
                     foreach(TestNode nodeTmp in arrNodes)
                     {
@@ -222,21 +221,12 @@ namespace CTSAddin
                 {
                     if (curPath != "")
                     {
-                        curPath += "\\";
+                        curPath += "/";
                     }
                     curPath = curPath + arrPath[i];
-                    //if (i != arrPath.Length)
-                    {
-                        m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(new UltraTreeNode(), StatusNode.Filled));
-                    }
-                    /*else
-                    {
-                        m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(new UltraTreeNode(), StatusNode.NotFilled));
-                    }*/
-                }
-                
+                    m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(new UltraTreeNode(), StatusNode.Filled));
+                }                
             }
-
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)

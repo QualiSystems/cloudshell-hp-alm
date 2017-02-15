@@ -13,9 +13,6 @@ namespace QS.ALM.CloudShellApi
 {
     public class Api
     {
-        //private static RestClient m_RestClient = null;
-        //private static string m_Authorization = "";
-
         private readonly string m_UrlStringServer = "";
         private readonly string m_UserName = "";
         private readonly string m_UserPassword = "";
@@ -30,8 +27,7 @@ namespace QS.ALM.CloudShellApi
             m_Domain = domain;
         }
 
-
-        private string CurrentlUrl
+        private string CurrentUrl
         {
             get 
             {
@@ -54,14 +50,14 @@ namespace QS.ALM.CloudShellApi
             get
             {
                 string password = Config.OverridePassword;
-                return password == null ? m_UserName : m_UserPassword;
+                return password == null ? m_UserPassword : password;
             }
         }
 
         private void Login(out RestClient client, out string authorization, out string contentError, out bool isSuccess)
         {
             isSuccess = false;
-            string connectProperty = "url = '" + CurrentlUrl + "', domain = '" + m_Domain +
+            string connectProperty = "url = '" + CurrentUrl + "', domain = '" + m_Domain +
                                         "', username = '" + CurrentUsername + "'." + System.Environment.NewLine;
             client = null;
             authorization = "";
@@ -70,7 +66,7 @@ namespace QS.ALM.CloudShellApi
             string mypath = System.IO.Directory.GetCurrentDirectory();
             try
             {
-                client = new RestClient(CurrentlUrl);
+                client = new RestClient(CurrentUrl);
             }
             catch (System.Exception e)
             {
@@ -120,13 +116,12 @@ namespace QS.ALM.CloudShellApi
             isSuccess = true;
             contentError = "";
 
-            if (parentPath == null || parentPath == "")
+            if (string.IsNullOrEmpty(parentPath))
             {
                 string root = Config.TestsRoot;
-                if(root != null && root != "")
+                if (!string.IsNullOrEmpty(root))
                 {
-                    //string[] arrPath = root.Split(new char[] { '/', '\\' });
-                    root = root.Replace('/', '\\');
+                    root = root.Replace('\\', '/');
                     return new TestNode[] { new TestNode(root, TypeNode.Folder) };
                 }
             }
