@@ -96,9 +96,6 @@
     <Reference Include="QCClient.UI.Components.Api">
       <HintPath>..\Lib\QCClient.UI.Components.Api.dll</HintPath>
     </Reference>
-    <Reference Include="QS.ALM.CloudShellApi">
-      <HintPath>..\CloudShellApi\bin\Debug\QS.ALM.CloudShellApi.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -166,6 +163,12 @@
       <Link>AlmCloudShell.snk</Link>
     </None>
     <None Include="Resources\TestTypeImage.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CloudShellApi\QS.ALM.CloudShellApi.csproj">
+      <Project>{c290f38c-afd1-420b-9cc6-bb1eed921500}</Project>
+      <Name>QS.ALM.CloudShellApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

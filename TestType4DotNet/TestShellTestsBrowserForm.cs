@@ -19,12 +19,13 @@ namespace CTSAddin
     public partial class TestShellTestsBrowserForm : Form
     {
         //private string m_CurrentTestPath = null;
+        Api m_Api;
         private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
         private Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
         /// <summary>
         /// Current node, selected in tree.
         /// </summary>
-        public UltraTreeNodeWithStatus SelectedNode { get; private set; }
+        public UltraTreeNodeWithStatus m_SelectedNode { get; private set; }
 
         /// <summary>
         /// Create form and try to select node in tree control by incomming path.
@@ -43,7 +44,7 @@ namespace CTSAddin
             if (AddQCTree() && SelectPath(path))
             {
                 ShowDialog();
-                return SelectedNode.Node.FullPath; ;// m_CurrentTestPath;
+                return m_SelectedNode == null ? null : m_SelectedNode.Node.FullPath; ;// m_CurrentTestPath;
             }
             else
             {
@@ -90,24 +91,15 @@ namespace CTSAddin
 
         private bool AddQCTree()
         {
-            string contentError = "";
-            bool isStatusServerOk = false;
-            Api.Login("http://192.168.42.35:9000", "application/x-www-form-urlencoded", "admin", "admin", "Global", out contentError, out isStatusServerOk);
-            if (isStatusServerOk)
-            {
-                TreeViewPanel.Controls.Add(m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
-                m_TestsBrouserQcTree.Dock = System.Windows.Forms.DockStyle.Fill;
-                m_TestsBrouserQcTree.HideSelection = false;
-                m_TestsBrouserQcTree.BeforeExpand += new BeforeNodeChangedEventHandler(TestsBrouserQcTree_BeforeExpand);
-                m_TestsBrouserQcTree.AfterSelect += new AfterNodeSelectEventHandler(TestsBrouserQcTree_AfterSelect);
-                m_TestsBrouserQcTree.TabIndex = 0;
-                return AddLayerToTree("");//add layer root
-            }
-            else
-            {
-                MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
-            }
-            return false;
+
+            m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", "Global");
+            TreeViewPanel.Controls.Add(m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
+            m_TestsBrouserQcTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            m_TestsBrouserQcTree.HideSelection = false;
+            m_TestsBrouserQcTree.BeforeExpand += new BeforeNodeChangedEventHandler(TestsBrouserQcTree_BeforeExpand);
+            m_TestsBrouserQcTree.AfterSelect += new AfterNodeSelectEventHandler(TestsBrouserQcTree_AfterSelect);
+            m_TestsBrouserQcTree.TabIndex = 0;
+            return AddLayerToTree("");//add layer root
         }
 
         private void TestsBrouserQcTree_AfterSelect(object sender, SelectEventArgs e)
@@ -116,8 +108,8 @@ namespace CTSAddin
             {
                 UltraTreeNodeWithStatus tmpNode;
                 m_DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath, out tmpNode);
-                SelectedNode = tmpNode;
-                if (SelectedNode.Status == StatusNode.Test)
+                m_SelectedNode = tmpNode;
+                if (m_SelectedNode.Status == StatusNode.Test)
                 {
                     ButtonOK.Enabled = true;
                 }
@@ -128,7 +120,7 @@ namespace CTSAddin
             }
             else
             {
-                SelectedNode = null;
+                m_SelectedNode = null;
             }
         }
 
@@ -157,7 +149,7 @@ namespace CTSAddin
             }
             if (node == null || node.Status == StatusNode.NotFilled)//Or root or data about it layer yet not read from server.
             {
-                TestNode[] arrNodes = Api.GetNodes(path, out contentError, out IsStatusServerOk);
+                TestNode[] arrNodes = m_Api.GetNodes(path, out contentError, out IsStatusServerOk);
                 if (path == "")// for root
                 {
                     if (!IsStatusServerOk)
@@ -219,13 +211,14 @@ namespace CTSAddin
 
         private void ButtonOK_Click(object sender, EventArgs e)
         {
-            //m_CurrentTestPath = SelectedNode.Node.FullPath;
+            UltraTreeNodeWithStatus tmp = m_SelectedNode;
             this.Close();
+            m_SelectedNode = tmp;
         }
 
-        private void ButtonCancel_Click(object sender, EventArgs e)
+        private void TestShellTestsBrowserForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //m_CurrentTestPath = null;
+            m_SelectedNode = null;
         }
     }
 }
