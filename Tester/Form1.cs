@@ -20,8 +20,8 @@ namespace Tester
         {
             string error;
 
-            if (!Api.RunTest(txtTestPath.Text, out error))
-                MessageBox.Show(error);
+           // if (!Api.RunTest(txtTestPath.Text, out error))
+             //   MessageBox.Show(error);
         }
     }
 }

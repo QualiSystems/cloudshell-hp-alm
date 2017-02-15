@@ -57,7 +57,6 @@
             this.ButtonCancel.TabIndex = 3;
             this.ButtonCancel.Text = "Cancel";
             this.ButtonCancel.UseVisualStyleBackColor = true;
-            this.ButtonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // TreeViewPanel
             // 
@@ -86,6 +85,7 @@
             this.Name = "TestShellTestsBrowserForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TestShell Tests Browser";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TestShellTestsBrowserForm_FormClosing);
             this.ResumeLayout(false);
 
         }
