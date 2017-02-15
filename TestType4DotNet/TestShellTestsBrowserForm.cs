@@ -27,14 +27,13 @@ namespace CTSAddin
         /// </summary>
         public UltraTreeNodeWithStatus m_SelectedNode { get; private set; }
 
-        /// <summary>
-        /// Create form and try to select node in tree control by incomming path.
-        /// </summary>
-        /// <param name="path"></param>
-        public TestShellTestsBrowserForm()
+
+        public TestShellTestsBrowserForm(string url, string username, string password, string domain)
         {
-            InitializeComponent();            
+            InitializeComponent();
+            m_Api = new Api(url, username, password, domain);
         }
+
         /// <summary>
         /// Show Dialog Form if path root for tree control from server reading success. Return choosen test's path.
         /// </summary>
@@ -56,6 +55,7 @@ namespace CTSAddin
         {
             if (path != null && path != "")
             {
+                path = path.Replace('/', '\\');
                 //path = path.ToLower();
                 string[] arrPath = path.Split(new char[] { '/', '\\' });
                 string curPath = "";
@@ -91,8 +91,6 @@ namespace CTSAddin
 
         private bool AddQCTree()
         {
-
-            m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", "Global");
             TreeViewPanel.Controls.Add(m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
             m_TestsBrouserQcTree.Dock = System.Windows.Forms.DockStyle.Fill;
             m_TestsBrouserQcTree.HideSelection = false;
@@ -140,6 +138,7 @@ namespace CTSAddin
             }
             if(path != "")
             {
+                path = path.Replace('/', '\\');
                 m_DictonaryNodes.TryGetValue(path, out node);
                 if(node == null)
                 {
@@ -156,6 +155,10 @@ namespace CTSAddin
                     {
                         MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
                         return false;
+                    }
+                    if (arrNodes != null && arrNodes.Length == 1)
+                    {
+                        AddRootToDictonaryNodes(arrNodes[0]);
                     }
                 }
                 else if (!IsStatusServerOk)
@@ -179,24 +182,24 @@ namespace CTSAddin
                     foreach(TestNode nodeTmp in arrNodes)
                     {
                         string nameNode = nodeTmp.Name;                       
-                        string newPatn = path + nameNode;
+                        string newPath = path + nameNode;
                         UltraTreeNode ultraTreeNode;
                         if(node == null)
                         {
-                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(newPatn, nameNode);//add layer root
+                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(newPath, nameNode);//add layer root
                         }
                         else
                         {
-                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(node.Node, newPatn, nameNode);//Insert node to tree control under node.Node.
+                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(node.Node, newPath, nameNode);//Insert node to tree control under node.Node.
                         }
 
                         if (nodeTmp.Type == TypeNode.Folder)
                         {
-                            m_DictonaryNodes.Add(newPatn, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.NotFilled));
+                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.NotFilled));
                         }
                         else
                         {
-                            m_DictonaryNodes.Add(newPatn, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
+                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
                             ultraTreeNode.Expanded = true;//For remove picture plus near node in tree control.
                         }
                     }
@@ -207,6 +210,33 @@ namespace CTSAddin
                 }
             }
             return true;
+        }
+
+        private void AddRootToDictonaryNodes(TestNode root)
+        {
+            string[] arrPath = root.Name.Split(new char[] { '/', '\\' });
+            string curPath = "";
+            if (arrPath.Length > 1)
+            {
+                for (int i = 0; i < arrPath.Length-1; ++i)
+                {
+                    if (curPath != "")
+                    {
+                        curPath += "\\";
+                    }
+                    curPath = curPath + arrPath[i];
+                    //if (i != arrPath.Length)
+                    {
+                        m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(new UltraTreeNode(), StatusNode.Filled));
+                    }
+                    /*else
+                    {
+                        m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(new UltraTreeNode(), StatusNode.NotFilled));
+                    }*/
+                }
+                
+            }
+
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)
