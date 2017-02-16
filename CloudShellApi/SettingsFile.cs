@@ -12,6 +12,11 @@ namespace QS.ALM.CloudShellApi
             get { return Read("Verbosity", "Info"); }
         }
 
+        public static string RunStatusSleepSeconds
+        {
+            get { return Read("RunStatusSleepSeconds", "5"); }
+        }
+
         private static string Read(string key, string defaultValue)
         {
             var appSettings = OpenAppSettings();
