@@ -13,9 +13,6 @@ namespace QS.ALM.CloudShellApi
 {
     public class Api
     {
-        //private static RestClient m_RestClient = null;
-        //private static string m_Authorization = "";
-
         private readonly string m_UrlStringServer = "";
         private readonly string m_UserName = "";
         private readonly string m_UserPassword = "";
@@ -30,11 +27,38 @@ namespace QS.ALM.CloudShellApi
             m_Domain = domain;
         }
 
+        private string CurrentUrl
+        {
+            get 
+            {
+                string url = Config.OverrideCloudShellUrl;
+                return url == null ? m_UrlStringServer : url;
+            }
+        }
+
+        private string CurrentUsername 
+        { 
+            get 
+            { 
+                string username = Config.OverrideUsername;
+                return username == null ? m_UserName : username;
+            } 
+        }
+
+        private string CurrentPassword
+        {
+            get
+            {
+                string password = Config.OverridePassword;
+                return password == null ? m_UserPassword : password;
+            }
+        }
+
         private void Login(out RestClient client, out string authorization, out string contentError, out bool isSuccess)
         {
             isSuccess = false;
-            string connectProperty = "url = '" + m_UrlStringServer + "', domain = '" + m_Domain +
-                                        "', username = '" + m_UserName + "'." + System.Environment.NewLine;
+            string connectProperty = "url = '" + CurrentUrl + "', domain = '" + m_Domain +
+                                        "', username = '" + CurrentUsername + "'." + System.Environment.NewLine;
             client = null;
             authorization = "";
             contentError = "";
@@ -42,7 +66,7 @@ namespace QS.ALM.CloudShellApi
             string mypath = System.IO.Directory.GetCurrentDirectory();
             try
             {
-                client = new RestClient(m_UrlStringServer);
+                client = new RestClient(CurrentUrl);
             }
             catch (System.Exception e)
             {
@@ -53,7 +77,7 @@ namespace QS.ALM.CloudShellApi
 
             var request = new RestRequest("/api/Auth/Login", Method.PUT);
             request.AddHeader("Content-Type", m_LoginContentType);
-            request.AddJsonBody(new { username = m_UserName, password = m_UserPassword, domain = m_Domain });
+            request.AddJsonBody(new { username = CurrentUsername, password = CurrentPassword, domain = m_Domain });
 
             IRestResponse res;
             try
@@ -89,6 +113,18 @@ namespace QS.ALM.CloudShellApi
         {
             string authorization = "";
             RestClient client = null;
+            isSuccess = true;
+            contentError = "";
+
+            if (string.IsNullOrEmpty(parentPath))
+            {
+                string root = Config.TestsRoot;
+                if (!string.IsNullOrEmpty(root))
+                {
+                    root = root.Replace('\\', '/');
+                    return new TestNode[] { new TestNode(root, TypeNode.Folder) };
+                }
+            }
 
             Login(out client, out authorization, out contentError, out isSuccess);
             if(!isSuccess)
@@ -109,8 +145,7 @@ namespace QS.ALM.CloudShellApi
                 isSuccess = false;
                 LogerErrorException("GetNodes", contentError, e);
                 return null;
-            }
-            isSuccess = true;
+            }            
 
             if (!IsHttpStatusCodeSuccess(res.StatusCode))
             {

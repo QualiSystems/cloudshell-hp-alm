@@ -56,7 +56,7 @@ namespace CTSAddin
 
     private void ButtonBrowse_Click(object sender, System.EventArgs e)
     {
-        TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm();
+        TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm("http://192.168.42.35:9000", "admin", "admin", "Global");
         string path;
         path = BrouseForm.TryShowDialog(m_TextBoxPath.Text);
         if(path != null)
