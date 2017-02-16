@@ -214,29 +214,59 @@ namespace QS.ALM.CloudShellApi
             ((int)res.StatusCode).ToString());
         }
 
-        public bool RunTest(string testPath, out string error)
+        public string RunTest(string testPath, out string contentError, out bool isSuccess)
         {
-            Logger.Info("Run test: " + testPath);
+            string authorization = "";
+            RestClient client = null;
+            isSuccess = true;
+            contentError = "";
 
-            if (testPath.ToLower() == "root\\dummy test1" || testPath.ToLower() == "root\\dummy test2")
+            if (string.IsNullOrEmpty(testPath))
             {
-                Thread.Sleep(1000);
-                error = null;
+                isSuccess = false;
+                contentError = "Path to Test is Empty";
+                return null;
             }
-            else
+            testPath = testPath.Replace('\\', '/');
+            Login(out client, out authorization, out contentError, out isSuccess);
+            if (!isSuccess)
             {
-                Thread.Sleep(2000);
-                error = "Test not found: " + testPath;
+                return null;
             }
 
-            var success = error == null;
+            var request = new RestRequest("/api/Scheduling//Suites/", Method.POST);
+            request.AddHeader("Authorization", authorization);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddJsonBody(new SuiteDetails(testPath));
+            IRestResponse res;
+            try
+            {
+                res = client.Execute(request);
+            }
+            catch (System.Exception e)
+            {
+                contentError = e.Message;
+                isSuccess = false;
+                LogerErrorException("GetNodes", contentError, e);
+                return null;
+            }
 
-            if (success)
-                Logger.Info("Run started: {0}", testPath);
-            else
-                Logger.Warn("Run NOT started: {0}: {1}", testPath, error);
+            if (!IsHttpStatusCodeSuccess(res.StatusCode))
+            {
+                contentError = "Error " + ((int)res.StatusCode).ToString() + System.Environment.NewLine + res.Content;
+                isSuccess = false;
+                LogerRestSharpError("GetNodes", contentError, res);
+                return null;
+            }
 
-            return success;
+            string content = res.Content.Trim(new char[] { '[', ']' });
+            if (content == "")
+            {
+                isSuccess = false;
+                contentError = "Uknown Error";
+                return null;
+            }
+            return content.Trim(new char[]{'\"'});
         }
 
         public TestStatus GetTestStatus(string testPath)

@@ -53,7 +53,7 @@ namespace CTSAddin
 
         private bool SelectPath(string path)
         {
-            if (path != null && path != "")
+            if (!string.IsNullOrEmpty(path))
             {
                 path = path.Replace('\\', '/');
                 string[] arrPath = path.Split(new char[] { '\\', '/' });
@@ -127,7 +127,7 @@ namespace CTSAddin
         }
 
         private bool AddLayerToTree(string path)
-        {            
+        {
             UltraTreeNodeWithStatus node = null;
             string contentError = "";
             bool IsStatusServerOk = false;

@@ -29,7 +29,7 @@
     private void InitializeComponent()
     {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptViewerControl));
-            this.m_TextBoxPath = new System.Windows.Forms.TextBox();
+            this.TextBoxPath = new System.Windows.Forms.TextBox();
             this.labelTestPath = new System.Windows.Forms.Label();
             this.ButtonBrowse = new System.Windows.Forms.Button();
             this.ButtonRefresh = new System.Windows.Forms.Button();
@@ -37,15 +37,15 @@
             this.LabelText2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // m_TextBoxPath
+            // TextBoxPath
             // 
-            this.m_TextBoxPath.Location = new System.Drawing.Point(104, 31);
-            this.m_TextBoxPath.Margin = new System.Windows.Forms.Padding(2);
-            this.m_TextBoxPath.Name = "m_TextBoxPath";
-            this.m_TextBoxPath.ReadOnly = true;
-            this.m_TextBoxPath.Size = new System.Drawing.Size(474, 20);
-            this.m_TextBoxPath.TabIndex = 0;
-            this.m_TextBoxPath.Text = "Shared/Folder 1/Test B sleep 20 seconds";
+            this.TextBoxPath.Location = new System.Drawing.Point(104, 31);
+            this.TextBoxPath.Margin = new System.Windows.Forms.Padding(2);
+            this.TextBoxPath.Name = "TextBoxPath";
+            this.TextBoxPath.ReadOnly = true;
+            this.TextBoxPath.Size = new System.Drawing.Size(474, 20);
+            this.TextBoxPath.TabIndex = 0;
+            this.TextBoxPath.Text = "Shared/Folder 1/Test B sleep 20 seconds";
             // 
             // labelTestPath
             // 
@@ -106,7 +106,7 @@
             this.Controls.Add(this.ButtonRefresh);
             this.Controls.Add(this.ButtonBrowse);
             this.Controls.Add(this.labelTestPath);
-            this.Controls.Add(this.m_TextBoxPath);
+            this.Controls.Add(this.TextBoxPath);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ScriptViewerControl";
             this.Size = new System.Drawing.Size(596, 308);
@@ -117,7 +117,7 @@
 
     #endregion
 
-    private System.Windows.Forms.TextBox m_TextBoxPath;
+    private System.Windows.Forms.TextBox TextBoxPath;
     private System.Windows.Forms.Label labelTestPath;
     private System.Windows.Forms.Button ButtonBrowse;
     private System.Windows.Forms.Button ButtonRefresh;
