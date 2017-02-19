@@ -134,31 +134,9 @@ namespace QS.ALM.CloudShellApi
 
             var request = new RestRequest("/api/Scheduling/Explorer/" + parentPath, Method.GET);
             request.AddHeader("Authorization", authorization);
-            IRestResponse res;
-            try
+            string content = ExecuteServerRequest(client, request, "GetNodes", out contentError, out isSuccess);
+            if (content == null)
             {
-                res = client.Execute(request);
-            }
-            catch (System.Exception e)
-            {
-                contentError = e.Message;
-                isSuccess = false;
-                LogerErrorException("GetNodes", contentError, e);
-                return null;
-            }            
-
-            if (!IsHttpStatusCodeSuccess(res.StatusCode))
-            {
-                contentError = "Error " + ((int)res.StatusCode).ToString() + System.Environment.NewLine + res.Content;
-                isSuccess = false;
-                LogerRestSharpError("GetNodes", contentError, res);                
-                return null;
-            }
-
-            string content = res.Content.Trim(new char[] { '[', ']' });
-            if(content == "")// Empty, not collect other nodes
-            {
-                contentError = "";
                 return null;
             }
 
@@ -222,10 +200,20 @@ namespace QS.ALM.CloudShellApi
                 return null;
             }
 
-            var request = new RestRequest("/api/Scheduling//Suites/", Method.POST);
+            var request = new RestRequest("/api/Scheduling/Suites/", Method.POST);
             request.AddHeader("Authorization", authorization);
             request.AddHeader("Content-Type", "application/json");
             request.AddJsonBody(new SuiteDetails(testPath));
+            string content = ExecuteServerRequest(client, request, "RunTest", out contentError, out isSuccess);
+            if(content == null)
+            {
+                return null;
+            }
+            return content.Trim(new char[]{'\"'});
+        }
+
+        public string ExecuteServerRequest(RestClient client, RestRequest request, string nameCallingMethod, out string contentError, out bool isSuccess)
+        {
             IRestResponse res;
             try
             {
@@ -235,7 +223,7 @@ namespace QS.ALM.CloudShellApi
             {
                 contentError = e.Message;
                 isSuccess = false;
-                LogerErrorException("GetNodes", contentError, e);
+                LogerErrorException(nameCallingMethod, contentError, e);
                 return null;
             }
 
@@ -243,20 +231,20 @@ namespace QS.ALM.CloudShellApi
             {
                 contentError = "Error " + ((int)res.StatusCode).ToString() + System.Environment.NewLine + res.Content;
                 isSuccess = false;
-                LogerRestSharpError("GetNodes", contentError, res);
+                LogerRestSharpError(nameCallingMethod, contentError, res);
                 return null;
             }
 
-            string content = res.Content.Trim(new char[] { '[', ']' });
-            if (content == "")
+            if (res.Content == "")
             {
                 isSuccess = false;
                 contentError = "Uknown Error";
                 return null;
             }
-            return content.Trim(new char[]{'\"'});
+            isSuccess = true;
+            contentError = "";
+            return res.Content;
         }
-
         public TestStatus GetTestStatus(string testPath)
         {
             if (testPath.ToLower() == "root\\dummy test1")
