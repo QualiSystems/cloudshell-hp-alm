@@ -86,8 +86,7 @@ namespace CTSAddin
                 }
             }
             return true;
-        }      
-
+        }
         private bool AddQCTree()
         {
             TreeViewPanel.Controls.Add(m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree());
@@ -123,7 +122,10 @@ namespace CTSAddin
 
         private void TestsBrouserQcTree_BeforeExpand(object sender, CancelableNodeEventArgs e)
         {
-            AddLayerToTree(e.TreeNode.FullPath.Replace('\\', '/'));            
+            if (!AddLayerToTree(e.TreeNode.FullPath.Replace('\\', '/')))
+            {
+                    e.Cancel = true;
+            }
         }
 
         private bool AddLayerToTree(string path)
@@ -145,6 +147,13 @@ namespace CTSAddin
                     return false;
                 }
             }
+            ////////////////////////////////FOR TEST CANCELED EXPAND
+            /*if (path == "Shared" && node.Status == StatusNode.NotFilled)
+            {
+                
+                UltraTreeNode node1 = m_TestsBrouserQcTree.AddRow(node.Node, "Shared/NodeTestCollaps", "NodeTestCollaps");
+                m_DictonaryNodes.Add("Shared/NodeTestCollaps", new UltraTreeNodeWithStatus(node1, StatusNode.NotFilled));
+            }*/
             if (node == null || node.Status == StatusNode.NotFilled)//Or root or data about it layer yet not read from server.
             {
                 TestNode[] arrNodes = m_Api.GetNodes(path, out contentError, out IsStatusServerOk);

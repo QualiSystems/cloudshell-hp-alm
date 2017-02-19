@@ -5,7 +5,7 @@ using System.Text;
 
 namespace QS.ALM.CloudShellApi
 {
-#region treeNodes
+    #region treeNodes
     public enum TypeNode
     {
         Folder,
@@ -24,16 +24,39 @@ namespace QS.ALM.CloudShellApi
     {
         public string Name { get; private set; }
 
-        public TypeNode Type { get; set; } // Test or Folder
+        public TypeNode Type { get; private set; } // Test or Folder
 
         public TestNode(string name, TypeNode type)
         {
             Name = name;
             Type = type;
         }
+
+        public TestNode(APIExplorerResult apiExplorerResult)
+        {
+            Name = apiExplorerResult.Name;
+            if(apiExplorerResult.Type == "Folder")
+            {
+                Type = TypeNode.Folder;
+            }
+            else
+            {
+                Type = TypeNode.Test;
+            }
+        }
+        public static TestNode[] ConvertFromArrAPIExplorerResult(ArrAPIExplorerResult arrAPIExplorerResult)
+        {
+            TestNode[] arrTestNode = new TestNode[arrAPIExplorerResult.Children.Length];
+
+            for (int i = 0; i < arrAPIExplorerResult.Children.Length; ++i)
+            {
+                arrTestNode[i] = new TestNode(arrAPIExplorerResult.Children[i]);
+            }
+            return arrTestNode;
+        }
     } 
 
-    class APIExplorerResult
+    public class APIExplorerResult
     {  
         public string Name { get; private set; }
         public string Type { get; private set; } // “Test” or “Folder”
@@ -45,13 +68,13 @@ namespace QS.ALM.CloudShellApi
         }
     }
     
-    class ArrAPIExplorerResult
+    public class ArrAPIExplorerResult
     {
         public APIExplorerResult[] Children;
     }
 #endregion
 
-#region Json
+    #region Json
     public class SuiteDetails
     {
         public SuiteDetails(string testPath) { JobsDetails = new JobDetails[] { new JobDetails("TestShell\\Tests\\" + testPath.Replace('/', '\\')) }; }
@@ -62,7 +85,7 @@ namespace QS.ALM.CloudShellApi
         public string EmailNotifications { get { return "None"; } }
         public int RemoveJobsFromQueueAfter { get { return (int)Config.QueueTimeout.TotalMinutes; } }
         public bool EndReservationOnEnd { get { return true; } }
-        public JobDetails[] JobsDetails {get; set;}
+        public JobDetails[] JobsDetails {get; private set;}
         public string ExistingReservationId { get; set; }
     }
 
@@ -85,7 +108,7 @@ namespace QS.ALM.CloudShellApi
     public class Test
     {
         public Test(string testPath) { TestPath = testPath; }
-        public string TestPath {get; set;}
+        public string TestPath {get; private set;}
         public string [] Parameters { get { return new string[0]; } }
         public int EstimatedDuration { get { return 0; } }
     }

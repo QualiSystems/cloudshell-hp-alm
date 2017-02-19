@@ -175,20 +175,8 @@ namespace QS.ALM.CloudShellApi
                 return null;
             }
 
-            TestNode[] arrTestNode = new TestNode[arrAPIExplorerResult.Children.Length];
+            TestNode[] arrTestNode = TestNode.ConvertFromArrAPIExplorerResult(arrAPIExplorerResult);
 
-
-            for (int i = 0; i < arrAPIExplorerResult.Children.Length; ++i )
-            {
-                if (arrAPIExplorerResult.Children[i].Type == "Folder")
-                {
-                    arrTestNode[i] = new TestNode(arrAPIExplorerResult.Children[i].Name, TypeNode.Folder);
-                }
-                else
-                {
-                    arrTestNode[i] = new TestNode(arrAPIExplorerResult.Children[i].Name, TypeNode.Test);
-                }
-            }
             contentError = "";
             return arrTestNode;
         }
