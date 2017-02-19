@@ -45,23 +45,25 @@ namespace CTSAddin
       MessageBox.Show("Saving script.");
     }
 
+    public string TestPath {get { return TextBoxPath.Text; }}
+
     /// <summary>
     /// Displays the active version of the test script in the Script Viewer control.
     /// </summary>
     /// <param name="test">Output. An ALM Open Test Architecture ITest object.</param>
     public void ShowTest(HP.ALM.QC.OTA.Entities.Api.ITest test)
     {
-      m_TextBoxPath.Text = "Showing test " + test.Name + " in project " + m_tdc.ProjectName;
+      TextBoxPath.Text = "Showing test " + test.Name + " in project " + m_tdc.ProjectName;
     }
 
     private void ButtonBrowse_Click(object sender, System.EventArgs e)
     {
         TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm("http://192.168.42.35:9000", "admin", "admin", "Global");
         string path;
-        path = BrouseForm.TryShowDialog(m_TextBoxPath.Text);
+        path = BrouseForm.TryShowDialog(TextBoxPath.Text);
         if(path != null)
         {
-            m_TextBoxPath.Text = path;
+            TextBoxPath.Text = path;
         }
     }
 
