@@ -28,21 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnRunTest = new System.Windows.Forms.Button();
             this.txtTestPath = new System.Windows.Forms.TextBox();
             this.PanelScriptView = new System.Windows.Forms.Panel();
             this.ButtonRunTest = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // btnRunTest
-            // 
-            this.btnRunTest.Location = new System.Drawing.Point(12, 12);
-            this.btnRunTest.Name = "btnRunTest";
-            this.btnRunTest.Size = new System.Drawing.Size(75, 23);
-            this.btnRunTest.TabIndex = 0;
-            this.btnRunTest.Text = "Run Test";
-            this.btnRunTest.UseVisualStyleBackColor = true;
-            this.btnRunTest.Click += new System.EventHandler(this.btnRunTest_Click);
             // 
             // txtTestPath
             // 
@@ -81,7 +70,6 @@
             this.Controls.Add(this.ButtonRunTest);
             this.Controls.Add(this.PanelScriptView);
             this.Controls.Add(this.txtTestPath);
-            this.Controls.Add(this.btnRunTest);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form1";
             this.Text = "Form1";
@@ -92,7 +80,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnRunTest;
         private System.Windows.Forms.TextBox txtTestPath;
         private System.Windows.Forms.Panel PanelScriptView;
         private System.Windows.Forms.Button ButtonRunTest;

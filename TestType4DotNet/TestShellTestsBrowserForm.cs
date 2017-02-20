@@ -105,7 +105,7 @@ namespace CTSAddin
                 UltraTreeNodeWithStatus tmpNode;
                 m_DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath.Replace('\\', '/'), out tmpNode);
                 m_SelectedNode = tmpNode;
-                if (m_SelectedNode.Status == StatusNode.Test)
+                if (m_SelectedNode != null && m_SelectedNode.Status == StatusNode.Test)
                 {
                     ButtonOK.Enabled = true;
                 }
@@ -219,7 +219,10 @@ namespace CTSAddin
             }
             return true;
         }
-
+        /// <summary>
+        /// All nodes out of range for current substring as root adding to dictinary with StatusNode.Filled
+        /// </summary>
+        /// <param name="root"></param>
         private void AddRootToDictonaryNodes(TestNode root)
         {
             string[] arrPath = root.Name.Split(new char[] { '/', '\\' });
