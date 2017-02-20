@@ -16,16 +16,6 @@ namespace Tester
             m_ScriptControl = new ScriptViewerControl();
             PanelScriptView.Controls.Add(m_ScriptControl);
             m_ScriptControl.Dock = DockStyle.Fill;
-
-            //scriptControl.
-        }
-
-        private void btnRunTest_Click(object sender, EventArgs e)
-        {
-            string error;
-
-           // if (!Api.RunTest(txtTestPath.Text, out error))
-             //   MessageBox.Show(error);
         }
 
         private void ButtonRunTest_Click(object sender, EventArgs e)
@@ -33,10 +23,20 @@ namespace Tester
             m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", "Global");
             string contentError;
             bool isSuccess;
-            string result = m_Api.RunTest(m_ScriptControl.TestPath, out contentError, out isSuccess);
+            string guiId = m_Api.RunTest(m_ScriptControl.TestPath, out contentError, out isSuccess);
+
             if (isSuccess)
             {
-                MessageBox.Show("Result Test = \"" + result + '\"', "Returned Key", MessageBoxButtons.OK);
+                MessageBox.Show("Result Test = \"" + guiId + '\"', "Returned Key", MessageBoxButtons.OK);
+
+                ExecutionJobResult runResult;
+
+                using (var runStatusManager = new RunStatusManager(guiId, m_Api))
+                    runResult = runStatusManager.WaitForRunEnd();
+
+                MessageBox.Show("Run Result = " + runResult.ToString());
+
+                //~TODO: write the runResult to ALM ...
             }
             else
             {

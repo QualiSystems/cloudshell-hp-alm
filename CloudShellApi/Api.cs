@@ -111,45 +111,21 @@ namespace QS.ALM.CloudShellApi
 
         public TestNode[] GetNodes(string parentPath, out string contentError, out bool isSuccess)
         {
-            string authorization = "";
-            RestClient client = null;
-            isSuccess = true;
-            contentError = "";
-
             if (string.IsNullOrEmpty(parentPath))
             {
                 string root = Config.TestsRoot;
                 if (!string.IsNullOrEmpty(root))
                 {
                     root = root.Replace('\\', '/');
+                    isSuccess = true;
+                    contentError = "";
                     return new TestNode[] { new TestNode(root, TypeNode.Folder) };
                 }
             }
-
-            Login(out client, out authorization, out contentError, out isSuccess);
-            if(!isSuccess)
+            ArrAPIExplorerResult arrAPIExplorerResult = GetServerObject<ArrAPIExplorerResult>("/api/Scheduling/Explorer/" + parentPath,
+                                                                                            "GetNodes", out contentError, out isSuccess);
+            if(arrAPIExplorerResult == null)
             {
-                return null;
-            }
-
-            var request = new RestRequest("/api/Scheduling/Explorer/" + parentPath, Method.GET);
-            request.AddHeader("Authorization", authorization);
-            string content = ExecuteServerRequest(client, request, "GetNodes", out contentError, out isSuccess);
-            if (content == null)
-            {
-                return null;
-            }
-
-            ArrAPIExplorerResult arrAPIExplorerResult = null;
-            try
-            {
-                arrAPIExplorerResult = JsonConvert.DeserializeObject<ArrAPIExplorerResult>(content);
-            }
-            catch (System.Exception e)
-            {
-                contentError = e.Message;
-                isSuccess = false;
-                LogerErrorException("GetNodes", contentError, e);
                 return null;
             }
 
@@ -203,7 +179,7 @@ namespace QS.ALM.CloudShellApi
             var request = new RestRequest("/api/Scheduling/Suites/", Method.POST);
             request.AddHeader("Authorization", authorization);
             request.AddHeader("Content-Type", "application/json");
-            request.AddJsonBody(new SuiteDetails(testPath));
+            request.AddJsonBody(new ApiSuiteTemplateDetails("TestShell\\Tests\\" + testPath.Replace('/', '\\')));
             string content = ExecuteServerRequest(client, request, "RunTest", out contentError, out isSuccess);
             if(content == null)
             {
@@ -245,15 +221,54 @@ namespace QS.ALM.CloudShellApi
             contentError = "";
             return res.Content;
         }
-        public TestStatus GetTestStatus(string testPath)
+
+        public ApiSuiteStatusDetails GetRunStatus(string m_RunGuid, out string contentError, out bool isSuccess)
         {
-            if (testPath.ToLower() == "root\\dummy test1")
-                return TestStatus.Running;
+            return GetServerObject<ApiSuiteStatusDetails>("/api/Scheduling/Suites/Status/" + m_RunGuid,
+                                                                    "GetRunStatus",  out contentError, out isSuccess);           
+        }
 
-            if (testPath.ToLower() == "root\\dummy test2")
-                return TestStatus.Passed;
+        public ApiSuiteDetails IsRunSuccess(string m_RunGuid, out string contentError, out bool isSuccess)
+        {
+            return GetServerObject<ApiSuiteDetails>("/api/Scheduling/Suites/" + m_RunGuid, "IsRunSuccess", out contentError, out isSuccess);            
+        }
 
-            return TestStatus.Failed;
+        public T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
+        {
+            contentError = null;
+            isSuccess = true;
+
+            string authorization = "";
+            RestClient client = null;
+            isSuccess = true;
+            contentError = "";
+
+            Login(out client, out authorization, out contentError, out isSuccess);
+            if (!isSuccess)
+            {
+                return default(T);//null;
+            }
+
+            var request = new RestRequest(nameFunctionOnServer, Method.GET);
+            request.AddHeader("Authorization", authorization);
+            request.AddHeader("Content-Type", "application/json");
+            string content = ExecuteServerRequest(client, request, nameCallingMethod, out contentError, out isSuccess);
+            if (content == null)
+            {
+                return default(T);//null;
+            }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(content);
+            }
+            catch (System.Exception e)
+            {
+                contentError = e.Message;
+                isSuccess = false;
+                LogerErrorException(nameCallingMethod, contentError, e);
+                return default(T);//null;
+            }
         }
 
         private bool IsHttpStatusCodeSuccess(HttpStatusCode code)
