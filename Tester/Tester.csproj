@@ -44,9 +44,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\QCClient.QCExtension.UI.Shared.dll</HintPath>
     </Reference>
-    <Reference Include="QS.ALM.CloudShellApi">
-      <HintPath>..\CloudShellApi\bin\Debug\QS.ALM.CloudShellApi.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -86,6 +83,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CloudShellApi\QS.ALM.CloudShellApi.csproj">
+      <Project>{c290f38c-afd1-420b-9cc6-bb1eed921500}</Project>
+      <Name>QS.ALM.CloudShellApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestType4DotNet\CTS.csproj">
       <Project>{e645efac-a997-4078-8a3c-87f2e80a77ec}</Project>
       <Name>CTS</Name>

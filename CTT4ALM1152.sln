@@ -18,9 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{EC7EBC34-740E-45F5-A67F-2B5A59136BB9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C290F38C-AFD1-420B-9CC6-BB1EED921500} = {C290F38C-AFD1-420B-9CC6-BB1EED921500}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CD3F61C3-C607-4C2C-BB5A-BBE3275CCAEB}"
 	ProjectSection(SolutionItems) = preProject
