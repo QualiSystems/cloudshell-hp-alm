@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Threading;
-using System.Collections.Generic;
 using RestSharp;
-using RestSharp.Authenticators;
-using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Net;
-using log4net;
 
 namespace QS.ALM.CloudShellApi
 {
     public class Api
     {
-        private readonly string m_UrlStringServer = "";
-        private readonly string m_UserName = "";
-        private readonly string m_UserPassword = "";
-        private readonly string m_LoginContentType = "application/x-www-form-urlencoded";
-        private readonly string m_Domain = "";
+        private const string LoginContentType = "application/x-www-form-urlencoded";
+        private readonly string m_UrlStringServer;
+        private readonly string m_UserName;
+        private readonly string m_UserPassword;
+        private readonly string m_Domain;
 
         public Api(string urlString, string username, string password, string domain)
         {
@@ -32,7 +26,7 @@ namespace QS.ALM.CloudShellApi
             get 
             {
                 string url = Config.OverrideCloudShellUrl;
-                return url == null ? m_UrlStringServer : url;
+                return url ?? m_UrlStringServer;
             }
         }
 
@@ -41,7 +35,7 @@ namespace QS.ALM.CloudShellApi
             get 
             { 
                 string username = Config.OverrideUsername;
-                return username == null ? m_UserName : username;
+                return username ?? m_UserName;
             } 
         }
 
@@ -50,7 +44,7 @@ namespace QS.ALM.CloudShellApi
             get
             {
                 string password = Config.OverridePassword;
-                return password == null ? m_UserPassword : password;
+                return password ?? m_UserPassword;
             }
         }
 
@@ -63,20 +57,20 @@ namespace QS.ALM.CloudShellApi
             authorization = "";
             contentError = "";
             isSuccess = false;           
-            string mypath = System.IO.Directory.GetCurrentDirectory();
+
             try
             {
                 client = new RestClient(CurrentUrl);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 contentError = connectProperty + e.Message;
-                LogerErrorException("Login", contentError, e);
+                LoggerErrorException("Login", contentError, e);
                 return;
             }
 
             var request = new RestRequest("/api/Auth/Login", Method.PUT);
-            request.AddHeader("Content-Type", m_LoginContentType);
+            request.AddHeader("Content-Type", LoginContentType);
             request.AddJsonBody(new { username = CurrentUsername, password = CurrentPassword, domain = m_Domain });
 
             IRestResponse res;
@@ -84,23 +78,22 @@ namespace QS.ALM.CloudShellApi
             {
                 res = client.Execute(request);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 contentError = connectProperty + e.Message;
-                LogerErrorException("Login", contentError, e);
+                LoggerErrorException("Login", contentError, e);
                 return;
             }
 
             if (IsHttpStatusCodeSuccess(res.StatusCode))
             {
-                authorization = "Basic " + res.Content.Trim(new char[] { '\"' });
+                authorization = "Basic " + res.Content.Trim('\"');
                 isSuccess = true;
-                return;
             }
             else if (res.StatusCode == 0)
             {
                 contentError = connectProperty + "Connect With Server Error";
-                LogerContentError("Login", contentError);
+                LoggerContentError("Login", contentError);
             }
             else
             {
@@ -119,7 +112,7 @@ namespace QS.ALM.CloudShellApi
                     root = root.Replace('\\', '/');
                     isSuccess = true;
                     contentError = "";
-                    return new TestNode[] { new TestNode(root, TypeNode.Folder) };
+                    return new[] { new TestNode(root, TypeNode.Folder) };
                 }
             }
             ArrAPIExplorerResult arrAPIExplorerResult = GetServerObject<ArrAPIExplorerResult>("/api/Scheduling/Explorer/" + parentPath,
@@ -135,18 +128,18 @@ namespace QS.ALM.CloudShellApi
             return arrTestNode;
         }
 
-        private void LogerErrorException(string method, string contentError, System.Exception e)
+        private static void LoggerErrorException(string method, string contentError, Exception e)
         {
             Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'," + Environment.NewLine + "Exception = '{2}'", 
                                                                                                     method, contentError, e.ToString());
         }
 
-        private void LogerContentError(string method, string contentError)
+        private static void LoggerContentError(string method, string contentError)
         {
             Logger.Error("QS.ALM.CloudShellApi.Api{0}: ContentError = '{1}'", method, contentError);
         }
 
-        private void LogerRestSharpError(string method, string contentError, IRestResponse res)
+        private static void LogerRestSharpError(string method, string contentError, IRestResponse res)
         {
             Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + 
             Environment.NewLine + "ErrorMessage = '{2}'" +
@@ -188,24 +181,24 @@ namespace QS.ALM.CloudShellApi
             return content.Trim(new char[]{'\"'});
         }
 
-        public string ExecuteServerRequest(RestClient client, RestRequest request, string nameCallingMethod, out string contentError, out bool isSuccess)
+        private string ExecuteServerRequest(RestClient client, RestRequest request, string nameCallingMethod, out string contentError, out bool isSuccess)
         {
             IRestResponse res;
             try
             {
                 res = client.Execute(request);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 contentError = e.Message;
                 isSuccess = false;
-                LogerErrorException(nameCallingMethod, contentError, e);
+                LoggerErrorException(nameCallingMethod, contentError, e);
                 return null;
             }
 
             if (!IsHttpStatusCodeSuccess(res.StatusCode))
             {
-                contentError = "Error " + ((int)res.StatusCode).ToString() + System.Environment.NewLine + res.Content;
+                contentError = "Error " + ((int)res.StatusCode) + Environment.NewLine + res.Content;
                 isSuccess = false;
                 LogerRestSharpError(nameCallingMethod, contentError, res);
                 return null;
@@ -222,18 +215,18 @@ namespace QS.ALM.CloudShellApi
             return res.Content;
         }
 
-        public ApiSuiteStatusDetails GetRunStatus(string m_RunGuid, out string contentError, out bool isSuccess)
+        public ApiSuiteStatusDetails GetRunStatus(string runGuid, out string contentError, out bool isSuccess)
         {
-            return GetServerObject<ApiSuiteStatusDetails>("/api/Scheduling/Suites/Status/" + m_RunGuid,
+            return GetServerObject<ApiSuiteStatusDetails>("/api/Scheduling/Suites/Status/" + runGuid,
                                                                     "GetRunStatus",  out contentError, out isSuccess);           
         }
 
-        public ApiSuiteDetails IsRunSuccess(string m_RunGuid, out string contentError, out bool isSuccess)
+        public ApiSuiteDetails GetRunResult(string runGuid, out string contentError, out bool isSuccess)
         {
-            return GetServerObject<ApiSuiteDetails>("/api/Scheduling/Suites/" + m_RunGuid, "IsRunSuccess", out contentError, out isSuccess);            
+            return GetServerObject<ApiSuiteDetails>("/api/Scheduling/Suites/" + runGuid, "GetRunResult", out contentError, out isSuccess);            
         }
 
-        public T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
+        private T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
         {
             contentError = null;
             isSuccess = true;
@@ -262,16 +255,16 @@ namespace QS.ALM.CloudShellApi
             {
                 return JsonConvert.DeserializeObject<T>(content);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 contentError = e.Message;
                 isSuccess = false;
-                LogerErrorException(nameCallingMethod, contentError, e);
+                LoggerErrorException(nameCallingMethod, contentError, e);
                 return default(T);//null;
             }
         }
 
-        private bool IsHttpStatusCodeSuccess(HttpStatusCode code)
+        private static bool IsHttpStatusCodeSuccess(HttpStatusCode code)
         {
             return ((int)code >= 200 && (int)code < 300);
         }
