@@ -271,18 +271,6 @@ namespace QS.ALM.CloudShellApi
             }
         }
 
-
-        public TestStatus GetTestStatus(string testPath)
-        {
-            if (testPath.ToLower() == "root\\dummy test1")
-                return TestStatus.Running;
-
-            if (testPath.ToLower() == "root\\dummy test2")
-                return TestStatus.Passed;
-
-            return TestStatus.Failed;
-        }
-
         private bool IsHttpStatusCodeSuccess(HttpStatusCode code)
         {
             return ((int)code >= 200 && (int)code < 300);

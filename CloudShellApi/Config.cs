@@ -62,7 +62,7 @@ namespace QS.ALM.CloudShellApi
         private readonly ManualResetEvent m_Event = new ManualResetEvent(false);
         private ExecutionJobResult m_RunResult;
         private Thread m_Worker;
-        private Api m_Api;
+        private readonly Api m_Api;
 
         public RunStatusManager(string runGuid, Api api)
         {
@@ -104,12 +104,13 @@ namespace QS.ALM.CloudShellApi
                 Logger.Error("Unexpected error in RunStatusManager: {0}", ex);
             }
 
-            m_RunResult = IsRunSuccess(m_Api.IsRunSuccess(m_RunGuid, out contentError, out isSuccess));
+            m_RunResult = GetRunResult(m_Api.IsRunSuccess(m_RunGuid, out contentError, out isSuccess));
             m_Event.Set();
         }
 
         private static bool HasRunEnded(ApiSuiteStatusDetails apiSuiteStatusDetails)
         {
+            Logger.Debug("Method QS.ALM.CloudShellApi.RunStatusManager.HasRunEnded ApiSuiteStatusDetails.SuiteStatus = {0}", apiSuiteStatusDetails.SuiteStatus);
             if (apiSuiteStatusDetails == null)
             {
                 return false;
@@ -121,12 +122,14 @@ namespace QS.ALM.CloudShellApi
             return false;
         }
 
-        private static ExecutionJobResult IsRunSuccess(ApiSuiteDetails cloudShellStatus)
+        private static ExecutionJobResult GetRunResult(ApiSuiteDetails cloudShellStatus)
         {
             if (cloudShellStatus == null)
             {
+                Logger.Error("Method QS.ALM.CloudShellApi.RunStatusManager.GetRunResult object ApiSuiteDetails is null");
                 return ExecutionJobResult.Unknown;
             }
+            Logger.Debug("Method QS.ALM.CloudShellApi.RunStatusManager.GetRunResult ApiSuiteStatusDetails.SuiteStatus = {0}", cloudShellStatus.JobsDetails[0].JobResult);
             
             switch(cloudShellStatus.JobsDetails[0].JobResult)
             {
@@ -136,7 +139,8 @@ namespace QS.ALM.CloudShellApi
                     return ExecutionJobResult.Terminated;
                 case "Completed":
                     return ExecutionJobResult.Completed;
-                case "CompletedWithError/EndedWithErrors":
+                case "CompletedWithError":
+                case "EndedWithErrors":
                     return ExecutionJobResult.EndedWithErrors;
                 case "Passed":
                     return ExecutionJobResult.Passed;
@@ -147,6 +151,8 @@ namespace QS.ALM.CloudShellApi
                 case "ManuallyStopped":
                     return ExecutionJobResult.ManuallyStopped;
                 default :
+                    Logger.Error("Method QS.ALM.CloudShellApi.RunStatusManager.GetRunResult ApiSuiteStatusDetails.SuiteStatus = {0}", 
+                                                                                            cloudShellStatus.JobsDetails[0].JobResult);
                     return ExecutionJobResult.Unknown;
             }
 

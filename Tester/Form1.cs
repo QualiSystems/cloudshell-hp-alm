@@ -23,15 +23,15 @@ namespace Tester
             m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", "Global");
             string contentError;
             bool isSuccess;
-            string GuiId = m_Api.RunTest(m_ScriptControl.TestPath, out contentError, out isSuccess);
+            string guiId = m_Api.RunTest(m_ScriptControl.TestPath, out contentError, out isSuccess);
 
             if (isSuccess)
             {
-                MessageBox.Show("Result Test = \"" + GuiId + '\"', "Returned Key", MessageBoxButtons.OK);
+                MessageBox.Show("Result Test = \"" + guiId + '\"', "Returned Key", MessageBoxButtons.OK);
 
                 ExecutionJobResult runResult;
 
-                using (var runStatusManager = new RunStatusManager(GuiId, m_Api))
+                using (var runStatusManager = new RunStatusManager(guiId, m_Api))
                     runResult = runStatusManager.WaitForRunEnd();
 
                 MessageBox.Show("Run Result = " + runResult.ToString());
