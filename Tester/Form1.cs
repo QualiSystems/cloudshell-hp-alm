@@ -8,7 +8,7 @@ namespace Tester
     public partial class Form1 : Form
     {
         private ScriptViewerControl m_ScriptControl = null;
-        private Api m_Api;
+        private readonly Api m_Api;
         public Form1()
         {   
             InitializeComponent();
@@ -16,11 +16,20 @@ namespace Tester
             m_ScriptControl = new ScriptViewerControl();
             PanelScriptView.Controls.Add(m_ScriptControl);
             m_ScriptControl.Dock = DockStyle.Fill;
+
+            try
+            {
+                m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                Enabled = false;
+            }
         }
 
         private void ButtonRunTest_Click(object sender, EventArgs e)
         {
-            m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", "Global");
             string contentError;
             bool isSuccess;
             string guiId = m_Api.RunTest(m_ScriptControl.TestPath, out contentError, out isSuccess);
