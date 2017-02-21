@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
+using QS.ALM.CloudShellApi;
 
 namespace CTSAddin
 {
@@ -11,10 +12,12 @@ namespace CTSAddin
     /// <remarks>Implementation is optional.</remarks>
   public partial class ScriptViewerControl : UserControl, IScriptViewer
   {
+    private readonly Api m_Api;
     private ITDConnection m_tdc;
     public ScriptViewerControl()
     {
-      InitializeComponent();
+        InitializeComponent();
+        m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", "Global");
     }
 
     /// <summary>
@@ -58,12 +61,19 @@ namespace CTSAddin
 
     private void ButtonBrowse_Click(object sender, System.EventArgs e)
     {
-        TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm("http://192.168.42.35:9000", "admin", "admin", "Global");
+        TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm(m_Api);
         string path;
         path = BrouseForm.TryShowDialog(TextBoxPath.Text);
-        if(path != null)
+        if (path != null)
         {
             TextBoxPath.Text = path;
+            string contentError;
+            bool isSuccess = false;
+            APITestExplorerTestInfo testParameter = m_Api.GetTestParameter(path, out contentError, out isSuccess);
+            if(!isSuccess)
+            {
+                MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
+            }
         }
     }
 

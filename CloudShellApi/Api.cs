@@ -226,6 +226,11 @@ namespace QS.ALM.CloudShellApi
             return GetServerObject<ApiSuiteDetails>("/api/Scheduling/Suites/" + runGuid, "GetRunResult", out contentError, out isSuccess);            
         }
 
+        public APITestExplorerTestInfo GetTestParameter(string path, out string contentError, out bool isSuccess)
+        {
+            return GetServerObject<APITestExplorerTestInfo>("/api/Scheduling/TestInfo/" + path, "GetTestParameter", out contentError, out isSuccess);            
+        }
+
         private T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
         {
             contentError = null;
