@@ -201,7 +201,26 @@ namespace QS.ALM.CloudShellApi
         public string ReportLink { get ; set; }
         public string [] Parameters { get ; set; }
         public string EstimatedDuration { get ; set; }
-    }  
+    }
+
+    public class APITestExplorerTestInfo
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public TimeSpan? Duration { get; set; }
+        public APITestParameterInfo[] Parameters { get; set; }
+    }
+
+    public class APITestParameterInfo
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
+        public string Dimension { get; set; }
+        public string Direction { get; set; }
+        public string[] PossibleValues { get; set; }
+    }
+
     #endregion
 }
 

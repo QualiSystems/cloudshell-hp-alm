@@ -19,7 +19,7 @@ namespace CTSAddin
     public partial class TestShellTestsBrowserForm : Form
     {
         //private string m_CurrentTestPath = null;
-        readonly Api m_Api;
+        private readonly Api m_Api;
         private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
         private Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
         /// <summary>
@@ -28,10 +28,10 @@ namespace CTSAddin
         public UltraTreeNodeWithStatus m_SelectedNode { get; private set; }
 
 
-        public TestShellTestsBrowserForm(string url, string username, string password, string domain)
+        public TestShellTestsBrowserForm(Api api)
         {
             InitializeComponent();
-            m_Api = new Api(url, username, password, domain);
+            m_Api = api;
         }
 
         /// <summary>
@@ -50,6 +50,8 @@ namespace CTSAddin
                 return null;
             }
         }
+
+        public bool IsChoosenTest{ get {return ButtonOK.Enabled;}}
 
         private bool SelectPath(string path)
         {
