@@ -13,30 +13,45 @@ namespace QS.ALM.CloudShellApi
         private readonly string m_UserPassword;
         private readonly string m_Domain;
 
-        public Api(string urlString, string username, string password, string domain)
+        public Api(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
         {
             m_UrlStringServer = urlString;
-            m_UserName = username;
-            m_UserPassword = password;
             m_Domain = domain;
+
+            switch (authenticationMode)
+            {
+                case AuthenticationMode.Alm:
+                    m_UserName = almUsername;
+                    m_UserPassword = almPassword;
+                    break;
+                case AuthenticationMode.CloudShell:
+                    m_UserName = cloudShellUsername;
+                    m_UserPassword = cloudShellPassword;
+                    break;
+                default:
+                    throw new Exception("Invalid AuthenticationMode: " +  authenticationMode);
+            }
+
+            if (string.IsNullOrEmpty(m_UserName) || string.IsNullOrEmpty(m_UserPassword))
+                throw new Exception(string.Format("Authentication mode is '{0}' but username or password are empty.", authenticationMode));
         }
 
         private string CurrentUrl
         {
-            get 
+            get
             {
                 string url = Config.OverrideCloudShellUrl;
                 return url ?? m_UrlStringServer;
             }
         }
 
-        private string CurrentUsername 
-        { 
-            get 
-            { 
+        private string CurrentUsername
+        {
+            get
+            {
                 string username = Config.OverrideUsername;
                 return username ?? m_UserName;
-            } 
+            }
         }
 
         private string CurrentPassword
@@ -51,8 +66,7 @@ namespace QS.ALM.CloudShellApi
         private void Login(out RestClient client, out string authorization, out string contentError, out bool isSuccess)
         {
             isSuccess = false;
-            string connectProperty = "url = '" + CurrentUrl + "', domain = '" + m_Domain +
-                                        "', username = '" + CurrentUsername + "'." + Environment.NewLine;
+            string connectProperty = "url = '" + CurrentUrl + "', domain = '" + m_Domain + "', username = '" + CurrentUsername + "'." + Environment.NewLine;
             client = null;
             authorization = "";
             contentError = "";
@@ -70,7 +84,7 @@ namespace QS.ALM.CloudShellApi
 
             var request = new RestRequest("/api/Auth/Login", Method.PUT);
             request.AddHeader("Content-Type", LoginContentType);
-            request.AddJsonBody(new { username = CurrentUsername, password = CurrentPassword, domain = m_Domain });
+            request.AddJsonBody(new {username = CurrentUsername, password = CurrentPassword, domain = m_Domain});
 
             IRestResponse res;
             try
@@ -97,7 +111,7 @@ namespace QS.ALM.CloudShellApi
             else
             {
                 contentError = connectProperty + res.Content;
-                LogerRestSharpError("GetNodes", contentError, res);
+                LoggerRestSharpError("GetNodes", contentError, res);
             }
         }
 
@@ -111,12 +125,11 @@ namespace QS.ALM.CloudShellApi
                     root = root.Replace('\\', '/');
                     isSuccess = true;
                     contentError = "";
-                    return new[] { new TestNode(root, TypeNode.Folder) };
+                    return new[] {new TestNode(root, TypeNode.Folder)};
                 }
             }
-            ArrAPIExplorerResult arrApiExplorerResult = GetServerObject<ArrAPIExplorerResult>("/api/Scheduling/Explorer/" + parentPath,
-                                                                                            "GetNodes", out contentError, out isSuccess);
-            if(arrApiExplorerResult == null)
+            ArrAPIExplorerResult arrApiExplorerResult = GetServerObject<ArrAPIExplorerResult>("/api/Scheduling/Explorer/" + parentPath, "GetNodes", out contentError, out isSuccess);
+            if (arrApiExplorerResult == null)
             {
                 return null;
             }
@@ -129,8 +142,7 @@ namespace QS.ALM.CloudShellApi
 
         private static void LoggerErrorException(string method, string contentError, Exception e)
         {
-            Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'," + Environment.NewLine + "Exception = '{2}'", 
-                                                                                                    method, contentError, e.ToString());
+            Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'," + Environment.NewLine + "Exception = '{2}'", method, contentError, e.ToString());
         }
 
         private static void LoggerContentError(string method, string contentError)
@@ -138,14 +150,9 @@ namespace QS.ALM.CloudShellApi
             Logger.Error("QS.ALM.CloudShellApi.Api{0}: ContentError = '{1}'", method, contentError);
         }
 
-        private static void LogerRestSharpError(string method, string contentError, IRestResponse res)
+        private static void LoggerRestSharpError(string method, string contentError, IRestResponse res)
         {
-            Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + 
-            Environment.NewLine + "ErrorMessage = '{2}'" +
-            Environment.NewLine + "ErrorException = '{3}'" + 
-            Environment.NewLine +  "StatusCode = '{4}'",
-            method, contentError, res.ErrorMessage, res.ErrorException == null ? "null" : res.ErrorException.ToString(), 
-            ((int)res.StatusCode).ToString());
+            Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + Environment.NewLine + "ErrorMessage = '{2}'" + Environment.NewLine + "ErrorException = '{3}'" + Environment.NewLine + "StatusCode = '{4}'", method, contentError, res.ErrorMessage, res.ErrorException == null ? "null" : res.ErrorException.ToString(), ((int) res.StatusCode).ToString());
         }
 
         public string RunTest(string testPath, out string contentError, out bool isSuccess)
@@ -171,11 +178,11 @@ namespace QS.ALM.CloudShellApi
             request.AddHeader("Content-Type", "application/json");
             request.AddJsonBody(new ApiSuiteTemplateDetails("TestShell\\Tests\\" + testPath.Replace('/', '\\')));
             string content = ExecuteServerRequest(client, request, "RunTest", out contentError, out isSuccess);
-            if(content == null)
+            if (content == null)
             {
                 return null;
             }
-            return content.Trim(new char[]{'\"'});
+            return content.Trim(new char[] {'\"'});
         }
 
         private string ExecuteServerRequest(RestClient client, RestRequest request, string nameCallingMethod, out string contentError, out bool isSuccess)
@@ -195,9 +202,9 @@ namespace QS.ALM.CloudShellApi
 
             if (!IsHttpStatusCodeSuccess(res.StatusCode))
             {
-                contentError = "Error " + ((int)res.StatusCode) + Environment.NewLine + res.Content;
+                contentError = "Error " + ((int) res.StatusCode) + Environment.NewLine + res.Content;
                 isSuccess = false;
-                LogerRestSharpError(nameCallingMethod, contentError, res);
+                LoggerRestSharpError(nameCallingMethod, contentError, res);
                 return null;
             }
 
@@ -214,18 +221,17 @@ namespace QS.ALM.CloudShellApi
 
         public ApiSuiteStatusDetails GetRunStatus(string runGuid, out string contentError, out bool isSuccess)
         {
-            return GetServerObject<ApiSuiteStatusDetails>("/api/Scheduling/Suites/Status/" + runGuid,
-                                                                    "GetRunStatus",  out contentError, out isSuccess);           
+            return GetServerObject<ApiSuiteStatusDetails>("/api/Scheduling/Suites/Status/" + runGuid, "GetRunStatus", out contentError, out isSuccess);
         }
 
         public ApiSuiteDetails GetRunResult(string runGuid, out string contentError, out bool isSuccess)
         {
-            return GetServerObject<ApiSuiteDetails>("/api/Scheduling/Suites/" + runGuid, "GetRunResult", out contentError, out isSuccess);            
+            return GetServerObject<ApiSuiteDetails>("/api/Scheduling/Suites/" + runGuid, "GetRunResult", out contentError, out isSuccess);
         }
 
         public APITestExplorerTestInfo GetTestParameter(string path, out string contentError, out bool isSuccess)
         {
-            return GetServerObject<APITestExplorerTestInfo>("/api/Scheduling/TestInfo/" + path, "GetTestParameter", out contentError, out isSuccess);            
+            return GetServerObject<APITestExplorerTestInfo>("/api/Scheduling/TestInfo/" + path, "GetTestParameter", out contentError, out isSuccess);
         }
 
         private T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
@@ -236,7 +242,7 @@ namespace QS.ALM.CloudShellApi
             Login(out client, out authorization, out contentError, out isSuccess);
             if (!isSuccess)
             {
-                return default(T);//null;
+                return default(T); //null;
             }
 
             var request = new RestRequest(nameFunctionOnServer, Method.GET);
@@ -245,7 +251,7 @@ namespace QS.ALM.CloudShellApi
             string content = ExecuteServerRequest(client, request, nameCallingMethod, out contentError, out isSuccess);
             if (content == null)
             {
-                return default(T);//null;
+                return default(T); //null;
             }
 
             try
@@ -257,13 +263,13 @@ namespace QS.ALM.CloudShellApi
                 contentError = e.Message;
                 isSuccess = false;
                 LoggerErrorException(nameCallingMethod, contentError, e);
-                return default(T);//null;
+                return default(T); //null;
             }
         }
 
         private static bool IsHttpStatusCodeSuccess(HttpStatusCode code)
         {
-            return ((int)code >= 200 && (int)code < 300);
+            return ((int) code >= 200 && (int) code < 300);
         }
     }
 }

@@ -17,7 +17,16 @@ namespace CTSAddin
     public ScriptViewerControl()
     {
         InitializeComponent();
-        m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", "Global");
+
+        try
+        {
+            m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+            Enabled = false;
+        }
     }
 
     /// <summary>
