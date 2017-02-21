@@ -52,11 +52,10 @@ namespace QS.ALM.CloudShellApi
         {
             isSuccess = false;
             string connectProperty = "url = '" + CurrentUrl + "', domain = '" + m_Domain +
-                                        "', username = '" + CurrentUsername + "'." + System.Environment.NewLine;
+                                        "', username = '" + CurrentUsername + "'." + Environment.NewLine;
             client = null;
             authorization = "";
             contentError = "";
-            isSuccess = false;           
 
             try
             {
@@ -115,14 +114,14 @@ namespace QS.ALM.CloudShellApi
                     return new[] { new TestNode(root, TypeNode.Folder) };
                 }
             }
-            ArrAPIExplorerResult arrAPIExplorerResult = GetServerObject<ArrAPIExplorerResult>("/api/Scheduling/Explorer/" + parentPath,
+            ArrAPIExplorerResult arrApiExplorerResult = GetServerObject<ArrAPIExplorerResult>("/api/Scheduling/Explorer/" + parentPath,
                                                                                             "GetNodes", out contentError, out isSuccess);
-            if(arrAPIExplorerResult == null)
+            if(arrApiExplorerResult == null)
             {
                 return null;
             }
 
-            TestNode[] arrTestNode = TestNode.ConvertFromArrAPIExplorerResult(arrAPIExplorerResult);
+            TestNode[] arrTestNode = TestNode.ConvertFromArrAPIExplorerResult(arrApiExplorerResult);
 
             contentError = "";
             return arrTestNode;
@@ -151,10 +150,8 @@ namespace QS.ALM.CloudShellApi
 
         public string RunTest(string testPath, out string contentError, out bool isSuccess)
         {
-            string authorization = "";
-            RestClient client = null;
-            isSuccess = true;
-            contentError = "";
+            string authorization;
+            RestClient client;
 
             if (string.IsNullOrEmpty(testPath))
             {
@@ -233,13 +230,8 @@ namespace QS.ALM.CloudShellApi
 
         private T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
         {
-            contentError = null;
-            isSuccess = true;
-
-            string authorization = "";
-            RestClient client = null;
-            isSuccess = true;
-            contentError = "";
+            string authorization;
+            RestClient client;
 
             Login(out client, out authorization, out contentError, out isSuccess);
             if (!isSuccess)
