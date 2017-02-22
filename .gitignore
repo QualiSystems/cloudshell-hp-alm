@@ -10,7 +10,6 @@ Deploy/obj/*
 Deploy/bin/*
 packages/*
 pfx/*
-cab/debug/*
-cab/release/*
+cab/bin/*
 !repositories.config
 *.suo

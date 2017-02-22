@@ -28,6 +28,8 @@ namespace QS.ALM.Deploy
                 AddFolder(files, (Path.Combine(m_SolutionRoot, "CSRemoteAgent", flavor)));
                 AddFolder(files, (Path.Combine(m_SolutionRoot, "TestType4DotNet", flavor)));
 
+                CreateIniFile(files, Path.Combine(m_SolutionRoot, "Cab", flavor, "QSALM.ini"));
+
                 var missingFiles = false;
 
                 // Verify all files exists
@@ -43,7 +45,7 @@ namespace QS.ALM.Deploy
                 if (missingFiles)
                     throw new Exception("Missing files");
 
-                var cabPath = Path.Combine(m_SolutionRoot, "Cab", "Debug", "QSALM.CAB");
+                var cabPath = Path.Combine(m_SolutionRoot, "Cab", flavor, "QSALM.CAB");
 
                 if (!File.Exists(cabPath))
                     throw new Exception("File not found: " + cabPath);
@@ -130,5 +132,53 @@ namespace QS.ALM.Deploy
                 throw new Exception(string.Format("Sign error ({0}): {1}", file, ex.Message));
             }
         }
+
+        private static void CreateIniFile(List<string> files, string fullPath)
+        {
+            HashSet<string> hashFiles = new HashSet<string>();
+            foreach(string fileName in files)
+            {
+                hashFiles.Add(Path.GetFileName(fileName));
+            }
+            string contentIni = "";
+            int index = 0;
+            foreach(string fileName in hashFiles)
+            {
+                contentIni += FileNameToIni(fileName, ++index);
+            }
+            File.WriteAllText(fullPath, contentIni);
+        }
+
+        private static string FileNameToIni(string filename, int index)
+        {
+            string name = Path.GetFileNameWithoutExtension(filename);
+            string extension = Path.GetExtension(filename).Substring(1);
+            char[] arr = extension.ToCharArray();
+            Array.Reverse(arr);
+            string extensionReversed = new string (arr);
+            string contentIni = "[File_" + index.ToString("D" + 4) + ']' + Environment.NewLine +
+                "URLName=%URL%/Extensions/CTS/" + name + '.' + extensionReversed + Environment.NewLine +
+                "ShortName=" + QuallyStr(filename) + name + '.' + extension + Environment.NewLine +
+                "Description=" + DescriptionStr(name) + Environment.NewLine +
+                DotNetYStr(filename) + Environment.NewLine;
+            return contentIni;
+        }
+
+        private static string QuallyStr(string filename)
+        {
+            return filename.ToLower() == "customtesttype.dll" ? "" : "Quali\\";
+        }
+
+        private static string DotNetYStr(string filename)
+        {
+            return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
+        }
+
+        private static string DescriptionStr(string name)
+        {
+            return name.ToLower() == "customtesttype" ? "CTS by Moti" : name;
+        }
+        
+
     }
 }
