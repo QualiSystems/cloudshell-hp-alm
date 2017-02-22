@@ -17,6 +17,11 @@ namespace CTSAddin
           AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
       }
 
+      private static string QualiSubFolder
+      {
+          get { return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Quali"); }
+      }
+
       static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)
       {
           var filename = args.Name.Split(',').First().Trim();
@@ -26,8 +31,8 @@ namespace CTSAddin
 
           if (!filename.ToLower().EndsWith(".dll"))
               filename += ".dll";
-           
-          var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Quali", filename);
+
+          var path = Path.Combine(QualiSubFolder, filename);
 
           if (File.Exists(path))
           {
@@ -67,7 +72,8 @@ namespace CTSAddin
     /// <returns></returns>
       public System.Drawing.Image TestTypeIcon(int status)
       {
-          RegAgent(@"C:\Users\Motico\AppData\Local\HP\ALM-Client\localhost\Quali\RemoteAgent.dll");
+          var path = Path.Combine(QualiSubFolder, "RemoteAgent.dll");
+          RegAgent(path);
           return Resource.TestTypeImage;
       }
 
@@ -86,13 +92,14 @@ namespace CTSAddin
               reg.StartInfo.RedirectStandardOutput = true;
               reg.Start();
               reg.WaitForExit();
-              reg.Close();
+
+              if (reg.ExitCode != 0)
+                  throw new Exception("Exit code=" + reg.ExitCode);
           }
           catch (Exception ex)
           {
-              MessageBox.Show(ex.Message);
+              MessageBox.Show("RemoteAgent registration failed: " + ex.Message);
           }
-
       }
   }
 }
