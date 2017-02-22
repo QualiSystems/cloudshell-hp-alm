@@ -77,28 +77,30 @@ namespace CTSAddin
           return Resource.TestTypeImage;
       }
 
-      private void RegAgent(string regBatFile)
+      private static void RegAgent(string assemblyPath)
       {
+          var process = new Process();
+
           try
           {
-              //'/s' : Specifies regsvr32 to run silently and to not display any message boxes.
-              // string fileinfo = "/s" + " " + "\"" + regBatFile + "\"";
-              Process reg = new Process();
-              //This file registers .dll files as command components in the registry.
-              reg.StartInfo.FileName = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegSvcs.exe";
-              reg.StartInfo.Arguments = regBatFile;
-              reg.StartInfo.UseShellExecute = false;
-              reg.StartInfo.CreateNoWindow = true;
-              reg.StartInfo.RedirectStandardOutput = true;
-              reg.Start();
-              reg.WaitForExit();
+              process.StartInfo.FileName = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegSvcs.exe";
+              process.StartInfo.Arguments = assemblyPath;
+              process.StartInfo.UseShellExecute = false;
+              process.StartInfo.CreateNoWindow = true;
+              process.StartInfo.RedirectStandardOutput = true;
+              process.StartInfo.RedirectStandardError = true;
+              process.Start();
+              process.WaitForExit();
 
-              if (reg.ExitCode != 0)
-                  throw new Exception("Exit code=" + reg.ExitCode);
+              var standardOutput = process.StandardOutput.ReadToEnd();
+              var standardError = process.StandardError.ReadToEnd();
+
+              if (process.ExitCode != 0)
+                  throw new Exception(string.Format("Exit code: {0}\n\n{1}", process.ExitCode, standardOutput + Environment.NewLine + standardError));
           }
           catch (Exception ex)
           {
-              MessageBox.Show("RemoteAgent registration failed: " + ex.Message);
+              MessageBox.Show(string.Format("RemoteAgent registration failed.\n\n{0}\n\nCommand was:\n{1} {2}", ex.Message, process.StartInfo.FileName, process.StartInfo.Arguments));
           }
       }
   }
