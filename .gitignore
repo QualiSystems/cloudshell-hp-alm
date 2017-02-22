@@ -6,6 +6,11 @@ CloudShellApi/obj/*
 CloudShellApi/bin/*
 Tester/obj/*
 Tester/bin/*
+Deploy/obj/*
+Deploy/bin/*
 packages/*
+pfx/*
+cab/debug/*
+cab/release/*
 !repositories.config
 *.suo
