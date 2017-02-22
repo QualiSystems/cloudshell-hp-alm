@@ -10,68 +10,75 @@ namespace QS.ALM.Deploy
 {
     class Program
     {
+        private const string AlmServerRoot = @"C:\ProgramData\HP\ALM\webapps\qcbin";
         static string m_SolutionRoot;
 
         static int Main(string[] args)
         {
-            if (Process.GetProcessesByName("ALM").Any())
-            {
-                Console.WriteLine("Please close ALM.exe");
-                return -1;
-            }
-
-            const string flavor = @"bin\Debug";
-            m_SolutionRoot = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\.."));
-
-            var files = new List<string>();
-
-            AddFolder(files, (Path.Combine(m_SolutionRoot, "CloudShellApi", flavor)));
-            AddFolder(files, (Path.Combine(m_SolutionRoot, "CSRemoteAgent", flavor)));
-            AddFolder(files, (Path.Combine(m_SolutionRoot, "TestType4DotNet", flavor)));
-            //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "Newtonsoft.Json.dll"));
-            //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "QS.ALM.CloudShellApi.dll"));
-            //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "RestSharp.dll"));
-
-            //files.Add(Path.Combine(solutionRoot, "CSRemoteAgent", flavor, "Interop.TDAPIOLELib.dll"));
-            //files.Add(Path.Combine(solutionRoot, "CSRemoteAgent", flavor, "RemoteAgent.dll"));
-
-            //files.Add(Path.Combine(solutionRoot, "TestType4DotNet", flavor, "CustomTestType.dll"));
-
-            var missingFiles = false;
-
-            // Verify all files exists
-            foreach (var file in files)
-            {
-                if (!File.Exists(file))
-                {
-                    missingFiles = true;
-                    Console.WriteLine("File not found: " + file);
-                }
-            }
-
-            if (missingFiles)
-                return -1;
-
-            var cabPath = Path.Combine(m_SolutionRoot, "Cab", "Debug", "QSALM.CAB");
-
-            if (!File.Exists(cabPath))
-            {
-                Console.WriteLine("File not found: " + cabPath);
-                return -1;
-            }
-
             try
             {
+                VerifyAlmNotRunning();
+
+                const string flavor = @"bin\Debug";
+                m_SolutionRoot = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\.."));
+
+                var files = new List<string>();
+
+                AddFolder(files, (Path.Combine(m_SolutionRoot, "CloudShellApi", flavor)));
+                AddFolder(files, (Path.Combine(m_SolutionRoot, "CSRemoteAgent", flavor)));
+                AddFolder(files, (Path.Combine(m_SolutionRoot, "TestType4DotNet", flavor)));
+                //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "Newtonsoft.Json.dll"));
+                //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "QS.ALM.CloudShellApi.dll"));
+                //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "RestSharp.dll"));
+
+                //files.Add(Path.Combine(solutionRoot, "CSRemoteAgent", flavor, "Interop.TDAPIOLELib.dll"));
+                //files.Add(Path.Combine(solutionRoot, "CSRemoteAgent", flavor, "RemoteAgent.dll"));
+
+                //files.Add(Path.Combine(solutionRoot, "TestType4DotNet", flavor, "CustomTestType.dll"));
+
+                var missingFiles = false;
+
+                // Verify all files exists
+                foreach (var file in files)
+                {
+                    if (!File.Exists(file))
+                    {
+                        missingFiles = true;
+                        Console.WriteLine("File not found: " + file);
+                    }
+                }
+
+                if (missingFiles)
+                    throw new Exception("Missing files");
+
+                var cabPath = Path.Combine(m_SolutionRoot, "Cab", "Debug", "QSALM.CAB");
+
+                if (!File.Exists(cabPath))
+                    throw new Exception("File not found: " + cabPath);
+
+                var ctsFolder = Path.Combine(AlmServerRoot, @"Extensions\CTS");
+                Directory.Delete(ctsFolder, true);
+                Directory.CreateDirectory(ctsFolder);
+
                 CopyToServerAndSign(files.ToArray(), @"Extensions\CTS");
                 CopyToServerAndSign(new[] { cabPath }, "Extensions");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                Console.ReadLine();
                 return -1;
             }
 
+            Console.WriteLine("Success.");
+            Console.ReadLine();
             return 0;
+        }
+
+        private static void VerifyAlmNotRunning()
+        {
+            if (Process.GetProcessesByName("ALM").Any())
+                throw new Exception("Please close ALM.exe");
         }
 
         private static void AddFolder(List<string> files, string folder)
@@ -83,7 +90,7 @@ namespace QS.ALM.Deploy
         {
             foreach (var file in files)
             {
-                var targetFile = Path.Combine(@"C:\ProgramData\HP\ALM\webapps\qcbin", targetFolder);
+                var targetFile = Path.Combine(AlmServerRoot, targetFolder);
 
                 if (Path.GetExtension(file).ToLower() == ".dll")
                     targetFile = Path.Combine(targetFile, Path.GetFileNameWithoutExtension(file) + ".lld");
