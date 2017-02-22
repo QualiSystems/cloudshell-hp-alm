@@ -18,6 +18,7 @@ namespace QS.ALM.CloudShellApi
             m_Worker.IsBackground = true;
             m_Worker.Start();
             m_Api = api;
+            Logger.Debug("QS.ALM.CloudShellApi.RunStatusManager(string runGuid, Api api), runGuid = {0}", m_RunGuid);
         }
 
         public ExecutionJobResult WaitForRunEnd()
@@ -58,8 +59,8 @@ namespace QS.ALM.CloudShellApi
         {
             if (apiSuiteStatusDetails == null)
             {
-                Logger.Debug("Method QS.ALM.CloudShellApi.RunStatusManager.HasRunEnded ApiSuiteStatusDetails = null");
-                return false;
+                Logger.Error("Method QS.ALM.CloudShellApi.RunStatusManager.HasRunEnded ApiSuiteStatusDetails = null");
+                return true;
             }
 
             Logger.Debug("Method QS.ALM.CloudShellApi.RunStatusManager.HasRunEnded ApiSuiteStatusDetails.SuiteStatus = {0}", apiSuiteStatusDetails.SuiteStatus);

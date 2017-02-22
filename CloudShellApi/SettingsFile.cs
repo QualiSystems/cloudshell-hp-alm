@@ -34,7 +34,7 @@ namespace QS.ALM.CloudShellApi
                 // Try to open the optional settings file (if missing, an empty "AppSettings" is returned)
                 var configFileMap = new ExeConfigurationFileMap { ExeConfigFilename = Path.Combine(Constants.TempFolder, "settings.config") };
                 var config = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.None);
-                return config.AppSettings.Settings; // this is empty if file not exists
+                return config.AppSettings.Settings; // this is empty, if file not exists
             }
             catch (Exception ex)
             {

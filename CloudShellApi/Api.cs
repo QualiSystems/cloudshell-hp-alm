@@ -105,7 +105,7 @@ namespace QS.ALM.CloudShellApi
             }
             else if (res.StatusCode == 0)
             {
-                contentError = connectProperty + "Connect With Server Error";
+                contentError ="Connect With Server Error" + Environment.NewLine + "Details :" + Environment.NewLine +  connectProperty + ;
                 LoggerContentError("Login", contentError);
             }
             else
