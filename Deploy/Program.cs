@@ -27,14 +27,6 @@ namespace QS.ALM.Deploy
                 AddFolder(files, (Path.Combine(m_SolutionRoot, "CloudShellApi", flavor)));
                 AddFolder(files, (Path.Combine(m_SolutionRoot, "CSRemoteAgent", flavor)));
                 AddFolder(files, (Path.Combine(m_SolutionRoot, "TestType4DotNet", flavor)));
-                //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "Newtonsoft.Json.dll"));
-                //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "QS.ALM.CloudShellApi.dll"));
-                //files.Add(Path.Combine(solutionRoot, "CloudShellApi", flavor, "RestSharp.dll"));
-
-                //files.Add(Path.Combine(solutionRoot, "CSRemoteAgent", flavor, "Interop.TDAPIOLELib.dll"));
-                //files.Add(Path.Combine(solutionRoot, "CSRemoteAgent", flavor, "RemoteAgent.dll"));
-
-                //files.Add(Path.Combine(solutionRoot, "TestType4DotNet", flavor, "CustomTestType.dll"));
 
                 var missingFiles = false;
 
