@@ -76,7 +76,6 @@
     <None Include="..\AlmCloudShell.snk">
       <Link>AlmCloudShell.snk</Link>
     </None>
-    <None Include="CloudShelApiSign.pfx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
