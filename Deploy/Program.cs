@@ -28,7 +28,8 @@ namespace QS.ALM.Deploy
                 AddFolder(files, (Path.Combine(m_SolutionRoot, "CSRemoteAgent", flavor)));
                 AddFolder(files, (Path.Combine(m_SolutionRoot, "TestType4DotNet", flavor)));
 
-                CreateIniFile(files, Path.Combine(m_SolutionRoot, "Cab", flavor, "QSALM.ini"));
+                CreateIniFile(files, Path.Combine(m_SolutionRoot, "Cab", flavor));
+                CreateCabFile(Path.Combine(m_SolutionRoot, "Cab", flavor));
 
                 var missingFiles = false;
 
@@ -51,7 +52,10 @@ namespace QS.ALM.Deploy
                     throw new Exception("File not found: " + cabPath);
 
                 var ctsFolder = Path.Combine(AlmServerRoot, @"Extensions\CTS");
-                Directory.Delete(ctsFolder, true);
+                if (Directory.Exists(ctsFolder))
+                {
+                    Directory.Delete(ctsFolder, true);
+                }
                 Directory.CreateDirectory(ctsFolder);
 
                 CopyToServerAndSign(files.ToArray(), @"Extensions\CTS");
@@ -112,29 +116,15 @@ namespace QS.ALM.Deploy
             if (!File.Exists(pfxPath))
                 throw new Exception("Pfx not found: " + pfxPath);
 
-            try
-            {
-                Process process = new Process();
-                process.StartInfo.FileName = signTool;
-                // signtool sign /v /f C:\Moti\sertifecat\qs.pfx /p qualisystems C:\Moti\Extensions\CTS.cab
-                process.StartInfo.Arguments = string.Format("sign /v /f \"{0}\" /p qualisystems \"{1}\"", pfxPath, file);
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.Start();
-                process.WaitForExit();
-
-                if (process.ExitCode != 0)
-                    throw new Exception(string.Format("Sign failed ({0}): Exit code = {1}", file, process.ExitCode));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Format("Sign error ({0}): {1}", file, ex.Message));
-            }
+            RunExecOperation(signTool,
+               string.Format("sign /v /f \"{0}\" /p qualisystems \"{1}\"", pfxPath, file),
+               file, "Sign");
         }
 
-        private static void CreateIniFile(List<string> files, string fullPath)
+        private static void CreateIniFile(List<string> files, string path)
         {
+            if(files == null || files.Count() == 0)
+                throw new Exception("List files is empty");
             HashSet<string> hashFiles = new HashSet<string>();
             foreach(string fileName in files)
             {
@@ -146,7 +136,49 @@ namespace QS.ALM.Deploy
             {
                 contentIni += FileNameToIni(fileName, ++index);
             }
-            File.WriteAllText(fullPath, contentIni);
+            if(!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }            
+            path = Path.Combine(path, "QSALM.ini");
+            File.WriteAllText(path, contentIni);
+            if(!File.Exists(path))
+                throw new Exception(string.Format("Creating {0} file error", path));
+        }
+
+        private static void CreateCabFile(string path)
+        {
+            string fullFileName = Path.Combine(path, "QSALM.cab");
+            RunExecOperation("makecab", 
+                string.Format(" {0} {1}", Path.Combine(path, "QSALM.ini"), fullFileName),
+                fullFileName,  "Create Cab File");
+
+            if (!File.Exists(fullFileName))
+                throw new Exception(string.Format("Creating {0} file error", fullFileName));
+        }
+
+
+        private static void RunExecOperation(string nameRunFile, string argument, string file, string nameOperationForExeption)
+        {
+            try
+            {
+                Process process = new Process();
+                process.StartInfo.FileName = nameRunFile;
+                // signtool sign /v /f C:\Moti\sertifecat\qs.pfx /p qualisystems C:\Moti\Extensions\CTS.cab
+                process.StartInfo.Arguments = argument;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.Start();
+                process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                    throw new Exception(string.Format("{0} failed ({1}): Exit code = {2}", nameOperationForExeption, file, process.ExitCode));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("{0} error ({1}): {2}", nameOperationForExeption, file, ex.Message));
+            }
         }
 
         private static string FileNameToIni(string filename, int index)
@@ -177,8 +209,6 @@ namespace QS.ALM.Deploy
         private static string DescriptionStr(string name)
         {
             return name.ToLower() == "customtesttype" ? "CTS by Moti" : name;
-        }
-        
-
+        }        
     }
 }
