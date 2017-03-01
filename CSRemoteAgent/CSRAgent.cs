@@ -18,6 +18,7 @@ namespace CSRAgent
   {
     ALMCon mALMCon = new ALMCon();
     private string mDescr;
+    //private TDConnection conn;
    
 
     public int get_status(ref string descr, ref string status)
