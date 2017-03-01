@@ -18,7 +18,7 @@ namespace CTSAddin
     /// </summary>
     public partial class TestShellTestsBrowserForm : Form
     {
-        //private string m_CurrentTestPath = null;
+        private string m_StartTestPath = null;
         private readonly Api m_Api;
         private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
         private Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
@@ -42,6 +42,8 @@ namespace CTSAddin
         {
             if (AddQCTree() && SelectPath(path))
             {
+                m_StartTestPath = path.Replace('\\', '/');
+                CheckButtunOkEnabledStatus();
                 ShowDialog();
                 return m_SelectedNode == null ? null : m_SelectedNode.Node.FullPath.Replace('\\', '/');
             }
@@ -107,14 +109,7 @@ namespace CTSAddin
                 UltraTreeNodeWithStatus tmpNode;
                 m_DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath.Replace('\\', '/'), out tmpNode);
                 m_SelectedNode = tmpNode;
-                if (m_SelectedNode != null && m_SelectedNode.Status == StatusNode.Test)
-                {
-                    ButtonOK.Enabled = true;
-                }
-                else
-                {
-                    ButtonOK.Enabled = false;
-                }
+                CheckButtunOkEnabledStatus();                
             }
             else
             {
@@ -250,6 +245,17 @@ namespace CTSAddin
             m_SelectedNode = tmp;
         }
 
+        void CheckButtunOkEnabledStatus()
+        {
+            if (m_SelectedNode != null && m_SelectedNode.Status == StatusNode.Test && m_StartTestPath != m_SelectedNode.Node.FullPath.Replace('\\', '/'))
+            {
+                ButtonOK.Enabled = true;
+            }
+            else
+            {
+                ButtonOK.Enabled = false;
+            }
+        }
         private void TestShellTestsBrowserForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             m_SelectedNode = null;

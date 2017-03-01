@@ -45,7 +45,6 @@
             this.TextBoxPath.ReadOnly = true;
             this.TextBoxPath.Size = new System.Drawing.Size(474, 20);
             this.TextBoxPath.TabIndex = 0;
-            this.TextBoxPath.Text = "Shared/Folder 1/Test B sleep 20 seconds";
             // 
             // labelTestPath
             // 
