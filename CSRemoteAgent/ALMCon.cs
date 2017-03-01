@@ -2,14 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TDAPIOLELib;
 using System.Threading;
 using System.Windows.Forms;
-
+using System.Diagnostics;
+using TDAPIOLELib;
 namespace CSRAgent
 {
     class ALMCon
     {
+
+       /* private TDConnection qcConnection;
+
+        private string Connect()
+        {
+            string status;
+            status = "Initialising";
+
+            qcConnection.InitConnectionEx("<QC URL>");
+            qcConnection.ConnectProjectEx("<QC Domain>", "<QC Project>", "<LoginUserId>", "<UserPassword>");
+            if (qcConnection.ProjectConnected)
+            {
+                status = "Connected";
+            }
+            return status;
+        }*/
+
         public TDConnection conn;
         static private Dictionary<string, string> Params;
         public CStatus mStatus;
@@ -20,13 +37,37 @@ namespace CSRAgent
 
         public int OpenCon()
         {
-            if(conn == null)
-                conn = new TDConnectionClass();
-            if (!conn.Connected)
+
+            //string connStr = "Data Source=Teradata1;User Id=ab;Password=ab;";
+
+            try
             {
+                conn = new TDConnectionClass();
+               // conn = (ITDConnection)conn1;
+                conn.InitConnectionEx(this.GetValue("TDAPI_host_name"));
                 conn.InitConnectionEx(this.GetValue("TDAPI_host_name"));
                 conn.ConnectProjectEx(this.GetValue("domain_name"), this.GetValue("project_name"), this.GetValue("user_name"), this.GetValue("password"));
+
+               // TDCommand cmd = new TDCommand("Show Table Customers", cn);
+
+               // String customers = (String)cmd.ExecuteScalar();
+
+                //cmd.Dispose();
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+           /* if (conn == null)
+            {
+                TDConnectionClass MTDConnectionClass = new TDConnectionClass();
+                conn = (TDConnection)MTDConnectionClass;
+            }
+           // if (!conn.Connected)
+           // {
+                conn.InitConnectionEx(this.GetValue("TDAPI_host_name"));
+                conn.ConnectProjectEx(this.GetValue("domain_name"), this.GetValue("project_name"), this.GetValue("user_name"), this.GetValue("password"));
+           // }*/
             return 0;
         }
         public int CloseCon()
