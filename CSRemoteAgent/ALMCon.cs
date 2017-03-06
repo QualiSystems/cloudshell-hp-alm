@@ -95,7 +95,7 @@ namespace CSRAgent
         {
             string contentError;
             bool isSuccess;
-            string guiId = m_Api.RunTest(m_TestPath, out contentError, out isSuccess);
+            string guiId = m_Api.RunTest(m_TestPath,null,  out contentError, out isSuccess);
 
             if (isSuccess)
             {
