@@ -89,9 +89,10 @@ namespace QS.ALM.CloudShellApi
         Terminated,
         Unknown
     }
+    
     public class ApiSuiteTemplateDetails
     {
-        public ApiSuiteTemplateDetails(string testPath) { JobsDetails = new ApiJobTemplate[] { new ApiJobTemplate(testPath) }; }
+        public ApiSuiteTemplateDetails(string testPath, List<TestParameters> parameters) { JobsDetails = new ApiJobTemplate[] { new ApiJobTemplate(testPath, parameters) }; }
         public string SuiteTemplateName { get ; set; }
         public string SuiteName { get { return Config.SuiteName; } }
         public string Description {get; set;}
@@ -104,7 +105,7 @@ namespace QS.ALM.CloudShellApi
     }
     public class ApiJobTemplate
     {
-      public ApiJobTemplate(string testPath) {Tests = new Test[]{new Test(testPath)}; }
+        public ApiJobTemplate(string testPath, List<TestParameters> parameters) { Tests = new Test[] { new Test(testPath, parameters) }; }
 
       public ApiJobTemplate() { }
       public string Name { get { return Config.JobName; } }
@@ -121,10 +122,28 @@ namespace QS.ALM.CloudShellApi
     }
     public class Test
     {
-        public Test(string testPath) { TestPath = testPath; }
+        public Test(string testPath, List<TestParameters> parameters) 
+        { 
+            TestPath = testPath;
+            if (parameters == null)
+            {
+                Parameters = new List<TestParameters>();
+            }
+            else
+            {
+                Parameters = parameters;
+            }
+        }
         public string TestPath {get; private set;}
-        public string [] Parameters { get { return new string[0]; } }
+        public List<TestParameters> Parameters { get; private set; }
         public int EstimatedDuration { get { return 0; } }
+    }
+
+    public class TestParameters
+    {
+        public TestParameters(string name, string value) {ParameterName = name; ParameterValue = value;}
+        public string ParameterName { get; set; }
+        public string ParameterValue { get; set; }
     }
 
     public class ApiSuiteStatusDetails
@@ -199,7 +218,7 @@ namespace QS.ALM.CloudShellApi
         public string Result { get ; set; }
         public string ReportId { get ; set; }
         public string ReportLink { get ; set; }
-        public string [] Parameters { get ; set; }
+        public TestParameters[] Parameters { get; set; }
         public string EstimatedDuration { get ; set; }
     }
 
