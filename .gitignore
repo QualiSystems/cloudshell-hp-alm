@@ -8,6 +8,8 @@ Tester/obj/*
 Tester/bin/*
 Deploy/obj/*
 Deploy/bin/*
+QS.ALM.RewriteClientDll/bin/*
+QS.ALM.RewriteClientDll/obj/*
 packages/*
 pfx/*
 cab/bin/*
