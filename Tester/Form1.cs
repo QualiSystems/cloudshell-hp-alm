@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using QS.ALM.CloudShellApi;
 using CTSAddin;
 
@@ -12,11 +13,6 @@ namespace Tester
         public Form1()
         {   
             InitializeComponent();
-
-            m_ScriptControl = new ScriptViewerControl();
-            PanelScriptView.Controls.Add(m_ScriptControl);
-            m_ScriptControl.Dock = DockStyle.Fill;
-
             try
             {
                 m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
@@ -26,13 +22,20 @@ namespace Tester
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
                 Enabled = false;
             }
+            m_ScriptControl = new ScriptViewerControl(m_Api);
+            PanelScriptView.Controls.Add(m_ScriptControl);
+            m_ScriptControl.Dock = DockStyle.Fill;
         }
 
         private void ButtonRunTest_Click(object sender, EventArgs e)
         {
             string contentError;
             bool isSuccess;
-            string guiId = m_Api.RunTest(m_ScriptControl.TestPath, out contentError, out isSuccess);
+
+            //List<TestParameters> parameters = new List<TestParameters>(); //for testing test parameters "Shared/Folder 1/Test A empty test"
+            //parameters.Add(new TestParameters("Param1", "")); 
+            //parameters.Add(new TestParameters("Param2_int", "0"));
+            string guiId = m_Api.RunTest(m_ScriptControl.TestPath, null/*parameters*/, out contentError, out isSuccess);
 
             if (isSuccess)
             {

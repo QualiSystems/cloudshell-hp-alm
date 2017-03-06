@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 using QS.ALM.CloudShellApi;
@@ -13,22 +14,19 @@ namespace CTSAddin
     /// <remarks>Implementation is optional.</remarks>
   public partial class ScriptViewerControl : UserControl, IScriptViewer
   {
-    private readonly Api m_Api;
-    private ITDConnection m_tdc;
+    private Api m_Api;
+    //private ITDConnection m_tdc;
     private HP.ALM.QC.OTA.Entities.Api.ITest m_CurrentTest;
+    private string m_FieldUserAlmQualiPass;//"TS_USER_01"
     public ScriptViewerControl()
     {
         InitializeComponent();
+    }
 
-        try
-        {
-            m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
-            Enabled = false;
-        }
+    public ScriptViewerControl(Api api)
+    {
+        m_Api = api;
+        InitializeComponent();
     }
 
     /// <summary>
@@ -39,7 +37,31 @@ namespace CTSAddin
     /// <param name="connection">Output. The connection is connected to the server and authorized for the project.</param>
     public void InitViewer(Mercury.TD.Client.Ota.Api.IConnection connection)
     {
-      m_tdc = (connection as Mercury.TD.Client.Ota.Core.ITDConnectedObject).TDConnection as ITDConnection;
+        ITDConnection tdc = (connection as Mercury.TD.Client.Ota.Core.ITDConnectedObject).TDConnection as ITDConnection;
+
+        try
+       {   
+            m_Api = new Api(tdc);        
+            //m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
+            var list = tdc.get_Fields("SYSTEM_FIELD");
+            m_FieldUserAlmQualiPass = tdc.get_TDParams("QUALI_TEST_PATH");
+            if(string.IsNullOrEmpty(m_FieldUserAlmQualiPass))
+            {
+                throw new Exception("Field user in Alm for Quali Test Path not present.");
+            }
+        }
+        catch (Exception ex)
+        {
+            m_Api = null;
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+            Enabled = false;
+        }
+
+
+      /*var command = m_tdc.Command;
+      command.CommandText = "Select SF_COLUMN_NAME from SYSTEM_FIELD WHERE SF_USER_LABEL = 'QUALI_TEST_PATH'";
+      var result = command.Execute();
+      string userFieldName = result["SF_COLUMN_NAME"].ToString();*/
       //var xxx = m_tdc.get_Fields("TP_NAME");
       //var xxx1 = m_tdc.get_Fields("PathForOurTestQuali");
     }
@@ -69,28 +91,52 @@ namespace CTSAddin
     /// <param name="test">Output. An ALM Open Test Architecture ITest object.</param>
     public void ShowTest(HP.ALM.QC.OTA.Entities.Api.ITest test)
     {
+        if (string.IsNullOrWhiteSpace(m_FieldUserAlmQualiPass))
+        {
+            if (m_Api != null)
+            {
+                MessageBox.Show("User Field Quali Path error.", "Error", MessageBoxButtons.OK);
+            }
+            return;
+        }
         m_CurrentTest = test;
-
-        TextBoxPath.Text = test["TS_USER_01"] == null ? "" : test["TS_USER_01"].ToString();// "Showing test " + test.Name + "path = '" + test.Path + "' in project " + m_tdc.ProjectName;
-
-        //iFact.PostList(newList);      
+        TextBoxPath.Text = m_CurrentTest[m_FieldUserAlmQualiPass] == null ? "" : m_CurrentTest[m_FieldUserAlmQualiPass].ToString();   
     }
 
     private void ButtonBrowse_Click(object sender, System.EventArgs e)
-    {
+    {        
         TestShellTestsBrowserForm BrouseForm = new TestShellTestsBrowserForm(m_Api);
         string path;
         path = BrouseForm.TryShowDialog(TextBoxPath.Text);
+        if(path != null && m_CurrentTest == null)//for tester
+        {
+            TextBoxPath.Text = path;
+            return;
+        }
         if (path != null)
         {
-            m_CurrentTest["TS_USER_01"] = TextBoxPath.Text = path;
-            string contentError;
-            bool isSuccess = false;
-            RewriteTestParameters(m_Api.GetTestParameter(path, out contentError, out isSuccess).Parameters);
-            if(!isSuccess)
+            m_CurrentTest[m_FieldUserAlmQualiPass] = TextBoxPath.Text = path;
+
+            /*m_CurrentTest
+
+            var fact = (Mercury.TD.Client.Ota.Core.Factory<HP.ALM.QC.OTA.Entities.Api.ITest, HP.ALM.QC.OTA.Entities.Api.ITestFolder>)m_CurrentTest.Factory;
+            var legFact = fact.LegacyFactory;
+
+
+            var tFilter = legFact.Filter;
+            //var qTName = "\"T1\"";
+            tFilter["TS_NAME"] = "";
+            var tList = tFilter.NewList();
+            foreach (var item in tList)
             {
-                MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
-            }
+                var tmp = item.ToString();
+            }*/
+            
+       
+            //m_CurrentTest.NewHistoryFilter
+            //object tmp = m_CurrentTest["QUALI_TEST_PATH"];
+
+            GetTestParameter(path);
         }
     }
 
@@ -98,27 +144,34 @@ namespace CTSAddin
     {
         string message = "Are you sure you would like to refresh the" + Environment.NewLine + "test parameters ?";
         string caption = "Refresh";
-        MessageBoxButtons buttons = MessageBoxButtons.OKCancel;
         DialogResult result;
 
-        result = MessageBox.Show(message, caption, buttons);
+        result = MessageBox.Show(message, caption, MessageBoxButtons.OKCancel);
 
         if (result == System.Windows.Forms.DialogResult.Yes)
         {
-            string contentError;
-            bool isSuccess = false;
-            RewriteTestParameters(m_Api.GetTestParameter(TextBoxPath.Text, out contentError, out isSuccess).Parameters);
+            GetTestParameter(TextBoxPath.Text);
         }
     }
 
-    void RewriteTestParameters(APITestParameterInfo[] arrParameters)
-    {
-        if(m_CurrentTest == null)
+
+      private void GetTestParameter(string path)
+      {
+        string contentError;
+        bool isSuccess = false;
+        APITestExplorerTestInfo testParameter = m_Api.GetTestParameter(path, out contentError, out isSuccess);
+        if(!isSuccess)
         {
+            MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
             return;
         }
-        var paramFactory = m_CurrentTest.ParameterFactory as Mercury.TD.Client.Ota.Core.Factory<HP.ALM.QC.OTA.Entities.Api.ITestParameter, HP.ALM.QC.OTA.Entities.Api.ITest>;
-        var baseFactory = paramFactory.LegacyFactory as TDAPIOLELib.IBaseFactory;
+        RewriteTestParameters(testParameter.Parameters);  
+      }
+
+    private void RewriteTestParameters(APITestParameterInfo[] arrParameters)
+    {
+        var paramFactory = (Mercury.TD.Client.Ota.Core.Factory<HP.ALM.QC.OTA.Entities.Api.ITestParameter, HP.ALM.QC.OTA.Entities.Api.ITest>)m_CurrentTest.ParameterFactory;
+        var baseFactory = (TDAPIOLELib.IBaseFactory)paramFactory.LegacyFactory;
 
         List baseList = baseFactory.NewList("");
         if (baseList != null)

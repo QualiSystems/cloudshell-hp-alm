@@ -1,21 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
 using RestSharp;
 using Newtonsoft.Json;
 using System.Net;
+using TDAPIOLELib;
 
 namespace QS.ALM.CloudShellApi
 {
     public class Api
     {
         private const string LoginContentType = "application/x-www-form-urlencoded";
-        private readonly string m_UrlStringServer;
-        private readonly string m_UserName;
-        private readonly string m_UserPassword;
-        private readonly string m_Domain;
+        private string m_UrlStringServer;
+        private string m_UserName;
+        private string m_UserPassword;
+        private string m_Domain;
+        //private ITDConnection m_tdc;
 
         public Api(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
         {
-            m_UrlStringServer = urlString;
+            Init(urlString, almUsername, almPassword, cloudShellUsername, cloudShellPassword, authenticationMode, domain);
+        }
+
+        public Api(ITDConnection tdConnection)
+        {
+
+            var list = tdConnection.get_Fields("SYSTEM_FIELD");
+            string url = tdConnection.get_TDParams("QS_SERVER_URL");
+            string almUsername = tdConnection.get_TDParams("QS_USERNAME");
+            string almPassword = tdConnection.get_TDParams("QS_PASSWORD");
+            string almMode = tdConnection.get_TDParams("QS_AUTH_MODE");
+
+            string localUsername = tdConnection.UserName;
+            string localUserPas = tdConnection.Password;
+
+            if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(almUsername) || string.IsNullOrWhiteSpace(almPassword) || string.IsNullOrWhiteSpace(almMode))
+            {
+                throw new Exception("Please, filling Alm administration properties.");
+            }
+            AuthenticationMode mode;
+            if(almMode.ToUpper() == "ALM")
+            {
+                mode = AuthenticationMode.Alm;
+            }
+            else if (almMode.ToLower() == "CLOUDSHELL")
+            {
+                mode = AuthenticationMode.CloudShell;
+            }
+            else
+            {
+                throw new Exception("Alm Mode in Administration Parameters unknown.");
+            }
+            string domain = tdConnection.get_TDParams("QS_DOMAIN");
+            
+            Init(url, almUsername, almPassword, null, null, mode, domain);
+        }
+
+        private void Init(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
+        {
+             m_UrlStringServer = urlString;
             m_Domain = domain;
 
             switch (authenticationMode)
@@ -155,7 +197,7 @@ namespace QS.ALM.CloudShellApi
             Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + Environment.NewLine + "ErrorMessage = '{2}'" + Environment.NewLine + "ErrorException = '{3}'" + Environment.NewLine + "StatusCode = '{4}'", method, contentError, res.ErrorMessage, res.ErrorException == null ? "null" : res.ErrorException.ToString(), ((int) res.StatusCode).ToString());
         }
 
-        public string RunTest(string testPath, out string contentError, out bool isSuccess)
+        public string RunTest(string testPath, List<TestParameters> parameters, out string contentError, out bool isSuccess)
         {
             string authorization;
             RestClient client;
@@ -176,7 +218,7 @@ namespace QS.ALM.CloudShellApi
             var request = new RestRequest("/api/Scheduling/Suites/", Method.POST);
             request.AddHeader("Authorization", authorization);
             request.AddHeader("Content-Type", "application/json");
-            request.AddJsonBody(new ApiSuiteTemplateDetails("TestShell\\Tests\\" + testPath.Replace('/', '\\')));
+            request.AddJsonBody(new ApiSuiteTemplateDetails("TestShell\\Tests\\" + testPath.Replace('/', '\\'), parameters));
             string content = ExecuteServerRequest(client, request, "RunTest", out contentError, out isSuccess);
             if (content == null)
             {
