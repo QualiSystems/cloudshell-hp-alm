@@ -37,14 +37,15 @@ namespace CSRAgent
 
     public int run()
     {
-      MessageBox.Show(string.Format(
+     /* MessageBox.Show(string.Format(
         "Running test: id-{0}, name-{1}, user-{2}, server-{3}, domain-{4}, project-{5}, host-{6}",
         mALMCon.GetValue("test_id"),  mALMCon.GetValue("test_name"),  mALMCon.GetValue("user_name"), 
-        mALMCon.GetValue("TDAPI_host_name"),  mALMCon.GetValue("domain_name"),mALMCon.GetValue("project_name"),  mALMCon.GetValue("host_name")));
+        mALMCon.GetValue("TDAPI_host_name"),  mALMCon.GetValue("domain_name"),mALMCon.GetValue("project_name"),  mALMCon.GetValue("host_name")));*/
       mALMCon.OpenCon();
-      List LTestData = new List();
-      LTestData = mALMCon.conn.get_Fields(mALMCon.GetValue("test_set_id"));
+     
       // post the run
+     // mALMCon.getTestParameters();
+      mALMCon.getTestPath();
       mALMCon.RunQSheel();
       mALMCon.WaitTestComplit();
       PostRun(mALMCon.getStatus());//"Passed");
@@ -61,7 +62,7 @@ namespace CSRAgent
       Run run = (((((((mALMCon.conn.TestSetFactory as TestSetFactory)[ mALMCon.GetValue("test_set_id")]) as TestSet).TSTestFactory as TSTestFactory)[ mALMCon.GetValue("testcycle_id_integer")]) as TSTest).RunFactory as RunFactory).AddItem("scottyRun") as Run;
       run["RN_TESTER_NAME"] =  mALMCon.GetValue("user_name");
       run["RN_HOST"] =  mALMCon.GetValue("host_name");
-      run.Status = runStatus;
+      //run.Status = runStatus;
       run.Post();
     }
 
