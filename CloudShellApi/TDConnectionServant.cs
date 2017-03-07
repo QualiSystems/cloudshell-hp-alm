@@ -8,7 +8,6 @@ namespace QS.ALM.CloudShellApi
 {
     public class TDConnectionServant
     {
-        static private TDConnectionServant m_TDConnectionServant;
         private readonly ITDConnection m_tdConnection;
 
         public TDConnectionServant(ITDConnection tdConnection) 
