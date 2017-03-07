@@ -5,6 +5,8 @@ using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 using QS.ALM.CloudShellApi;
 using Mercury.TD.Client.Ota.Api;
+using Mercury.TD.Client.Ota.Core;
+
 
 namespace CTSAddin
 {
@@ -15,7 +17,6 @@ namespace CTSAddin
   public partial class ScriptViewerControl : UserControl, IScriptViewer
   {
     private Api m_Api;
-    //private ITDConnection m_tdc;
     private HP.ALM.QC.OTA.Entities.Api.ITest m_CurrentTest;
     private string m_FieldUserAlmQualiPass;//"TS_USER_01"
     public ScriptViewerControl()
@@ -35,20 +36,13 @@ namespace CTSAddin
     /// <remarks>With the TDConnection reference, you can access all ALM Open Test Architecture components.
     /// <br />For more information, see the ALM Open Test Architecture Reference.</remarks>
     /// <param name="connection">Output. The connection is connected to the server and authorized for the project.</param>
-    public void InitViewer(Mercury.TD.Client.Ota.Api.IConnection connection)
-    {
-        ITDConnection tdc = (connection as Mercury.TD.Client.Ota.Core.ITDConnectedObject).TDConnection as ITDConnection;
-
+    public void InitViewer(IConnection connection)
+    {        
         try
-       {   
-            m_Api = new Api(tdc);        
-            //m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
-            var list = tdc.get_Fields("SYSTEM_FIELD");
-            m_FieldUserAlmQualiPass = tdc.get_TDParams("QUALI_TEST_PATH");
-            if(string.IsNullOrEmpty(m_FieldUserAlmQualiPass))
-            {
-                throw new Exception("Field user in Alm for Quali Test Path not present.");
-            }
+       { 
+            ITDConnection tdc = (connection as ITDConnectedObject).TDConnection as ITDConnection;
+            m_Api = new Api(tdc);           
+            m_FieldUserAlmQualiPass = new TDConnectionServant(tdc).GetQualiTestPathFieldName();
         }
         catch (Exception ex)
         {
@@ -57,7 +51,8 @@ namespace CTSAddin
             Enabled = false;
         }
 
-
+      //m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
+      //var list = tdc.get_Fields("SYSTEM_FIELD");
       /*var command = m_tdc.Command;
       command.CommandText = "Select SF_COLUMN_NAME from SYSTEM_FIELD WHERE SF_USER_LABEL = 'QUALI_TEST_PATH'";
       var result = command.Execute();
@@ -116,13 +111,14 @@ namespace CTSAddin
         if (path != null)
         {
             m_CurrentTest[m_FieldUserAlmQualiPass] = TextBoxPath.Text = path;
+            GetTestParameter(path);
+        }
+
 
             /*m_CurrentTest
 
             var fact = (Mercury.TD.Client.Ota.Core.Factory<HP.ALM.QC.OTA.Entities.Api.ITest, HP.ALM.QC.OTA.Entities.Api.ITestFolder>)m_CurrentTest.Factory;
             var legFact = fact.LegacyFactory;
-
-
             var tFilter = legFact.Filter;
             //var qTName = "\"T1\"";
             tFilter["TS_NAME"] = "";
@@ -131,13 +127,9 @@ namespace CTSAddin
             {
                 var tmp = item.ToString();
             }*/
-            
-       
-            //m_CurrentTest.NewHistoryFilter
-            //object tmp = m_CurrentTest["QUALI_TEST_PATH"];
 
-            GetTestParameter(path);
-        }
+        //m_CurrentTest.NewHistoryFilter
+            //object tmp = m_CurrentTest["QUALI_TEST_PATH"];
     }
 
     private void ButtonRefresh_Click(object sender, System.EventArgs e)
@@ -153,7 +145,6 @@ namespace CTSAddin
             GetTestParameter(TextBoxPath.Text);
         }
     }
-
 
       private void GetTestParameter(string path)
       {

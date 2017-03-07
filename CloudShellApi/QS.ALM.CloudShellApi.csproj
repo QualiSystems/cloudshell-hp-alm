@@ -77,6 +77,7 @@
     <Compile Include="APIContracts.cs" />
     <Compile Include="AuthenticationMode.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="TDConnectionServant.cs" />
     <Compile Include="RunStatusManager.cs" />
     <Compile Include="SettingsFile.cs" />
     <Compile Include="Constants.cs" />
