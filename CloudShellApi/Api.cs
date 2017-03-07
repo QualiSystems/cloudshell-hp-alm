@@ -23,7 +23,7 @@ namespace QS.ALM.CloudShellApi
 
         public Api(ITDConnection tdConnection)
         {
-            TDConnectionServant conectionServant = TDConnectionServant.GetInstance(tdConnection);
+            TDConnectionServant conectionServant = new TDConnectionServant(tdConnection);
             string url = conectionServant.GetTdParam("QS_SERVER_URL");
             string almUsername = conectionServant.GetTdParam("QS_USERNAME");
             string almPassword = conectionServant.GetTdParam("QS_PASSWORD");            

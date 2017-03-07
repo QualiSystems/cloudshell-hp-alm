@@ -42,7 +42,7 @@ namespace CTSAddin
        { 
             ITDConnection tdc = (connection as ITDConnectedObject).TDConnection as ITDConnection;
             m_Api = new Api(tdc);           
-            m_FieldUserAlmQualiPass = TDConnectionServant.GetInstance(tdc).GetUserFieldNameByLabel("QUALI_TEST_PATH");
+            m_FieldUserAlmQualiPass = new TDConnectionServant(tdc).GetQualiTestPathFieldName();
         }
         catch (Exception ex)
         {

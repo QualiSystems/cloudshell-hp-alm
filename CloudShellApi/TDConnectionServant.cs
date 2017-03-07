@@ -9,25 +9,16 @@ namespace QS.ALM.CloudShellApi
     public class TDConnectionServant
     {
         static private TDConnectionServant m_TDConnectionServant;
-        static private ITDConnection m_tdConnection;
+        private readonly ITDConnection m_tdConnection;
 
-        public static TDConnectionServant GetInstance()
+        public TDConnectionServant(ITDConnection tdConnection) 
         {
-            return m_TDConnectionServant;
+            m_tdConnection = tdConnection;
         }
 
-        public static TDConnectionServant GetInstance(ITDConnection tdConnection)
+        public string GetQualiTestPathFieldName()
         {
-            if (tdConnection == null)
-            {
-                return null;
-            }
-            if(m_TDConnectionServant == null)
-            {
-                m_TDConnectionServant = new TDConnectionServant();
-                m_tdConnection = tdConnection;
-            }
-            return m_TDConnectionServant;
+            return GetUserFieldNameByLabel("QUALI_TEST_PATH");
         }
 
         public string GetUserFieldNameByLabel(string labelName)
@@ -76,8 +67,6 @@ namespace QS.ALM.CloudShellApi
                 throw new Exception("Missing Parameter '" + paramName + "'. Please add the missing parametes in the Site Configuration tab under the Site Administration.");
             }
             return tdParam;
-        }
-
-        private TDConnectionServant() { }
+        }        
     }
 }
