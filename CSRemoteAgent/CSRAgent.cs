@@ -63,7 +63,16 @@ namespace CSRAgent
       run["RN_TESTER_NAME"] =  mALMCon.GetValue("user_name");
       run["RN_HOST"] =  mALMCon.GetValue("host_name");
       //run.Status = runStatus;
-      run.Post();
+
+        //Run run2 = mALMCon.conn.RunFactory
+
+      ResultFactory rf = (ResultFactory)((ISupportResults)run).ResultFactory;
+      var col =  rf.NewList("");//.AddItem()
+      //rf
+        
+        //ResultFactory rf = (ResultFactory)((ISupportResults)run).ResultFactory;
+        
+        run.Post();
     }
 
     public int get_value(string prmName, ref string prmValue)

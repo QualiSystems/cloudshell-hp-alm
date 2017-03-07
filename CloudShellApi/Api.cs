@@ -23,41 +23,22 @@ namespace QS.ALM.CloudShellApi
 
         public Api(ITDConnection tdConnection)
         {
-
-            var list = tdConnection.get_Fields("SYSTEM_FIELD");
-            string url = tdConnection.get_TDParams("QS_SERVER_URL");
-            string almUsername = tdConnection.get_TDParams("QS_USERNAME");
-            string almPassword = tdConnection.get_TDParams("QS_PASSWORD");
-            string almMode = tdConnection.get_TDParams("QS_AUTH_MODE");
-
-            string localUsername = tdConnection.UserName;
-            string localUserPas = tdConnection.Password;
-
-            if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(almUsername) || string.IsNullOrWhiteSpace(almPassword) || string.IsNullOrWhiteSpace(almMode))
-            {
-                throw new Exception("Please, filling Alm administration properties.");
-            }
-            AuthenticationMode mode;
-            if(almMode.ToUpper() == "ALM")
-            {
-                mode = AuthenticationMode.Alm;
-            }
-            else if (almMode.ToLower() == "CLOUDSHELL")
-            {
-                mode = AuthenticationMode.CloudShell;
-            }
-            else
-            {
-                throw new Exception("Alm Mode in Administration Parameters unknown.");
-            }
-            string domain = tdConnection.get_TDParams("QS_DOMAIN");
-            
+            TDConnectionServant conectionServant = TDConnectionServant.GetInstance(tdConnection);
+            string url = conectionServant.GetTdParam("QS_SERVER_URL");
+            string almUsername = conectionServant.GetTdParam("QS_USERNAME");
+            string almPassword = conectionServant.GetTdParam("QS_PASSWORD");            
+            string domain = conectionServant.GetTdParam("QS_DOMAIN");
+            AuthenticationMode mode = conectionServant.GetAlmMode();
+                                 
             Init(url, almUsername, almPassword, null, null, mode, domain);
+
+            //string localUsername = tdConnection.UserName;
+            //string localUserPas = tdConnection.Password;
         }
 
         private void Init(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
         {
-             m_UrlStringServer = urlString;
+            m_UrlStringServer = urlString;
             m_Domain = domain;
 
             switch (authenticationMode)
