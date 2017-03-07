@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
@@ -63,7 +63,7 @@ namespace CSRAgent
       run["RN_TESTER_NAME"] =  mALMCon.GetValue("user_name");
       run["RN_HOST"] =  mALMCon.GetValue("host_name");
       //run.Status = runStatus;
-        run.Post();
+      run.Post();
     }
 
     public int get_value(string prmName, ref string prmValue)
