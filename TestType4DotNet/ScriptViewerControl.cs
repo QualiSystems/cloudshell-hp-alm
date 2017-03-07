@@ -111,7 +111,7 @@ namespace CTSAddin
         if (path != null)
         {
             m_CurrentTest[m_FieldUserAlmQualiPass] = TextBoxPath.Text = path;
-            GetTestParameter(path);
+            RefreshTestParameter(path);
         }
 
 
@@ -142,11 +142,11 @@ namespace CTSAddin
 
         if (result == System.Windows.Forms.DialogResult.Yes)
         {
-            GetTestParameter(TextBoxPath.Text);
+            RefreshTestParameter(TextBoxPath.Text);
         }
     }
 
-      private void GetTestParameter(string path)
+      private void RefreshTestParameter(string path)
       {
         string contentError;
         bool isSuccess = false;
