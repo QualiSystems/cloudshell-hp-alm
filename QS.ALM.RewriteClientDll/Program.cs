@@ -16,9 +16,10 @@ namespace QS.ALM.RewriteClientDll
 
             string name = "ALM-Client".ToLower();
             string name1 = "iexplore".ToLower();
+            string name2 = "dllhost".ToLower();
             System.Diagnostics.Process[] etc = System.Diagnostics.Process.GetProcesses();
             foreach (System.Diagnostics.Process anti in etc)
-                if (anti.ProcessName.ToLower().Contains(name) || anti.ProcessName.ToLower().Contains(name1))
+                if (anti.ProcessName.ToLower().Contains(name) || anti.ProcessName.ToLower().Contains(name1) || anti.ProcessName.ToLower().Contains(name2))
                 { 
                     anti.Kill(); 
                 }
