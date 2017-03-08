@@ -47,22 +47,25 @@ namespace CSRAgent
      // mALMCon.getTestParameters();
       mALMCon.getTestPath();
       mALMCon.RunQSheel();
-      mALMCon.WaitTestComplit();
-      PostRun(mALMCon.getStatus());//"Passed");
+      string reportLink = mALMCon.WaitTestComplit();
+      PostRun(mALMCon.getStatus(), reportLink);//"Passed");
       //Process.GetCurrentProcess().Kill();
       mALMCon.mStatus = CStatus.end_of_test; //"END_OF_TEST";
       mDescr = "Completed";
       return 0;
     }
 
-    private void PostRun(string runStatus)
+    private void PostRun(string runStatus, string reportLink)
     {
       mALMCon.OpenCon();
 
       Run run = (((((((mALMCon.conn.TestSetFactory as TestSetFactory)[ mALMCon.GetValue("test_set_id")]) as TestSet).TSTestFactory as TSTestFactory)[ mALMCon.GetValue("testcycle_id_integer")]) as TSTest).RunFactory as RunFactory).AddItem("scottyRun") as Run;
       run["RN_TESTER_NAME"] =  mALMCon.GetValue("user_name");
       run["RN_HOST"] =  mALMCon.GetValue("host_name");
-      //run.Status = runStatus;
+      StepFactory stepFact = (StepFactory)run.StepFactory;
+      object repLink = (object)reportLink;
+      Step newStep = (Step)stepFact.AddItem(repLink);
+      newStep.Post();
       run.Post();
     }
 

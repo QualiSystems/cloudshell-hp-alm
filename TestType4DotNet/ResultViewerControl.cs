@@ -48,7 +48,13 @@ namespace CTSAddin
         m_textBox.Text = "no run result";
         return;
       }
-      m_textBox.Text = string.Format("showing run ({0}) in project {1}", run.Id, m_tdc.ProjectName);
+      IRun2 legacyRun = (IRun2)((run as Mercury.TD.Client.Ota.Entities.Api.ILegacyBaseFieldProvider).LegacyBaseField);
+      StepFactory stepFact = (StepFactory)legacyRun.StepFactory;
+      List stepList = stepFact.NewList("");
+      foreach (Step step in stepList)
+      {
+          m_textBox.Text = step.Name;
+      }
     }
   }
 }

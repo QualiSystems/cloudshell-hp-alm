@@ -91,11 +91,12 @@ namespace CSRAgent
             }
             return 0;
         }
-        public int WaitTestComplit()
+        public string WaitTestComplit()
         {
             string contentError;
             bool isSuccess;
             string guiId = m_Api.RunTest(m_TestPath,null,  out contentError, out isSuccess);
+            string reportLink = null;
 
             if (isSuccess)
             {
@@ -106,6 +107,10 @@ namespace CSRAgent
                 using (var runStatusManager = new RunStatusManager(guiId, m_Api))
                     runResult = runStatusManager.WaitForRunEnd();
 
+                ApiSuiteDetails apiDetail = m_Api.GetRunResult(guiId, out contentError, out isSuccess);
+
+                reportLink = apiDetail.JobsDetails[0].Tests[0].ReportLink;
+
                 //MessageBox.Show("Run Result = " + runResult.ToString());
 
                 //~TODO: write the runResult to ALM ...
@@ -115,9 +120,9 @@ namespace CSRAgent
                 //MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
 
                 throw new System.InvalidOperationException(contentError);
-            }   
+            }
 
-            return 0;
+            return reportLink;
         }
 
         public string getStatus()
@@ -234,7 +239,7 @@ namespace CSRAgent
             }
            
                 TreeManager treeMgr = (TreeManager)conn.TreeManager;
-                SubjectNode subjectNode = (SubjectNode)treeMgr.get_NodeByPath("Subject\\" + testF);
+                //SubjectNode subjectNode = (SubjectNode)treeMgr.get_NodeByPath("Subject\\" + testF);
                 TestSetTreeManager testSetFolderF = (TestSetTreeManager)conn.TestSetTreeManager;
                 TestSetFolder tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
                 
