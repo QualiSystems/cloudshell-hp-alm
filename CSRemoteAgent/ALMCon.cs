@@ -99,21 +99,13 @@ namespace CSRAgent
 
             if (isSuccess)
             {
-               // MessageBox.Show("Result Test = \"" + guiId + '\"', "Returned Key", MessageBoxButtons.OK);
-
                 ExecutionJobResult runResult;
 
                 using (var runStatusManager = new RunStatusManager(guiId, m_Api))
                     runResult = runStatusManager.WaitForRunEnd();
-
-                //MessageBox.Show("Run Result = " + runResult.ToString());
-
-                //~TODO: write the runResult to ALM ...
             }
             else
             {
-                //MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
-
                 throw new System.InvalidOperationException(contentError);
             }   
 
@@ -126,7 +118,6 @@ namespace CSRAgent
         }
         public int getTestParameters(TDAPIOLELib.TestSet theTestSet, TestSetFolder tsFolder, string tSetName , string testName)//TDAPIOLELib.Test test)//, 
         {
-
             String tempStrt = String.Empty;
             TSTestFactory TSTestFact;
             List testList;
@@ -136,7 +127,6 @@ namespace CSRAgent
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
             testList = TSTestFact.NewList(tsFilter.Text);
             Debug.Print("Test instances and planned hosts:");
-            //For each test instance, set the host to run depending on the planning in the test set.
             foreach (TSTest TSTst in testList)
             {
                 if (testName == TSTst.TestName)
@@ -146,12 +136,35 @@ namespace CSRAgent
                         m_TestPath = theTest["TS_USER_01"].ToString();
                     else
                         m_TestPath = "";
+                    getTheParams(TSTst);
                     break;
                 }
             }
 
            
             return 0;
+        }
+
+        private void getTheParams(TDAPIOLELib.TSTest TSTst)
+        {
+            TDAPIOLELib.ParameterValueFactory paramValueFact;
+
+            List testParametersVList = ((ISupportParameterValues)TSTst).ParameterValueFactory.NewList("");
+
+
+            if (testParametersVList != null)
+            {
+                foreach (ParameterValue element in testParametersVList)
+                {
+                    string value = GetParameterValue(element.ActualValue);
+                    string Ls = element.Name;
+                }
+            }
+        }
+
+        private string GetParameterValue(object p)
+        {
+            return "";
         }
         private int getCinfigortion()
         {
@@ -163,7 +176,6 @@ namespace CSRAgent
         {
             try
             {
-                TestSetTreeManager testSetFolderF;
                 TestSet testSet1;
                 List tsList;
                 bool found;
