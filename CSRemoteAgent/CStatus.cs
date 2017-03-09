@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CSRAgent
 {
-    public enum CStatus
+    /*public enum CStatus
     {
        busy       , //The testing tool is currently running another test.
        end_of_test , //The testing tool has reached the end of the current test.
@@ -18,5 +18,5 @@ namespace CSRAgent
        test_passed     , //The test has been successfully completed.
        test_failed     , //The test failed.
        retry            //You cannot execute the test on the current host. Try to execute the test on another host from the attached host group.
-    }
+    }*/
 }
