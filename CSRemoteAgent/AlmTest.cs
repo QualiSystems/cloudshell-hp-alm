@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mshtml;
+using System;
 using System.Linq;
 using TDAPIOLELib;
 
@@ -6,6 +7,16 @@ namespace CSRAgent
 {
     class AlmTest
     {
+        private enum mHtml
+        {
+            HTML,
+            HEAD,
+            TITLE,
+            BODY,
+            DIV,
+            FONT,
+            SPAN
+        }
         public string GetTestPath(TSTest test)
         {
             var theTest = (Test)test.Test;
@@ -97,9 +108,60 @@ namespace CSRAgent
             return null;
         }
 
-        private string GetParameterValue(object p)
+
+        private string GetParameterValue(object html)
         {
-            return "";
+            string str1 = "";
+            string str = "";
+            IHTMLDocument2 doc = (IHTMLDocument2)new HTMLDocument();
+            doc.write((string)html);
+            int count = 0;
+            int count7 = 0;
+            foreach (IHTMLElement el in doc.all)
+            {
+                switch ((mHtml)count)
+                {
+                    case mHtml.HTML:
+                        if (el.tagName == "HTML")
+                            count += 1;
+                        break;
+                    case mHtml.HEAD:
+                        if (el.tagName == "HEAD")
+                            count += 1;
+                        break;
+                    case mHtml.TITLE:
+                        if (el.tagName == "TITLE")
+                            count += 1;
+                        break;
+                    case mHtml.BODY:
+                        if (el.tagName == "BODY")
+                            count += 1;
+                        break;
+                    case mHtml.DIV:
+                        if (el.tagName == "DIV")
+                            count += 1;
+                        break;
+                    case mHtml.FONT:
+                        if (el.tagName == "FONT")
+                            count += 1;
+                        break;
+                    case mHtml.SPAN:
+                        if (el.tagName == "SPAN")
+                            count += 1;
+                        break;
+                }
+                count7 += 1;
+                if (count == 7 && count7 == 7)
+                {
+                    str1 = el.tagName;
+                    str = el.getAttribute("outerText").ToString();
+                }
+                else if (count7 > count)
+                {
+                    return str;
+                }
+            }
+            return str;
         }
     }
 }
