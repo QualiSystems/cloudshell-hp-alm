@@ -156,9 +156,15 @@ namespace CSRAgent
             {
                 foreach (ParameterValue element in testParametersVList)
                 {
+                    string value = GetParameterValue(element.ActualValue);
                     string Ls = element.Name;
                 }
             }
+        }
+
+        private string GetParameterValue(object p)
+        {
+            return "";
         }
         private int getCinfigortion()
         {
