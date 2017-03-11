@@ -13,7 +13,7 @@ namespace CSRAgent
             m_TestSetFactory = testSetFactory;
         }
 
-        public void SaveRunResults(string runStatus)
+        public void SaveRunResults(AlmRunStatus runStatus)
         {
             var testSetId = m_AlmParameters.TestSetId;
             var testSet = (TestSet)m_TestSetFactory[testSetId];
@@ -24,7 +24,7 @@ namespace CSRAgent
             var run = (Run)runFactory.AddItem("TestShell Run");
             run["RN_TESTER_NAME"] = m_AlmParameters.UserName;
             run["RN_HOST"] = m_AlmParameters.HostName;
-            run.Status = runStatus;
+            run.Status = AgentRunManager.ConvertAlmRunStatusToString(runStatus);
             run.Post();
         }
     }

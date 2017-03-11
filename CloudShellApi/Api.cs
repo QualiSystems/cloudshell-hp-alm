@@ -86,6 +86,18 @@ namespace QS.ALM.CloudShellApi
             }
         }
 
+        public void VerifyLogin()
+        {
+            string authorization;
+            RestClient client;
+            string contentError;
+            bool isSuccess;
+            Login(out client, out authorization, out contentError, out isSuccess);
+
+            if (!isSuccess)
+                throw new Exception("Login to CloudShell failed: " + contentError);
+        }
+
         private void Login(out RestClient client, out string authorization, out string contentError, out bool isSuccess)
         {
             isSuccess = false;
