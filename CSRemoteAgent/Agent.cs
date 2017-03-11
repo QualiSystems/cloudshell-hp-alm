@@ -25,7 +25,6 @@ namespace CSRAgent
 
         private AlmRunStatus m_Status;
         private string m_StatusDesc;
-        private AgentRunManager m_AgentRunManager;
 
         private void SetStatus(AlmRunStatus almRunStatus, string statusDesc)
         {
@@ -61,13 +60,8 @@ namespace CSRAgent
             try
             {
                 var almConnection = new AlmConnection(m_AlmParameters);
-                var almTestHelper = new AlmTest();
-                var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
-                var testPath = almTestHelper.GetTestPath(test);
-                var testParameters = almTestHelper.GetTestParameters(test);
-
                 var api = new Api(almConnection.Connection);
-                m_AgentRunManager = new AgentRunManager(api, testPath, testParameters);
+                api.VerifyLogin();
             }
             catch (Exception ex)
             {
@@ -87,10 +81,20 @@ namespace CSRAgent
             SetStatus(AlmRunStatus.LogicalRunning, "Running test");
             
             Exception runException = null;
+            AlmConnection almConnection;
 
             try
             {
-                var runResultStatus = m_AgentRunManager.RunTest();
+                almConnection = new AlmConnection(m_AlmParameters);
+                var almTestHelper = new AlmTest();
+                var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
+                var testPath = almTestHelper.GetTestPath(test);
+                var testParameters = almTestHelper.GetTestParameters(test);
+
+                var api = new Api(almConnection.Connection);
+                var agentRunManager = new AgentRunManager(api, testPath, testParameters);
+                var runResultStatus = agentRunManager.RunTest();
+
                 SetStatus(AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus), "Test run: " + runResultStatus);
             }
             catch (Exception ex)
@@ -100,7 +104,7 @@ namespace CSRAgent
             }
 
             // Renew connection (not sure needed):
-            var almConnection = new AlmConnection(m_AlmParameters);
+            almConnection = new AlmConnection(m_AlmParameters);
             var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
             var almResults = new AlmResults(m_AlmParameters, testSetFactory);
             almResults.SaveRunResults(m_Status);
