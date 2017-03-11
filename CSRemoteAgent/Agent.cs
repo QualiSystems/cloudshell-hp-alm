@@ -19,10 +19,19 @@ namespace CSRAgent
 
         public CSRAgent()
         {
-            StatusDescription = AlmRunStatus.Ready;
+            m_Status = AlmRunStatus.Init;
+            MessageBox.Show("Run Agent is up!");
         }
 
-        private string StatusDescription { get; set; }
+        private AlmRunStatus m_Status;
+        private string m_StatusDesc;
+        private AgentRunManager m_AgentRunManager;
+
+        private void SetStatus(AlmRunStatus almRunStatus, string statusDesc)
+        {
+            m_Status = almRunStatus;
+            m_StatusDesc = statusDesc;
+        }
 
         public int get_value(string paramName, ref string paramValue)
         {
@@ -40,54 +49,63 @@ namespace CSRAgent
 
         public int get_status(ref string descr, ref string status)
         {
-            descr = StatusDescription;
-            status = "ERROR 97";
+            descr = m_StatusDesc;
+            status = AgentRunManager.ConvertAlmRunStatusToString(m_Status);
             return 0;
         }
 
         public int is_host_ready(ref string descr)
         {
-            StatusDescription = AlmRunStatus.Ready;
-            descr = StatusDescription;
-            MessageBox.Show("Host is ready!");
+            SetStatus(AlmRunStatus.Init, "Host initializing");
+
+            try
+            {
+                var almConnection = new AlmConnection(m_AlmParameters);
+                var almTestHelper = new AlmTest();
+                var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
+                var testPath = almTestHelper.GetTestPath(test);
+                var testParameters = almTestHelper.GetTestParameters(test);
+
+                var api = new Api(almConnection.Connection);
+                m_AgentRunManager = new AgentRunManager(api, testPath, testParameters);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.ToString());
+                SetStatus(AlmRunStatus.Failed, ex.Message);
+                descr = ex.Message;
+                return -1;
+            }
+
+            descr = "Host is ready";
+            SetStatus(AlmRunStatus.Ready, descr);
             return 0;
         }
 
         public int run()
         {
-            StatusDescription = AlmRunStatus.Init;
-            var almConnection = new AlmConnection(m_AlmParameters);
-
-            var almTestHelper = new AlmTest();
-            var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
-            var testPath = almTestHelper.GetTestPath(test);
-            var testParameters = almTestHelper.GetTestParameters(test);
-
-            StatusDescription = AlmRunStatus.LogicalRunning;
+            SetStatus(AlmRunStatus.LogicalRunning, "Running test");
+            
             Exception runException = null;
 
             try
             {
-                var api = new Api(almConnection.Connection);
-                var agentRunManager = new AgentRunManager();
-                StatusDescription = agentRunManager.RunTest(api, testPath, testParameters);
+                var runResultStatus = m_AgentRunManager.RunTest();
+                SetStatus(AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus), "Test run: " + runResultStatus);
             }
             catch (Exception ex)
             {
-                StatusDescription = AlmRunStatus.Failed;
+                SetStatus(AlmRunStatus.Failed, "Test run failed: " + ex.Message);
                 runException = ex;
             }
 
             // Renew connection (not sure needed):
-            almConnection = new AlmConnection(m_AlmParameters);
+            var almConnection = new AlmConnection(m_AlmParameters);
             var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
             var almResults = new AlmResults(m_AlmParameters, testSetFactory);
-            almResults.SaveRunResults(StatusDescription);
+            almResults.SaveRunResults(m_Status);
 
-            if (runException != null)
-                throw runException;
-
-            return 0;
+            return runException != null ? 1 : 0;
         }
 
         public int stop()
