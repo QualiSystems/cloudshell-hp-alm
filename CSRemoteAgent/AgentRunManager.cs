@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using QS.ALM.CloudShellApi;
 
 namespace CSRAgent
 {
     class AgentRunManager
     {
-        public int RunTest(Api api, string testPath)
+        public int RunTest(Api api, string testPath, List<TestParameters> testParameters)
         {
             string contentError;
             bool isSuccess;
-            string guiId = api.RunTest(testPath, null, out contentError, out isSuccess);
+            string guiId = api.RunTest(testPath, testParameters, out contentError, out isSuccess);
 
             if (isSuccess)
             {

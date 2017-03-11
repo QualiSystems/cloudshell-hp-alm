@@ -67,7 +67,7 @@ namespace CSRAgent
             }
 
             var agentRunManager = new AgentRunManager();
-            agentRunManager.RunTest(api, testPath);
+            agentRunManager.RunTest(api, testPath, testParameters);
 
             //m_AlmParameters.mStatus = CStatus.end_of_test; //"END_OF_TEST";
             StatusDescription = "Completed";

@@ -16,7 +16,7 @@ namespace CSRAgent
         private void OpenConnection()
         {
             Connection = new TDConnectionClass();
-            Connection.InitConnectionEx(m_AlmParameters.HostName);
+            Connection.InitConnectionEx(m_AlmParameters.TdApiHostName);
             Connection.ConnectProjectEx(m_AlmParameters.DomainName, m_AlmParameters.ProjectName, m_AlmParameters.UserName, m_AlmParameters.Password);
         }
 

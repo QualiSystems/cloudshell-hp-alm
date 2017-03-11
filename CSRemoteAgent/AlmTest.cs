@@ -1,4 +1,7 @@
-﻿using System;
+﻿using mshtml;
+using QS.ALM.CloudShellApi;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using TDAPIOLELib;
 
@@ -6,9 +9,19 @@ namespace CSRAgent
 {
     class AlmTest
     {
+        private enum mHtml
+        {
+            HTML,
+            HEAD,
+            TITLE,
+            BODY,
+            DIV,
+            FONT,
+            SPAN
+        }
         public string GetTestPath(TSTest test)
         {
-            var theTest = (Test)test.Test;
+            var theTest = (TDAPIOLELib.Test)test.Test;
             if (theTest["TS_USER_01"] != null)
                 return theTest["TS_USER_01"].ToString();
             
@@ -20,7 +33,6 @@ namespace CSRAgent
             string[] strParmsArr;
             string testF = "";
             string testn = "";
-            //int TestInstID = Convert.ToInt32(almParameters.Params["testcycle_id_integer"]);
             if (almParameters.TestSet.Split(',')[0].Split('\"')[0].IndexOfAny("ntest_set".ToCharArray()) > -1)
             {
                 strParmsArr = almParameters.TestSet.Split(',')[0].Split('\"')[1].Split('\\');
@@ -30,11 +42,9 @@ namespace CSRAgent
             }
             else
             {
-                throw new Exception("ERROR 99"); //TODO
+                throw new Exception("ERROR 99"); 
             }
 
-            //TreeManager treeMgr = (TreeManager)almConnection.Connection.TreeManager;
-            //SubjectNode subjectNode = (SubjectNode)treeMgr.get_NodeByPath("Subject\\" + testF);
             TestSetTreeManager testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
             TestSetFolder tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
 
@@ -80,8 +90,9 @@ namespace CSRAgent
             return testSet1;
         }
 
-        public object GetTestParameters(TSTest tsTst)
+        public List<TestParameters> GetTestParameters(TSTest tsTst)
         {
+            List<TestParameters> parameters = new List<TestParameters>();
             var supportParameterValues = (ISupportParameterValues)tsTst;
             var testParametersVList = supportParameterValues.ParameterValueFactory.NewList("");
 
@@ -89,17 +100,68 @@ namespace CSRAgent
             {
                 foreach (ParameterValue element in testParametersVList)
                 {
-                    string value = GetParameterValue(element.ActualValue);
-                    string Ls = element.Name;
+                    TestParameters item = new TestParameters(element.Name, GetParameterValue(element.ActualValue));
+                    parameters.Add(item);
                 }
             }
 
-            return null;
+            return parameters;
         }
 
-        private string GetParameterValue(object p)
+
+        private string GetParameterValue(object html)
         {
-            return "";
+            string str1 = "";
+            string str = "";
+            IHTMLDocument2 doc = (IHTMLDocument2)new HTMLDocument();
+            doc.write((string)html);
+            int count = 0;
+            int count7 = 0;
+            foreach (IHTMLElement el in doc.all)
+            {
+                switch ((mHtml)count)
+                {
+                    case mHtml.HTML:
+                        if (el.tagName == "HTML")
+                            count += 1;
+                        break;
+                    case mHtml.HEAD:
+                        if (el.tagName == "HEAD")
+                            count += 1;
+                        break;
+                    case mHtml.TITLE:
+                        if (el.tagName == "TITLE")
+                            count += 1;
+                        break;
+                    case mHtml.BODY:
+                        if (el.tagName == "BODY")
+                            count += 1;
+                        break;
+                    case mHtml.DIV:
+                        if (el.tagName == "DIV")
+                            count += 1;
+                        break;
+                    case mHtml.FONT:
+                        if (el.tagName == "FONT")
+                            count += 1;
+                        break;
+                    case mHtml.SPAN:
+                        if (el.tagName == "SPAN")
+                            count += 1;
+                        break;
+                }
+                count7 += 1;
+                if (count == 7 && count7 == 7)
+                {
+                    //str1 = el.tagName;
+                    str = el.getAttribute("outerText").ToString();
+                }
+                else if (count7 > count)
+                {
+                    return str;
+                }
+            }
+            return str;
         }
     }
 }
