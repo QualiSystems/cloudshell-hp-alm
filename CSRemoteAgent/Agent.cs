@@ -16,6 +16,12 @@ namespace CSRAgent
     public class CSRAgent : ServicedComponent, IRAgent
     {
         private readonly AlmParameters m_AlmParameters = new AlmParameters();
+
+        public CSRAgent()
+        {
+            StatusDescription = AlmRunStatus.Ready;
+        }
+
         private string StatusDescription { get; set; }
 
         public int get_value(string paramName, ref string paramValue)
@@ -41,13 +47,15 @@ namespace CSRAgent
 
         public int is_host_ready(ref string descr)
         {
-            descr = "Ready";
+            StatusDescription = AlmRunStatus.Ready;
+            descr = StatusDescription;
             MessageBox.Show("Host is ready!");
             return 0;
         }
 
         public int run()
         {
+            StatusDescription = AlmRunStatus.Init;
             var almConnection = new AlmConnection(m_AlmParameters);
 
             var almTestHelper = new AlmTest();
@@ -55,30 +63,30 @@ namespace CSRAgent
             var testPath = almTestHelper.GetTestPath(test);
             var testParameters = almTestHelper.GetTestParameters(test);
 
-            Api api;
+            StatusDescription = AlmRunStatus.LogicalRunning;
+            Exception runException = null;
 
             try
             {
-                api = new Api(almConnection.Connection);
+                var api = new Api(almConnection.Connection);
+                var agentRunManager = new AgentRunManager();
+                StatusDescription = agentRunManager.RunTest(api, testPath, testParameters);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                StatusDescription = AlmRunStatus.Failed;
+                runException = ex;
             }
-
-            var agentRunManager = new AgentRunManager();
-            agentRunManager.RunTest(api, testPath, testParameters);
-
-            //m_AlmParameters.mStatus = CStatus.end_of_test; //"END_OF_TEST";
-            StatusDescription = "Completed";
 
             // Renew connection (not sure needed):
             almConnection = new AlmConnection(m_AlmParameters);
             var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
             var almResults = new AlmResults(m_AlmParameters, testSetFactory);
-            almResults.SaveRunResults("TODO 96");
+            almResults.SaveRunResults(StatusDescription);
 
-            //Process.GetCurrentProcess().Kill();
+            if (runException != null)
+                throw runException;
+
             return 0;
         }
 

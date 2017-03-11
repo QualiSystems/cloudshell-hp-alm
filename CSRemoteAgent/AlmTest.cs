@@ -9,7 +9,7 @@ namespace CSRAgent
 {
     class AlmTest
     {
-        private enum mHtml
+        private enum ParameterHtmlElements
         {
             HTML,
             HEAD,
@@ -30,35 +30,37 @@ namespace CSRAgent
 
         public TSTest FindTest(AlmConnection almConnection, AlmParameters almParameters)
         {
-            string[] strParmsArr;
-            string testF = "";
-            string testn = "";
-            if (almParameters.TestSet.Split(',')[0].Split('\"')[0].IndexOfAny("ntest_set".ToCharArray()) > -1)
-            {
-                strParmsArr = almParameters.TestSet.Split(',')[0].Split('\"')[1].Split('\\');
-                testF = strParmsArr[2];
-                testn = strParmsArr[strParmsArr.Count() - 1];
+            string testn;
+            var testSet = almParameters.TestSet;
+            var testSetSplit = testSet.Split(',');
+            var first = testSetSplit[0];
+            var firstSplit = first.Split('\"');
 
+            if (firstSplit[0].IndexOfAny("ntest_set".ToCharArray()) > -1)
+            {
+                var strParmsArr = firstSplit[1].Split('\\');
+                testn = strParmsArr[strParmsArr.Count() - 1];
+                //testF = strParmsArr[2];
             }
             else
             {
                 throw new Exception("ERROR 99"); 
             }
 
-            TestSetTreeManager testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
-            TestSetFolder tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
+            var testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
+            var tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
 
             var theTestSet = FindTestSet(tstSetFolder, testn);
             string testName = almParameters.TestName;
-            var TSTestFact = (TSTestFactory)theTestSet.TSTestFactory;
-            var tsFilter = (TDFilter)TSTestFact.Filter;
+            var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
+            var tsFilter = (TDFilter)tsTestFact.Filter;
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
-            var testList = TSTestFact.NewList(tsFilter.Text);
+            var testList = tsTestFact.NewList(tsFilter.Text);
 
-            foreach (TSTest TSTst in testList)
+            foreach (TSTest tsTst in testList)
             {
-                if (testName == TSTst.TestName)
-                    return TSTst;;
+                if (testName == tsTst.TestName)
+                    return tsTst;;
             }
 
             throw new Exception("ERROR 98"); //TODO
@@ -119,33 +121,33 @@ namespace CSRAgent
             int count7 = 0;
             foreach (IHTMLElement el in doc.all)
             {
-                switch ((mHtml)count)
+                switch ((ParameterHtmlElements)count)
                 {
-                    case mHtml.HTML:
+                    case ParameterHtmlElements.HTML:
                         if (el.tagName == "HTML")
                             count += 1;
                         break;
-                    case mHtml.HEAD:
+                    case ParameterHtmlElements.HEAD:
                         if (el.tagName == "HEAD")
                             count += 1;
                         break;
-                    case mHtml.TITLE:
+                    case ParameterHtmlElements.TITLE:
                         if (el.tagName == "TITLE")
                             count += 1;
                         break;
-                    case mHtml.BODY:
+                    case ParameterHtmlElements.BODY:
                         if (el.tagName == "BODY")
                             count += 1;
                         break;
-                    case mHtml.DIV:
+                    case ParameterHtmlElements.DIV:
                         if (el.tagName == "DIV")
                             count += 1;
                         break;
-                    case mHtml.FONT:
+                    case ParameterHtmlElements.FONT:
                         if (el.tagName == "FONT")
                             count += 1;
                         break;
-                    case mHtml.SPAN:
+                    case ParameterHtmlElements.SPAN:
                         if (el.tagName == "SPAN")
                             count += 1;
                         break;

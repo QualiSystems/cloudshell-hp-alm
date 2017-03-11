@@ -1,9 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-/// <summary>
-/// Handles communication between ALM and the testing tool.
-/// </summary>
 namespace CSRAgent
 {
     /// <summary>
