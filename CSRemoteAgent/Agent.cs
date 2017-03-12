@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using QS.ALM.CloudShellApi;
 using TDAPIOLELib;
 
@@ -19,8 +18,10 @@ namespace CSRAgent
 
         public CSRAgent()
         {
+            if (SettingsFile.DebugMode)
+                Debugger.Launch();
+
             m_Status = AlmRunStatus.Init;
-            MessageBox.Show("Run Agent is up!");
         }
 
         private AlmRunStatus m_Status;
