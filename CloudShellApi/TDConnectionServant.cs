@@ -3,11 +3,11 @@ using TDAPIOLELib;
 
 namespace QS.ALM.CloudShellApi
 {
-    public class TDConnectionServant
+    public class TdConnectionServant
     {
         private readonly ITDConnection m_TdConnection;
 
-        public TDConnectionServant(ITDConnection tdConnection) 
+        public TdConnectionServant(ITDConnection tdConnection) 
         {
             m_TdConnection = tdConnection;
         }
@@ -50,13 +50,18 @@ namespace QS.ALM.CloudShellApi
             throw new Exception("QS_AUTH_MODE unknown : " + almMode);
         }
 
-        public string GetTdParam(string paramName)
+        public string GetTdParam(string paramName, string defaultValue = null)
         {
             paramName = paramName.ToUpper();
             var tdParam = m_TdConnection.get_TDParams(paramName);
-            
-            if(string.IsNullOrWhiteSpace(tdParam))
+
+            if (string.IsNullOrWhiteSpace(tdParam))
+            {
+                if (!string.IsNullOrEmpty(defaultValue))
+                    return defaultValue;
+                
                 throw new Exception("Missing Parameter '" + paramName + "'. Please add the missing parametes in the Site Configuration tab under the Site Administration.");
+            }
             
             return tdParam;
         }        

@@ -1,4 +1,5 @@
-﻿using TDAPIOLELib;
+﻿using QS.ALM.CloudShellApi;
+using TDAPIOLELib;
 
 namespace CSRAgent
 {
@@ -21,7 +22,7 @@ namespace CSRAgent
             var testCycleId = m_AlmParameters.TestCycleIdInteger;
             var tsTest = (TSTest)tsTestFactory[testCycleId];
             var runFactory = (RunFactory)tsTest.RunFactory;
-            var run = (Run)runFactory.AddItem("TestShell Run");
+            var run = (Run)runFactory.AddItem(Config.TestShell + " Run");
             run["RN_TESTER_NAME"] = m_AlmParameters.UserName;
             run["RN_HOST"] = m_AlmParameters.HostName;
             run.Status = AgentRunManager.ConvertAlmRunStatusToString(runStatus);
