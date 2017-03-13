@@ -90,79 +90,34 @@ namespace QS.ALM.CloudShellApi
     
     public class ApiSuiteTemplateDetails
     {
-        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, List<TestParameters> parameters)
-        {
-            SuiteName = suiteName;
-            JobsDetails = new[] {new ApiJobTemplate(jobName, testPath, parameters)};
-        }
-
+        public ApiSuiteTemplateDetails(string testPath, List<TestParameters> parameters) { JobsDetails = new ApiJobTemplate[] { new ApiJobTemplate(testPath, parameters) }; }
         public string SuiteTemplateName { get ; set; }
-        public string SuiteName { get; set; }
+        public string SuiteName { get { return Config.SuiteName; } }
         public string Description {get; set;}
-        public string Type { get { return Config.TestShell; } }
+        public string Type { get { return "TestShell"; } }
         public string EmailNotifications { get { return "None"; } }
         public int RemoveJobsFromQueueAfter { get { return (int)Config.QueueTimeout.TotalMinutes; } }
         public bool EndReservationOnEnd { get { return true; } }
         public ApiJobTemplate[] JobsDetails {get; private set;}
         public string ExistingReservationId { get; set; }
     }
-
     public class ApiJobTemplate
     {
-        public ApiJobTemplate(string jobName, string testPath, List<TestParameters> parameters)
-        {
-            Name = jobName;
-            Tests = new Test[] {new Test(testPath, parameters)};
-        }
+        public ApiJobTemplate(string testPath, List<TestParameters> parameters) { Tests = new Test[] { new Test(testPath, parameters) }; }
 
-        public ApiJobTemplate()
-        {
-        }
-
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public string[] ExecutionServers
-        {
-            get { return new string[0]; }
-        }
-
-        public string LoggingProfile
-        {
-            get { return Config.LoggingProfile; }
-        }
-
-        public int EstimatedDuration
-        {
-            get { return 10; }
-        }
-
-        public bool StopOnFail
-        {
-            get { return false; }
-        }
-
-        public bool StopOnError
-        {
-            get { return false; }
-        }
-
-        public Test[] Tests { get; set; }
-        public string Topology { get; set; }
-
-        public int DurationTimeBuffer
-        {
-            get { return 10; }
-        }
-
-        public string Type
-        {
-            get { return Config.TestShell; }
-        }
+      public ApiJobTemplate() { }
+      public string Name { get { return Config.JobName; } }
+      public string Description {get; set;}
+      public string [] ExecutionServers { get { return new string[0]; } }
+      public string LoggingProfile { get { return Config.LoggingProfile; } }
+      public int EstimatedDuration { get { return 10; } }
+      public bool StopOnFail { get { return false; } }
+      public bool StopOnError { get { return false; } }
+      public Test[] Tests { get; set; }
+      public string Topology {get; set;}
+      public int DurationTimeBuffer { get { return 10; } }
+      public string Type { get { return "TestShell"; } }
     }
-
-
     public class Test
     {
         public Test(string testPath, List<TestParameters> parameters) 

@@ -12,7 +12,7 @@ namespace QS.ALM.RewriteClientDll
         static void Main(string[] args)
         {
             string source = "..\\..\\..\\TestType4DotNet\\bin\\Debug";
-            string dest = "C:\\Users\\Ticomsoft_L1\\AppData\\Local\\HP\\ALM-Client\\localhost";
+            string dest = "C:\\Users\\Motico\\AppData\\Local\\HP\\ALM-Client\\localhost";
 
             string name = "ALM-Client".ToLower();
             string name1 = "iexplore".ToLower();

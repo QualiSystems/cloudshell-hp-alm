@@ -2,10 +2,18 @@
 
 namespace QS.ALM.CloudShellApi
 {
-    public static class Config
+    static class Config
     {
-        public const string TestShell = "TestShell";
-        
+        public static string SuiteName
+        {
+            get { return "ALM Suite"; }
+        }
+
+        public static string JobName
+        {
+            get { return "ALM Job"; }
+        }
+
         public static TimeSpan QueueTimeout
         {
             get

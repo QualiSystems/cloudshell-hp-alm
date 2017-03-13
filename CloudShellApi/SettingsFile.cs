@@ -7,11 +7,6 @@ namespace QS.ALM.CloudShellApi
 {
     public static class SettingsFile
     {
-        public static bool DebugMode
-        {
-            get { return bool.Parse(Read("DebugMode", "false")); }
-        }
-
         public static string Verbosity
         {
             get { return Read("Verbosity", "Info"); }

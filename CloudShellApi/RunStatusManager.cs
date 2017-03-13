@@ -11,7 +11,7 @@ namespace QS.ALM.CloudShellApi
         private Thread m_Worker;
         private readonly Api m_Api;
 
-        public RunStatusManager(Api api, string runGuid)
+        public RunStatusManager(string runGuid, Api api)
         {
             m_RunGuid = runGuid;
             m_Worker = new Thread(ThreadLoop);

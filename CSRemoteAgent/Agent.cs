@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using QS.ALM.CloudShellApi;
 using TDAPIOLELib;
 
@@ -15,23 +16,7 @@ namespace CSRAgent
     public class CSRAgent : ServicedComponent, IRAgent
     {
         private readonly AlmParameters m_AlmParameters = new AlmParameters();
-
-        public CSRAgent()
-        {
-            if (SettingsFile.DebugMode)
-                Debugger.Launch();
-
-            m_Status = AlmRunStatus.Init;
-        }
-
-        private AlmRunStatus m_Status;
-        private string m_StatusDesc;
-
-        private void SetStatus(AlmRunStatus almRunStatus, string statusDesc)
-        {
-            m_Status = almRunStatus;
-            m_StatusDesc = statusDesc;
-        }
+        private string StatusDescription { get; set; }
 
         public int get_value(string paramName, ref string paramValue)
         {
@@ -49,68 +34,52 @@ namespace CSRAgent
 
         public int get_status(ref string descr, ref string status)
         {
-            descr = m_StatusDesc;
-            status = AgentRunManager.ConvertAlmRunStatusToString(m_Status);
+            descr = StatusDescription;
+            status = "ERROR 97";
             return 0;
         }
 
         public int is_host_ready(ref string descr)
         {
-            SetStatus(AlmRunStatus.Init, "Host initializing");
-
-            try
-            {
-                var almConnection = new AlmConnection(m_AlmParameters);
-                var api = new Api(almConnection.Connection);
-                api.VerifyLogin();
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.ToString());
-                SetStatus(AlmRunStatus.Failed, ex.Message);
-                descr = ex.Message;
-                return -1;
-            }
-
-            descr = "Host is ready";
-            SetStatus(AlmRunStatus.Ready, descr);
+            descr = "Ready";
+            MessageBox.Show("Host is ready!");
             return 0;
         }
 
         public int run()
         {
-            SetStatus(AlmRunStatus.LogicalRunning, "Running test");
-            
-            Exception runException = null;
-            AlmConnection almConnection;
+            var almConnection = new AlmConnection(m_AlmParameters);
+
+            var almTestHelper = new AlmTest();
+            var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
+            var testPath = almTestHelper.GetTestPath(test);
+            var testParameters = almTestHelper.GetTestParameters(test);
+
+            Api api;
 
             try
             {
-                almConnection = new AlmConnection(m_AlmParameters);
-                var almTestHelper = new AlmTest();
-                var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
-                var testPath = almTestHelper.GetTestPath(test);
-                var testParameters = almTestHelper.GetTestParameters(test);
-
-                var api = new Api(almConnection.Connection);
-                var agentRunManager = new AgentRunManager(api, testPath, testParameters);
-                var runResultStatus = agentRunManager.RunTest();
-
-                SetStatus(AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus), "Test run: " + runResultStatus);
+                api = new Api(almConnection.Connection);
             }
             catch (Exception ex)
             {
-                SetStatus(AlmRunStatus.Failed, "Test run failed: " + ex.Message);
-                runException = ex;
+                throw new Exception(ex.Message);
             }
+
+            var agentRunManager = new AgentRunManager();
+            agentRunManager.RunTest(api, testPath, testParameters);
+
+            //m_AlmParameters.mStatus = CStatus.end_of_test; //"END_OF_TEST";
+            StatusDescription = "Completed";
 
             // Renew connection (not sure needed):
             almConnection = new AlmConnection(m_AlmParameters);
             var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
             var almResults = new AlmResults(m_AlmParameters, testSetFactory);
-            almResults.SaveRunResults(m_Status);
+            almResults.SaveRunResults("TODO 96");
 
-            return runException != null ? 1 : 0;
+            //Process.GetCurrentProcess().Kill();
+            return 0;
         }
 
         public int stop()
