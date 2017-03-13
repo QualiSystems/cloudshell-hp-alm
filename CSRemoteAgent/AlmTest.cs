@@ -50,6 +50,7 @@ namespace CSRAgent
 
             var theTestSet = FindTestSet(tstSetFolder, testn);
             string testName = almParameters.TestName;
+            string testId = /*Convert.ToInt32(*/almParameters.TestCycleIdInteger/*)*/;
             var TSTestFact = (TSTestFactory)theTestSet.TSTestFactory;
             var tsFilter = (TDFilter)TSTestFact.Filter;
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
@@ -57,7 +58,7 @@ namespace CSRAgent
 
             foreach (TSTest TSTst in testList)
             {
-                if (testName == TSTst.TestName)
+                if (testName == TSTst.TestName && testId == (string)TSTst.ID)
                     return TSTst;;
             }
 
