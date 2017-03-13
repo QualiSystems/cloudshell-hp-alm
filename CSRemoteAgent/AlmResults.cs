@@ -24,7 +24,7 @@ namespace CSRAgent
             var run = (Run)runFactory.AddItem("TestShell Run");
             run["RN_TESTER_NAME"] = m_AlmParameters.UserName;
             run["RN_HOST"] = m_AlmParameters.HostName;
-            run.Status = runStatus;
+            //run.Status = runStatus;
             run.Post();
         }
     }

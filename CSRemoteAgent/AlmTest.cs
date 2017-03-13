@@ -100,7 +100,12 @@ namespace CSRAgent
             {
                 foreach (ParameterValue element in testParametersVList)
                 {
-                    TestParameters item = new TestParameters(element.Name, GetParameterValue(element.ActualValue));
+                    string str =  GetParameterValue(element.ActualValue);
+                    if(str == null || str == "")
+                    {
+                        str = GetParameterValue(element.DefaultValue);
+                    }
+                    TestParameters item = new TestParameters(element.Name,str);
                     parameters.Add(item);
                 }
             }
@@ -111,7 +116,6 @@ namespace CSRAgent
 
         private string GetParameterValue(object html)
         {
-            string str1 = "";
             string str = "";
             IHTMLDocument2 doc = (IHTMLDocument2)new HTMLDocument();
             doc.write((string)html);
@@ -154,6 +158,7 @@ namespace CSRAgent
                 if (count == 7 && count7 == 7)
                 {
                     //str1 = el.tagName;
+                    
                     str = el.getAttribute("outerText").ToString();
                 }
                 else if (count7 > count)

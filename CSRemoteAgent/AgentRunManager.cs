@@ -10,7 +10,8 @@ namespace CSRAgent
         {
             string contentError;
             bool isSuccess;
-            string guiId = api.RunTest(testPath, testParameters, out contentError, out isSuccess);
+            string guiId = api.RunTest(testPath, null, out contentError, out isSuccess);
+            //string guiId = api.RunTest(testPath, testParameters, out contentError, out isSuccess);
 
             if (isSuccess)
             {
