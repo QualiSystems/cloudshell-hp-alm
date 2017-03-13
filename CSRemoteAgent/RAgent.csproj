@@ -66,9 +66,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ALMCon.cs" />
-    <Compile Include="CStatus.cs" />
-    <Compile Include="CSRAgent.cs" />
+    <Compile Include="AlmParameters.cs" />
+    <Compile Include="AlmResults.cs" />
+    <Compile Include="AgentRunManager.cs" />
+    <Compile Include="AlmRunStatus.cs" />
+    <Compile Include="AlmTest.cs" />
+    <Compile Include="AlmConnection.cs" />
+    <Compile Include="Agent.cs" />
     <Compile Include="IRAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -91,6 +95,17 @@
       <Project>{c290f38c-afd1-420b-9cc6-bb1eed921500}</Project>
       <Name>QS.ALM.CloudShellApi</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="MSHTML">
+      <Guid>{3050F1C5-98B5-11CF-BB82-00AA00BDCE0B}</Guid>
+      <VersionMajor>4</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
