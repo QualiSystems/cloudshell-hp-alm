@@ -49,31 +49,14 @@ namespace CSRAgent
         public int get_status(ref string descr, ref string status)
         {
             descr = m_StatusDesc;
-            status = AgentRunManager.ConvertAlmRunStatusToString(m_Status);
+            status = AlmRunStatusStrings.ToString(m_Status);
             return 0;
         }
 
         public int is_host_ready(ref string descr)
         {
-            SetStatus(AlmRunStatus.Init, "Host initializing");
-
-            try
-            {
-                // Basic verification
-                var almConnection = new AlmConnection(m_AlmParameters);
-                new Api(almConnection.Connection);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.ToString());
-                SetStatus(AlmRunStatus.Failed, ex.Message);
-                descr = ex.Message;
-                return -1;
-            }
-
             descr = "Host is ready";
             SetStatus(AlmRunStatus.Ready, descr);
-
             return 0;
         }
 

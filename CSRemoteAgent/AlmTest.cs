@@ -54,7 +54,7 @@ namespace CSRAgent
 
             var theTestSet = FindTestSet(tstSetFolder, testn);
             var testName = almParameters.TestName;
-            var testId = /*Convert.ToInt32(*/almParameters.TestCycleIdInteger/*)*/;
+            var testId = almParameters.TestCycleIdInteger;
             var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
             var tsFilter = (TDFilter)tsTestFact.Filter;
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
@@ -97,7 +97,7 @@ namespace CSRAgent
 
         public List<TestParameters> GetTestParameters(TSTest tsTst)
         {
-            List<TestParameters> parameters = new List<TestParameters>();
+            var parameters = new List<TestParameters>();
             var supportParameterValues = (ISupportParameterValues)tsTst;
             var testParametersVList = supportParameterValues.ParameterValueFactory.NewList("");
 
@@ -105,21 +105,13 @@ namespace CSRAgent
             {
                 foreach (ParameterValue element in testParametersVList)
                 {
-                    string str =  GetParameterValue(element.ActualValue);
+                    string str = GetParameterValue(element.Name, element.ActualValue);
                     
                     if(string.IsNullOrEmpty(str))
-                    {
-                        str = GetParameterValue(element.DefaultValue);
-                    }
-                    if (str != "ERROR 1000")
-                    {
-                        var item = new TestParameters(element.Name, str);
-                        parameters.Add(item);
-                    }
-                    else
-                    {
-                        throw new Exception("ERROR 1000");
-                    }
+                        str = GetParameterValue(element.Name, element.DefaultValue);
+                    
+                    var item = new TestParameters(element.Name, str);
+                    parameters.Add(item);
                 }
             }
 
@@ -127,11 +119,14 @@ namespace CSRAgent
         }
 
 
-        private string GetParameterValue(object html)
+        private string GetParameterValue(string parameterName, object html)
         {
-            var str = "";
+            string parameterValue = null;
             IHTMLDocument2 doc = (IHTMLDocument2)new HTMLDocument();
             doc.write((string)html);
+
+            // Verify that the html got exactly 7 elements.
+            // We do this since the user is using a html editor to edit the paraemter value
             int count = 0;
             int count7 = 0;
             foreach (IHTMLElement el in doc.all)
@@ -168,18 +163,23 @@ namespace CSRAgent
                         break;
                 }
                 count7 += 1;
+
                 if (count == 7 && count7 == 7)
                 {
-                    str = el.getAttribute("outerText").ToString();
+                    parameterValue = el.getAttribute("outerText").ToString();
                     break;
                 }
-                else if (count7 > count)
+                
+                if (count7 > count)
                 {
-                    str = "ERROR 1000"; 
                     break;
                 }
             }
-            return str;
+
+            if (parameterValue == null)
+                throw new Exception(string.Format("Parameter value must contain plain text only. Please make sure that the value of parameter '{0}' has no special formatting or other html elements such as tables, numbering, bullets, bold, italic, etc ...", parameterName));
+
+            return parameterValue;
         }
     }
 }
