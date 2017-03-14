@@ -111,7 +111,7 @@ namespace CTSAddin
 
             var result = MessageBox.Show(message, caption, MessageBoxButtons.OKCancel);
 
-            if (result == DialogResult.Yes)
+            if (result == DialogResult.OK)
             {
                 RefreshTestParameter(TextBoxPath.Text);
             }
