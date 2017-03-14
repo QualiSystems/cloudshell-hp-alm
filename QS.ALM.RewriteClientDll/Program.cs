@@ -12,7 +12,11 @@ namespace QS.ALM.RewriteClientDll
         static void Main(string[] args)
         {
             string source = "..\\..\\..\\TestType4DotNet\\bin\\Debug";
-            string dest = "C:\\Users\\Ticomsoft_L1\\AppData\\Local\\HP\\ALM-Client\\localhost";
+            var userProfile = Environment.ExpandEnvironmentVariables("%USERPROFILE%");
+            string dest = Path.Combine(userProfile, "AppData\\Local\\HP\\ALM-Client\\localhost");
+
+            if (!Directory.Exists(dest))
+                throw new Exception("Folder not found: " + dest);
 
             string name = "ALM-Client".ToLower();
             string name1 = "iexplore".ToLower();
@@ -24,9 +28,6 @@ namespace QS.ALM.RewriteClientDll
                     anti.Kill(); 
                 }
             System.Threading.Thread.Sleep(1000);
-            File.Copy(Path.Combine(source, "CustomTestType.dll"), Path.Combine(dest, "CustomTestType.dll"), true);
-            File.Copy(Path.Combine(source, "CustomTestType.pdb"), Path.Combine(dest, "CustomTestType.pdb"), true);
-            File.Copy(Path.Combine(source, "QS.ALM.CloudShellApi.dll"), Path.Combine(dest, "Quali", "QS.ALM.CloudShellApi.dll"), true);
             File.Copy(Path.Combine(source, "QS.ALM.CloudShellApi.pdb"), Path.Combine(dest, "Quali", "QS.ALM.CloudShellApi.pdb"), true);
             File.Copy(Path.Combine("..\\..\\..\\CSRemoteAgent\\bin\\Debug", "RemoteAgent.dll"), Path.Combine(dest, "Quali", "RemoteAgent.dll"), true);
             File.Copy(Path.Combine("..\\..\\..\\CSRemoteAgent\\bin\\Debug", "RemoteAgent.pdb"), Path.Combine(dest, "Quali", "RemoteAgent.pdb"), true);

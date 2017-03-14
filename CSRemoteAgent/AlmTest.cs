@@ -106,8 +106,15 @@ namespace CSRAgent
                     {
                         str = GetParameterValue(element.DefaultValue);
                     }
-                    TestParameters item = new TestParameters(element.Name,str);
-                    parameters.Add(item);
+                    if (str != "ERROR 1000")
+                    {
+                        TestParameters item = new TestParameters(element.Name, str);
+                        parameters.Add(item);
+                    }
+                    else
+                    {
+                        throw new Exception("ERROR 1000");
+                    }
                 }
             }
 
@@ -158,13 +165,13 @@ namespace CSRAgent
                 count7 += 1;
                 if (count == 7 && count7 == 7)
                 {
-                    //str1 = el.tagName;
-                    
                     str = el.getAttribute("outerText").ToString();
+                    break;
                 }
                 else if (count7 > count)
                 {
-                    return str;
+                    str = "ERROR 1000"; 
+                    break;
                 }
             }
             return str;
