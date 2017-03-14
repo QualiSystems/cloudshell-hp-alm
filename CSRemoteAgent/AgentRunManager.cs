@@ -18,7 +18,7 @@ namespace CSRAgent
             {
                 ExecutionJobResult runResult;
 
-                using (var runStatusManager = new RunStatusManager(guiId, api))
+                using (var runStatusManager = new RunStatusManager(api, guiId))
                     runResult = runStatusManager.WaitForRunEnd();
 
                 ApiSuiteDetails apiDetail = api.GetRunResult(guiId, out contentError, out isSuccess);

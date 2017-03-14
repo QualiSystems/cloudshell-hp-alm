@@ -43,7 +43,7 @@ namespace Tester
 
                 ExecutionJobResult runResult;
 
-                using (var runStatusManager = new RunStatusManager(guiId, m_Api))
+                using (var runStatusManager = new RunStatusManager(m_Api, guiId))
                     runResult = runStatusManager.WaitForRunEnd();
 
                 MessageBox.Show("Run Result = " + runResult.ToString());
