@@ -28,7 +28,10 @@ namespace QS.ALM.RewriteClientDll
                     anti.Kill(); 
                 }
             System.Threading.Thread.Sleep(1000);
-            File.Copy(Path.Combine(source, "QS.ALM.CloudShellApi.pdb"), Path.Combine(dest, "Quali", "QS.ALM.CloudShellApi.pdb"), true);
+           /* File.Copy(Path.Combine(source, "CustomTestType.dll"), Path.Combine(dest, "CustomTestType.dll"), true);
+            File.Copy(Path.Combine(source, "CustomTestType.pdb"), Path.Combine(dest, "CustomTestType.pdb"), true);
+            File.Copy(Path.Combine(source, "QS.ALM.CloudShellApi.dll"), Path.Combine(dest, "Quali", "QS.ALM.CloudShellApi.dll"), true);
+            File.Copy(Path.Combine(source, "QS.ALM.CloudShellApi.pdb"), Path.Combine(dest, "Quali", "QS.ALM.CloudShellApi.pdb"), true);for changes in project CTS  */
             File.Copy(Path.Combine("..\\..\\..\\CSRemoteAgent\\bin\\Debug", "RemoteAgent.dll"), Path.Combine(dest, "Quali", "RemoteAgent.dll"), true);
             File.Copy(Path.Combine("..\\..\\..\\CSRemoteAgent\\bin\\Debug", "RemoteAgent.pdb"), Path.Combine(dest, "Quali", "RemoteAgent.pdb"), true);
         }
