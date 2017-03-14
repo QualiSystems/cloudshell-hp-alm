@@ -8,8 +8,8 @@
     <ProjectGuid>{E645EFAC-A997-4078-8A3C-87F2E80A77EC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CTSAddin</RootNamespace>
-    <AssemblyName>CustomTestType</AssemblyName>
+    <RootNamespace>TestShellTestType</RootNamespace>
+    <AssemblyName>TestShellTestType</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\CustomTestType.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\TestShellTestType.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

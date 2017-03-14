@@ -51,14 +51,14 @@ namespace QS.ALM.Deploy
                 if (!File.Exists(cabPath))
                     throw new Exception("File not found: " + cabPath);
 
-                var ctsFolder = Path.Combine(AlmServerRoot, @"Extensions\CTS");
+                var ctsFolder = Path.Combine(AlmServerRoot, @"Extensions\TestShell");
                 if (Directory.Exists(ctsFolder))
                 {
                     Directory.Delete(ctsFolder, true);
                 }
                 Directory.CreateDirectory(ctsFolder);
 
-                CopyToServerAndSign(files.ToArray(), @"Extensions\CTS");
+                CopyToServerAndSign(files.ToArray(), @"Extensions\TestShell");
                 CopyToServerAndSign(new[] { cabPath }, "Extensions");
             }
             catch (Exception ex)
@@ -189,7 +189,7 @@ namespace QS.ALM.Deploy
             Array.Reverse(arr);
             string extensionReversed = new string (arr);
             string contentIni = "[File_" + index.ToString("D" + 4) + ']' + Environment.NewLine +
-                "URLName=%URL%/Extensions/CTS/" + name + '.' + extensionReversed + Environment.NewLine +
+                "URLName=%URL%/Extensions/TestShell/" + name + '.' + extensionReversed + Environment.NewLine +
                 "ShortName=" + QuallyStr(filename) + name + '.' + extension + Environment.NewLine +
                 "Description=" + DescriptionStr(name) + Environment.NewLine +
                 DotNetYStr(filename) + Environment.NewLine;
@@ -198,7 +198,7 @@ namespace QS.ALM.Deploy
 
         private static string QuallyStr(string filename)
         {
-            return filename.ToLower() == "customtesttype.dll" ? "" : "Quali\\";
+            return filename.ToLower() == "testshelltesttype.dll" ? "" : "Quali\\";
         }
 
         private static string DotNetYStr(string filename)
