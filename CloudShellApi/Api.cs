@@ -22,7 +22,7 @@ namespace QS.ALM.CloudShellApi
             Init(urlString, almUsername, almPassword, cloudShellUsername, cloudShellPassword, authenticationMode, domain);
         }
 
-        public Api(ITDConnection tdConnection)
+        public Api(ITDConnection tdConnection, string cloudShellUsername = null, string cloudShellPassword = null)
         {
             var conectionServant = new TDConnectionServant(tdConnection);
             var url = conectionServant.GetTdParam("QS_SERVER_URL");
@@ -33,8 +33,8 @@ namespace QS.ALM.CloudShellApi
 
             m_SuiteName = conectionServant.GetTdParam("CLOUDSHELL_SUITE_NAME", "ALM Suite"); // Changing suite name is undocumented
             m_JobName = conectionServant.GetTdParam("CLOUDSHELL_JOB_NAME", "ALM Job"); // Changing job name is undocumented
-                                 
-            Init(url, almUsername, almPassword, null, null, mode, domain);
+
+            Init(url, almUsername, almPassword, cloudShellUsername, cloudShellPassword, mode, domain);
         }
 
         private void Init(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
@@ -42,18 +42,27 @@ namespace QS.ALM.CloudShellApi
             m_UrlStringServer = urlString;
             m_Domain = domain;
 
-            switch (authenticationMode)
+            // Ignore AuthenticationMode in design mode. Only in run mode we have the password of the logged-in user
+            if (string.IsNullOrEmpty(cloudShellPassword))
             {
-                case AuthenticationMode.Alm:
-                    m_UserName = almUsername;
-                    m_UserPassword = almPassword;
-                    break;
-                case AuthenticationMode.CloudShell:
-                    m_UserName = cloudShellUsername;
-                    m_UserPassword = cloudShellPassword;
-                    break;
-                default:
-                    throw new Exception("Invalid AuthenticationMode: " +  authenticationMode);
+                m_UserName = almUsername;
+                m_UserPassword = almPassword;
+            }
+            else
+            {
+                switch (authenticationMode)
+                {
+                    case AuthenticationMode.Alm:
+                        m_UserName = almUsername;
+                        m_UserPassword = almPassword;
+                        break;
+                    case AuthenticationMode.CloudShell:
+                        m_UserName = cloudShellUsername;
+                        m_UserPassword = cloudShellPassword;
+                        break;
+                    default:
+                        throw new Exception("Invalid AuthenticationMode: " +  authenticationMode);
+                }
             }
 
             if (string.IsNullOrEmpty(m_UserName) || string.IsNullOrEmpty(m_UserPassword))

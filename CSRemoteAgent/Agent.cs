@@ -67,6 +67,7 @@ namespace CSRAgent
             Exception runException = null;
             AlmConnection almConnection;
             string reportLink = null;
+            AlmRunStatus almRunStatus;
 
             try
             {
@@ -77,29 +78,37 @@ namespace CSRAgent
                 var testParameters = almTestHelper.GetTestParameters(test);
 
                 // Run the test
-                var api = new Api(almConnection.Connection);
+                var api = new Api(almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
                 var agentRunManager = new AgentRunManager(api, testPath, testParameters);
                 var runGuid = agentRunManager.RunTest();
 
                 var apiDetail = GetSuiteResult(api, runGuid);
                 var runResultStatus = RunStatusManager.GetRunResult(apiDetail);
                 reportLink = apiDetail.JobsDetails[0].Tests[0].ReportLink;
+                almRunStatus = AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus);
 
-                SetStatus(AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus), "Test run: " + runResultStatus);
+                SetStatus(almRunStatus, "Test run: " + runResultStatus);
+            }
+            catch (Exception ex)
+            {
+                almRunStatus = AlmRunStatus.Failed;
+                SetStatus(almRunStatus, "Test run failed: " + ex.Message);
+                runException = ex;
+            }
+
+            try
+            {
+                // Renew connection (not sure needed):
+                almConnection = new AlmConnection(m_AlmParameters);
+                var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
+                var almResults = new AlmResults(m_AlmParameters, testSetFactory);
+                almResults.SaveRunResults(almRunStatus, reportLink);
             }
             catch (Exception ex)
             {
                 SetStatus(AlmRunStatus.Failed, "Test run failed: " + ex.Message);
                 runException = ex;
             }
-
-            // Renew connection (not sure needed):
-            almConnection = new AlmConnection(m_AlmParameters);
-            var testSetFactory = (TestSetFactory) almConnection.Connection.TestSetFactory;
-            var almResults = new AlmResults(m_AlmParameters, testSetFactory);
-
-            almResults.SaveRunResults(reportLink);
-
             return runException != null ? 1 : 0;
         }
 
