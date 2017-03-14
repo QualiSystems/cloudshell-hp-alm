@@ -27,7 +27,12 @@ namespace CTSAddin
     /// </param>
     /// <returns></returns>
       public System.Drawing.Image TestTypeIcon(int status)
-      {
+      { 
+          // WARNING: don't move this code:
+          // The "SettingsFile" class is loaded from the "Quai sub folder (when running in ALM), so the "Hook" must be called first
+          if (SettingsFile.DebugMode)
+              Debugger.Launch();
+
           RegisterAgent.Register();
 
           return Resource.TestTypeImage;
