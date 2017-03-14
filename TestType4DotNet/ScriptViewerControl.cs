@@ -47,7 +47,7 @@ namespace CTSAddin
             {
                 m_Api = null;
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
-                ReadOnly = true;
+                Enabled = false;
             }
         }
 
@@ -56,7 +56,7 @@ namespace CTSAddin
         /// </summary>
         public bool ReadOnly
         {
-            set { Enabled = !value; }
+            set { }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace CTSAddin
         {
             if (string.IsNullOrWhiteSpace(m_TestPathUserFieldName))
             {
-                ReadOnly = true;
+                Enabled = false;
                 MessageBox.Show("TestPath field name is unknown", "Error", MessageBoxButtons.OK);
                 return;
             }
