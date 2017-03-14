@@ -1,4 +1,6 @@
 ﻿using HP.ALM.QC.UI.Modules.Shared.Api;
+using QS.ALM.CloudShellApi;
+using System.Diagnostics;
 
 namespace CTSAddin
 {
