@@ -1,5 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
+/// <summary>
+/// Handles communication between ALM and the testing tool.
+/// </summary>
 namespace CSRAgent
 {
     /// <summary>
@@ -145,3 +149,30 @@ namespace CSRAgent
     int get_value(string prm_name, ref string prm_value);
   }
 }
+
+/*
+ * From old documentation
+get_value Method
+Gets the value of a run parameter.
+
+Syntax
+
+Visual Basic
+Public Function get_value( _
+   ByVal prm_name As String, _
+   ByRef prm_value As String _
+) As Long
+Parameters
+
+prm_name
+The name of the parameter. For a list of parameters, see set_value.
+prm_value
+The value of the parameter.
+Return Type
+
+S_OK if the call succeeds. Any other HRESULT on error.
+Remarks
+
+For parameter names test_set_end and test_set_start, return YES if the agent requires this information. If YES is returned, set_value will be called with these parameters when their values change.
+
+ */

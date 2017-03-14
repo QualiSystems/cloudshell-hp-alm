@@ -9,7 +9,7 @@ namespace CSRAgent
 {
     class AlmTest
     {
-        private enum ParameterHtmlElements
+        private enum mHtml
         {
             HTML,
             HEAD,
@@ -30,37 +30,36 @@ namespace CSRAgent
 
         public TSTest FindTest(AlmConnection almConnection, AlmParameters almParameters)
         {
-            string testn;
-            var testSet = almParameters.TestSet;
-            var testSetSplit = testSet.Split(',');
-            var first = testSetSplit[0];
-            var firstSplit = first.Split('\"');
-
-            if (firstSplit[0].IndexOfAny("ntest_set".ToCharArray()) > -1)
+            string[] strParmsArr;
+            string testF = "";
+            string testn = "";
+            if (almParameters.TestSet.Split(',')[0].Split('\"')[0].IndexOfAny("ntest_set".ToCharArray()) > -1)
             {
-                var strParmsArr = firstSplit[1].Split('\\');
+                strParmsArr = almParameters.TestSet.Split(',')[0].Split('\"')[1].Split('\\');
+                testF = strParmsArr[2];
                 testn = strParmsArr[strParmsArr.Count() - 1];
-                //testF = strParmsArr[2];
+
             }
             else
             {
                 throw new Exception("ERROR 99"); 
             }
 
-            var testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
-            var tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
+            TestSetTreeManager testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
+            TestSetFolder tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
 
             var theTestSet = FindTestSet(tstSetFolder, testn);
             string testName = almParameters.TestName;
-            var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
-            var tsFilter = (TDFilter)tsTestFact.Filter;
+            string testId = /*Convert.ToInt32(*/almParameters.TestCycleIdInteger/*)*/;
+            var TSTestFact = (TSTestFactory)theTestSet.TSTestFactory;
+            var tsFilter = (TDFilter)TSTestFact.Filter;
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
-            var testList = tsTestFact.NewList(tsFilter.Text);
+            var testList = TSTestFact.NewList(tsFilter.Text);
 
-            foreach (TSTest tsTst in testList)
+            foreach (TSTest TSTst in testList)
             {
-                if (testName == tsTst.TestName)
-                    return tsTst;;
+                if (testName == TSTst.TestName && testId == (string)TSTst.ID)
+                    return TSTst;;
             }
 
             throw new Exception("ERROR 98"); //TODO
@@ -102,8 +101,20 @@ namespace CSRAgent
             {
                 foreach (ParameterValue element in testParametersVList)
                 {
-                    TestParameters item = new TestParameters(element.Name, GetParameterValue(element.ActualValue));
-                    parameters.Add(item);
+                    string str =  GetParameterValue(element.ActualValue);
+                    if(str == null || str == "")
+                    {
+                        str = GetParameterValue(element.DefaultValue);
+                    }
+                    if (str != "ERROR 1000")
+                    {
+                        TestParameters item = new TestParameters(element.Name, str);
+                        parameters.Add(item);
+                    }
+                    else
+                    {
+                        throw new Exception("ERROR 1000");
+                    }
                 }
             }
 
@@ -113,7 +124,6 @@ namespace CSRAgent
 
         private string GetParameterValue(object html)
         {
-            string str1 = "";
             string str = "";
             IHTMLDocument2 doc = (IHTMLDocument2)new HTMLDocument();
             doc.write((string)html);
@@ -121,33 +131,33 @@ namespace CSRAgent
             int count7 = 0;
             foreach (IHTMLElement el in doc.all)
             {
-                switch ((ParameterHtmlElements)count)
+                switch ((mHtml)count)
                 {
-                    case ParameterHtmlElements.HTML:
+                    case mHtml.HTML:
                         if (el.tagName == "HTML")
                             count += 1;
                         break;
-                    case ParameterHtmlElements.HEAD:
+                    case mHtml.HEAD:
                         if (el.tagName == "HEAD")
                             count += 1;
                         break;
-                    case ParameterHtmlElements.TITLE:
+                    case mHtml.TITLE:
                         if (el.tagName == "TITLE")
                             count += 1;
                         break;
-                    case ParameterHtmlElements.BODY:
+                    case mHtml.BODY:
                         if (el.tagName == "BODY")
                             count += 1;
                         break;
-                    case ParameterHtmlElements.DIV:
+                    case mHtml.DIV:
                         if (el.tagName == "DIV")
                             count += 1;
                         break;
-                    case ParameterHtmlElements.FONT:
+                    case mHtml.FONT:
                         if (el.tagName == "FONT")
                             count += 1;
                         break;
-                    case ParameterHtmlElements.SPAN:
+                    case mHtml.SPAN:
                         if (el.tagName == "SPAN")
                             count += 1;
                         break;
@@ -155,12 +165,13 @@ namespace CSRAgent
                 count7 += 1;
                 if (count == 7 && count7 == 7)
                 {
-                    //str1 = el.tagName;
                     str = el.getAttribute("outerText").ToString();
+                    break;
                 }
                 else if (count7 > count)
                 {
-                    return str;
+                    str = "ERROR 1000"; 
+                    break;
                 }
             }
             return str;
