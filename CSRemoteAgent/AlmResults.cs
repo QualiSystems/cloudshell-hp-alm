@@ -13,7 +13,7 @@ namespace CSRAgent
             m_TestSetFactory = testSetFactory;
         }
 
-        public void SaveRunResults(string runStatus)
+        public void SaveRunResults(string reportLink)
         {
             var testSetId = m_AlmParameters.TestSetId;
             var testSet = (TestSet)m_TestSetFactory[testSetId];
@@ -25,6 +25,13 @@ namespace CSRAgent
             run["RN_TESTER_NAME"] = m_AlmParameters.UserName;
             run["RN_HOST"] = m_AlmParameters.HostName;
             //run.Status = runStatus;
+            if (!string.IsNullOrWhiteSpace(reportLink))
+            {
+                StepFactory stepFact = (StepFactory)run.StepFactory;
+                object repLink = (object)reportLink;
+                Step newStep = (Step)stepFact.AddItem(repLink);
+                newStep.Post();
+            }
             run.Post();
         }
     }
