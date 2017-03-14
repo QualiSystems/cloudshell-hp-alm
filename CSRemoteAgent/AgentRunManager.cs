@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using QS.ALM.CloudShellApi;
 
-namespace CSRAgent
+namespace TestShellAgent
 {
     class AgentRunManager
     {

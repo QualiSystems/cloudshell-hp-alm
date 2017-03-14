@@ -8,7 +8,7 @@
     <ProjectGuid>{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSRAgent</RootNamespace>
+    <RootNamespace>TestShellAgent</RootNamespace>
     <AssemblyName>RemoteAgent</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

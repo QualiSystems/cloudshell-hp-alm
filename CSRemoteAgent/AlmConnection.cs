@@ -1,6 +1,6 @@
 ﻿using TDAPIOLELib;
 
-namespace CSRAgent
+namespace TestShellAgent
 {
     class AlmConnection
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSRAgent
+namespace TestShellAgent
 {
     enum AlmRunStatus
     {

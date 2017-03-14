@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace CSRAgent
+namespace TestShellAgent
 {
     /// <summary>
     /// Handles communication between ALM and the testing tool.

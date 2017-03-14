@@ -5,20 +5,20 @@ using System.Runtime.InteropServices;
 using QS.ALM.CloudShellApi;
 using TDAPIOLELib;
 
-[assembly: ApplicationName("Scotty CS Remote Agent")]
+[assembly: ApplicationName("TestShell Remote Agent")]
 [assembly: ApplicationActivation(ActivationOption.Server)]
 [assembly: ApplicationAccessControl(false)]
 
-namespace CSRAgent
+namespace TestShellAgent
 {
     [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("AlmCsRemoteAgent1152")]
-    public class CSRAgent : ServicedComponent, IRAgent
+    public class Agent : ServicedComponent, IRAgent
     {
         private readonly AlmParameters m_AlmParameters = new AlmParameters();
         private AlmRunStatus m_Status;
         private string m_StatusDesc;
 
-        public CSRAgent()
+        public Agent()
         {
             if (SettingsFile.DebugMode)
                 Debugger.Launch();
