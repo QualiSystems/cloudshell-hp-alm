@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
+using System.Diagnostics;
 
 namespace CTSAddin
 {
@@ -43,12 +44,24 @@ namespace CTSAddin
     /// </param>
     public void ShowResult(HP.ALM.QC.OTA.Entities.Api.IRun run)
     {
-      if (run == null)
-      {
-        m_textBox.Text = "no run result";
-        return;
-      }
-      m_textBox.Text = string.Format("showing run ({0}) in project {1}", run.Id, m_tdc.ProjectName);
+        if (run == null)
+        {
+            linkLabelReportResult.Text = "no run result";
+            linkLabelReportResult.Enabled = false;
+            return;
+        }
+        IRun2 legacyRun = (IRun2)((run as Mercury.TD.Client.Ota.Entities.Api.ILegacyBaseFieldProvider).LegacyBaseField);
+        StepFactory stepFact = (StepFactory)legacyRun.StepFactory;
+        List stepList = stepFact.NewList("");
+        foreach (Step step in stepList)
+        {
+            linkLabelReportResult.Text = step.Name;
+        }
+    }
+
+    private void linkLabelReportResult_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        Process.Start(linkLabelReportResult.Text);
     }
   }
 }
