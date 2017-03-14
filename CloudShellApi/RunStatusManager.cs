@@ -7,7 +7,6 @@ namespace QS.ALM.CloudShellApi
     {
         private readonly string m_RunGuid;
         private readonly ManualResetEvent m_Event = new ManualResetEvent(false);
-        private ExecutionJobResult m_RunResult;
         private Thread m_Worker;
         private readonly Api m_Api;
 
@@ -21,21 +20,20 @@ namespace QS.ALM.CloudShellApi
             Logger.Debug("QS.ALM.CloudShellApi.RunStatusManager(string runGuid, Api api), runGuid = {0}", m_RunGuid);
         }
 
-        public ExecutionJobResult WaitForRunEnd()
+        public void WaitForRunEnd()
         {
             m_Event.WaitOne();
-            return m_RunResult;
         }
 
         private void ThreadLoop()
         {
-            string contentError = null;
-            bool isSuccess = false;
-
             try
             {
                 while (true)
                 {
+                    string contentError;
+                    bool isSuccess;
+
                     if (HasRunEnded(m_Api.GetRunStatus(m_RunGuid, out contentError, out isSuccess)))
                         break;
 
@@ -51,7 +49,6 @@ namespace QS.ALM.CloudShellApi
                 Logger.Error("Unexpected error in RunStatusManager: {0}", ex);
             }
 
-            m_RunResult = GetRunResult(m_Api.GetRunResult(m_RunGuid, out contentError, out isSuccess));
             m_Event.Set();
         }
 
@@ -72,16 +69,25 @@ namespace QS.ALM.CloudShellApi
             return false;
         }
 
-        private static ExecutionJobResult GetRunResult(ApiSuiteDetails cloudShellStatus)
+        public static ExecutionJobResult GetRunResult(ApiSuiteDetails cloudShellStatus)
         {
             if (cloudShellStatus == null)
             {
-                Logger.Error("Method QS.ALM.CloudShellApi.RunStatusManager.GetRunResult object ApiSuiteDetails is null");
+                Logger.Error("cloudShellStatus is null");
                 return ExecutionJobResult.Unknown;
             }
-            Logger.Debug("Method QS.ALM.CloudShellApi.RunStatusManager.GetRunResult ApiSuiteStatusDetails.SuiteStatus = {0}", cloudShellStatus.JobsDetails[0].JobResult);
+
+            if (cloudShellStatus.JobsDetails.Length == 0)
+            {
+                Logger.Error("cloudShellStatus.JobsDetails is null");
+                return ExecutionJobResult.Unknown;
+            }
+
+            var jobResult = cloudShellStatus.JobsDetails[0].JobResult;
+
+            Logger.Debug("Method QS.ALM.CloudShellApi.RunStatusManager.GetRunResult ApiSuiteStatusDetails.SuiteStatus = {0}", jobResult);
             
-            switch(cloudShellStatus.JobsDetails[0].JobResult)
+            switch(jobResult)
             {
                 case "NotStarted" :
                     return ExecutionJobResult.NotStarted;
@@ -101,7 +107,7 @@ namespace QS.ALM.CloudShellApi
                     return ExecutionJobResult.ManuallyStopped;
                 default :
                     Logger.Error("Method QS.ALM.CloudShellApi.RunStatusManager.GetRunResult ApiSuiteStatusDetails.SuiteStatus = {0}", 
-                        cloudShellStatus.JobsDetails[0].JobResult);
+                        jobResult);
                     return ExecutionJobResult.Unknown;
             }
         }

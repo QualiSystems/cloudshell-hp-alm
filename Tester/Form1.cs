@@ -41,12 +41,9 @@ namespace Tester
             {
                 MessageBox.Show("Result Test = \"" + guiId + '\"', "Returned Key", MessageBoxButtons.OK);
 
-                ExecutionJobResult runResult;
-
                 using (var runStatusManager = new RunStatusManager(m_Api, guiId))
-                    runResult = runStatusManager.WaitForRunEnd();
+                    runStatusManager.WaitForRunEnd();
 
-                MessageBox.Show("Run Result = " + runResult.ToString());
 
                 //~TODO: write the runResult to ALM ...
             }
