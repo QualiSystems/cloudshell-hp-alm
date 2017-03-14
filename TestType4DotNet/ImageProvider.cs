@@ -11,8 +11,7 @@ namespace CTSAddin
   {
       static ImageProvider()
       {
-          if (SettingsFile.DebugMode)
-              Debugger.Launch();
+        
 
           // The "ImageProvider" ctor is called in a very early stage of the integration, just before the user is logged into ALM project.
           // We use this point to hook the sub folder resolver
@@ -32,7 +31,12 @@ namespace CTSAddin
     /// </param>
     /// <returns></returns>
       public System.Drawing.Image TestTypeIcon(int status)
-      {
+      { 
+          // WARNING: don't move this code:
+          // The "SettingsFile" class is loaded from the "Quai sub folder (when running in ALM), so the "Hook" must be called first
+          if (SettingsFile.DebugMode)
+              Debugger.Launch();
+
           RegisterAgent.Register();
 
           return Resource.TestTypeImage;
