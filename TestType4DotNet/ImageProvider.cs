@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using HP.ALM.QC.UI.Modules.Shared.Api;
-using QS.ALM.CloudShellApi;
+﻿using HP.ALM.QC.UI.Modules.Shared.Api;
 
 namespace CTSAddin
 {
@@ -11,8 +9,6 @@ namespace CTSAddin
   {
       static ImageProvider()
       {
-        
-
           // The "ImageProvider" ctor is called in a very early stage of the integration, just before the user is logged into ALM project.
           // We use this point to hook the sub folder resolver
           SubFolderResovler.Hook();
