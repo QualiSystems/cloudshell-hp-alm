@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
-namespace CTSAddin
+namespace TestShellTestType
 {
     static class RegisterAgent
     {
         public static void Register()
         {
-            var assemblyPath = Path.Combine(SubFolderResovler.QualiSubFolder, "RemoteAgent.dll");
+            var assemblyPath = Path.Combine(SubFolderResovler.QualiSubFolder, "TestShellAgent.dll");
 
             var process = new Process();
 

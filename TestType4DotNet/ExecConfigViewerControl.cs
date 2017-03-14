@@ -2,7 +2,7 @@
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 
-namespace CTSAddin
+namespace TestShellTestType
 {
     /// <summary>
     /// Configures the testing tool for execution of a single test instance. This component is optional.

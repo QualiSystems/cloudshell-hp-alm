@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Infragistics.Win.UltraWinTree;
 using QS.ALM.CloudShellApi;
 
-namespace CTSAddin
+namespace TestShellTestType
 {
     /// <summary>
     /// Class dialog Form for present tree control for selecting test.

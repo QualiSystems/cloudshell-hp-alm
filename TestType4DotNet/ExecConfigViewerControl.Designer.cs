@@ -1,4 +1,4 @@
-﻿namespace CTSAddin
+﻿namespace TestShellTestType
 {
   partial class ExecConfigViewerControl
   {

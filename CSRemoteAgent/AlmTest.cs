@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TDAPIOLELib;
 
-namespace CSRAgent
+namespace TestShellAgent
 {
     class AlmTest
     {
@@ -105,12 +105,12 @@ namespace CSRAgent
             {
                 foreach (ParameterValue element in testParametersVList)
                 {
-                    string str = GetParameterValue(element.Name, element.ActualValue);
-                    
-                    if(string.IsNullOrEmpty(str))
-                        str = GetParameterValue(element.Name, element.DefaultValue);
-                    
-                    var item = new TestParameters(element.Name, str);
+                    string value = GetParameterValue(element.Name, element.ActualValue);
+
+                    if (string.IsNullOrEmpty(value))
+                        value = GetParameterValue(element.Name, element.DefaultValue);
+
+                    var item = new TestParameters(element.Name, value);
                     parameters.Add(item);
                 }
             }

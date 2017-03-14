@@ -5,20 +5,20 @@ using System.Runtime.InteropServices;
 using QS.ALM.CloudShellApi;
 using TDAPIOLELib;
 
-[assembly: ApplicationName("Scotty CS Remote Agent")]
+[assembly: ApplicationName("TestShell Remote Agent")]
 [assembly: ApplicationActivation(ActivationOption.Server)]
 [assembly: ApplicationAccessControl(false)]
 
-namespace CSRAgent
+namespace TestShellAgent
 {
-    [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("AlmCsRemoteAgent1152")]
-    public class CSRAgent : ServicedComponent, IRAgent
+    [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("TestShellRemoteAgent1221")]
+    public class Agent : ServicedComponent, IRAgent
     {
         private readonly AlmParameters m_AlmParameters = new AlmParameters();
         private AlmRunStatus m_Status;
         private string m_StatusDesc;
 
-        public CSRAgent()
+        public Agent()
         {
             if (SettingsFile.DebugMode)
                 Debugger.Launch();
@@ -67,6 +67,7 @@ namespace CSRAgent
             Exception runException = null;
             AlmConnection almConnection;
             string reportLink = null;
+            AlmRunStatus almRunStatus;
 
             try
             {
@@ -77,29 +78,37 @@ namespace CSRAgent
                 var testParameters = almTestHelper.GetTestParameters(test);
 
                 // Run the test
-                var api = new Api(almConnection.Connection);
+                var api = new Api(almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
                 var agentRunManager = new AgentRunManager(api, testPath, testParameters);
                 var runGuid = agentRunManager.RunTest();
 
                 var apiDetail = GetSuiteResult(api, runGuid);
                 var runResultStatus = RunStatusManager.GetRunResult(apiDetail);
                 reportLink = apiDetail.JobsDetails[0].Tests[0].ReportLink;
+                almRunStatus = AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus);
 
-                SetStatus(AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus), "Test run: " + runResultStatus);
+                SetStatus(almRunStatus, "Test run: " + runResultStatus);
+            }
+            catch (Exception ex)
+            {
+                almRunStatus = AlmRunStatus.Failed;
+                SetStatus(almRunStatus, "Test run failed: " + ex.Message);
+                runException = ex;
+            }
+
+            try
+            {
+                // Renew connection (not sure needed):
+                almConnection = new AlmConnection(m_AlmParameters);
+                var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
+                var almResults = new AlmResults(m_AlmParameters, testSetFactory);
+                almResults.SaveRunResults(almRunStatus, reportLink);
             }
             catch (Exception ex)
             {
                 SetStatus(AlmRunStatus.Failed, "Test run failed: " + ex.Message);
                 runException = ex;
             }
-
-            // Renew connection (not sure needed):
-            almConnection = new AlmConnection(m_AlmParameters);
-            var testSetFactory = (TestSetFactory) almConnection.Connection.TestSetFactory;
-            var almResults = new AlmResults(m_AlmParameters, testSetFactory);
-
-            almResults.SaveRunResults(reportLink);
-
             return runException != null ? 1 : 0;
         }
 

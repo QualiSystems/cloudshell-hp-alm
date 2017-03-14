@@ -7,7 +7,7 @@ using Mercury.TD.Client.Ota.Api;
 using Mercury.TD.Client.Ota.Core;
 
 
-namespace CTSAddin
+namespace TestShellTestType
 {
     /// <summary>
     /// Handles displaying test scripts from the project repository in the ALM user interface.

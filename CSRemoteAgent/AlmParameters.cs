@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace CSRAgent
+namespace TestShellAgent
 {
     class AlmParameters
     {

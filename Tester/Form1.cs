@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Collections.Generic;
 using QS.ALM.CloudShellApi;
-using CTSAddin;
+using TestShellTestType;
 
 namespace Tester
 {
@@ -15,7 +15,7 @@ namespace Tester
             InitializeComponent();
             try
             {
-                m_Api = new Api("http://192.168.42.35:9000", "admin", "admin", null, null, AuthenticationMode.Alm, "Global");
+                m_Api = new Api("http://192.168.42.35:9000", null, null, "admin", "admin", AuthenticationMode.CloudShell, "Global");
             }
             catch (Exception ex)
             {
