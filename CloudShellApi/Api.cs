@@ -14,7 +14,8 @@ namespace QS.ALM.CloudShellApi
         private string m_UserName;
         private string m_UserPassword;
         private string m_Domain;
-        //private ITDConnection m_tdc;
+        private string m_SuiteName;
+        private string m_JobName;
 
         public Api(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
         {
@@ -23,17 +24,17 @@ namespace QS.ALM.CloudShellApi
 
         public Api(ITDConnection tdConnection)
         {
-            TDConnectionServant conectionServant = new TDConnectionServant(tdConnection);
-            string url = conectionServant.GetTdParam("QS_SERVER_URL");
-            string almUsername = conectionServant.GetTdParam("QS_USERNAME");
-            string almPassword = conectionServant.GetTdParam("QS_PASSWORD");            
-            string domain = conectionServant.GetTdParam("QS_DOMAIN");
-            AuthenticationMode mode = conectionServant.GetAlmMode();
+            var conectionServant = new TDConnectionServant(tdConnection);
+            var url = conectionServant.GetTdParam("QS_SERVER_URL");
+            var almUsername = conectionServant.GetTdParam("QS_USERNAME");
+            var almPassword = conectionServant.GetTdParam("QS_PASSWORD");            
+            var domain = conectionServant.GetTdParam("QS_DOMAIN");
+            var mode = conectionServant.GetAlmMode();
+
+            m_SuiteName = conectionServant.GetTdParam("CLOUDSHELL_SUITE_NAME", "ALM Suite"); // Changing suite name is undocumented
+            m_JobName = conectionServant.GetTdParam("CLOUDSHELL_JOB_NAME", "ALM Job"); // Changing job name is undocumented
                                  
             Init(url, almUsername, almPassword, null, null, mode, domain);
-
-            //string localUsername = tdConnection.UserName;
-            //string localUserPas = tdConnection.Password;
         }
 
         private void Init(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
@@ -199,7 +200,7 @@ namespace QS.ALM.CloudShellApi
             var request = new RestRequest("/api/Scheduling/Suites/", Method.POST);
             request.AddHeader("Authorization", authorization);
             request.AddHeader("Content-Type", "application/json");
-            request.AddJsonBody(new ApiSuiteTemplateDetails("TestShell\\Tests\\" + testPath.Replace('/', '\\'), parameters));
+            request.AddJsonBody(new ApiSuiteTemplateDetails(m_SuiteName, m_JobName, "TestShell\\Tests\\" + testPath.Replace('/', '\\'), parameters));
             string content = ExecuteServerRequest(client, request, "RunTest", out contentError, out isSuccess);
             if (content == null)
             {
