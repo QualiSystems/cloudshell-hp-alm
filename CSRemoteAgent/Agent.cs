@@ -43,7 +43,6 @@ namespace CSRAgent
         public int is_host_ready(ref string descr)
         {
             descr = "Ready";
-            MessageBox.Show("Host is ready!");
             return 0;
         }
 
