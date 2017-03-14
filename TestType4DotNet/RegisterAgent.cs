@@ -9,7 +9,7 @@ namespace CTSAddin
     {
         public static void Register()
         {
-            var assemblyPath = Path.Combine(SubFolderResovler.QualiSubFolder, "RemoteAgent.dll");
+            var assemblyPath = Path.Combine(SubFolderResovler.QualiSubFolder, "TestShellAgent.dll");
 
             var process = new Process();
 
