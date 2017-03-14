@@ -172,13 +172,9 @@ namespace CSRAgent
                 
                 if (count7 > count)
                 {
-                    break;
+                    throw new Exception(string.Format("Parameter value must contain plain text only. Please make sure that the value of parameter '{0}' has no special formatting or other html elements such as tables, numbering, bullets, bold, italic, etc ...", parameterName));
                 }
             }
-
-            if (parameterValue == null)
-                throw new Exception(string.Format("Parameter value must contain plain text only. Please make sure that the value of parameter '{0}' has no special formatting or other html elements such as tables, numbering, bullets, bold, italic, etc ...", parameterName));
-
             return parameterValue;
         }
     }
