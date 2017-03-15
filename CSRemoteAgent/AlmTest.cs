@@ -39,7 +39,11 @@ namespace TestShellAgent
 
             if (firstSplit[0].IndexOfAny("ntest_set".ToCharArray()) > -1)
             {
-                var strParmsArr = firstSplit[1].Split('\\');
+                string [] strParmsArr;
+                if(firstSplit.Length > 1)
+                   strParmsArr = firstSplit[1].Split('\\');
+                else
+                   strParmsArr = firstSplit[0].Split('\\');
                 //testF = strParmsArr[2];
                 testn = strParmsArr[strParmsArr.Count() - 1];
 
