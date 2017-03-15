@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Collections.Generic;
 using QS.ALM.CloudShellApi;
-using TestShellTestType;
+using TestType;
 
 namespace Tester
 {

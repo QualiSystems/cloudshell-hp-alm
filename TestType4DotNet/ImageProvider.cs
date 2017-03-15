@@ -2,7 +2,7 @@
 using QS.ALM.CloudShellApi;
 using System.Diagnostics;
 
-namespace TestShellTestType
+namespace TestType
 {
     /// <summary>
     /// Gets the test type's icons for display in the user interface.

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestShellTestType {
+namespace TestType {
     using System;
     
     

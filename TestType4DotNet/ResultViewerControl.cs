@@ -10,7 +10,7 @@ using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 using System.Diagnostics;
 
-namespace TestShellTestType
+namespace TestType
 {
   /// <summary>
   /// Handles display of test run results in the ALM user interface. This component is optional.

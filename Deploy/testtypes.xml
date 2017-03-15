@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <TestTypes>
-	<!--<TestType name="LEANFT-TEST">
+	<TestType name="LEANFT-TEST">
   		<CLSID>68ec975e-3cb8-49c1-bf4c-b69112520d7c</CLSID>
   		<ImageProviderCLSID>LeanFT.ImageProvider,LeanFT</ImageProviderCLSID>
   		<ScriptViewerCLSID>LeanFT.ScriptViewerControl,LeanFT</ScriptViewerCLSID>
-  		<ExecutionConfigurationViewerCLSID>LeanFT.ExecConfigViewerControl,LeanFT</ExecutionConfigurationViewerCLSID>
+  		<!--<ExecutionConfigurationViewerCLSID>LeanFT.ExecConfigViewerControl,LeanFT</ExecutionConfigurationViewerCLSID>-->
   		<ResultViewerCLSID>LeanFT.ResultScriptViewerControl,LeanFT</ResultViewerCLSID>
   		<RemoteAgentCLSID>943944ca-3e86-4eb8-8148-aea9f057b076</RemoteAgentCLSID>
-  	</TestType>-->
+  	</TestType>
   	<TestType name="TestShell">
   		<CLSID>62C8FE65-4EBB-45e7-B440-6E39B2CDBF29</CLSID>
-  		<ImageProviderCLSID>TestShellTestType.ImageProvider, TestShellTestType</ImageProviderCLSID>
-  		<ScriptViewerCLSID>TestShellTestType.ScriptViewerControl, TestShellTestType</ScriptViewerCLSID>
-  		<ExecutionConfigurationViewerCLSID>TestShellTestType.ExecConfigViewerControl, TestShellTestType</ExecutionConfigurationViewerCLSID>
-  		<ResultViewerCLSID>TestShellTestType.ResultViewerControl, TestShellTestType</ResultViewerCLSID>
+  		<ImageProviderCLSID>TestType.ImageProvider,TestShellTestType</ImageProviderCLSID>
+  		<ScriptViewerCLSID>TestType.ScriptViewerControl,TestShellTestType</ScriptViewerCLSID>
+  		<ExecutionConfigurationViewerCLSID>TestType.ExecConfigViewerControl,TestShellTestType</ExecutionConfigurationViewerCLSID>
+  		<ResultViewerCLSID>TestType.ResultViewerControl,TestShellTestType</ResultViewerCLSID>
   		<RemoteAgentCLSID>479DFA08-CF6D-4890-AAAF-7CAFC39B6974</RemoteAgentCLSID>
   	</TestType>
 </TestTypes>

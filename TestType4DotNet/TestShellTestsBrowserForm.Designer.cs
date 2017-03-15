@@ -1,4 +1,4 @@
-﻿namespace TestShellTestType
+﻿namespace TestType
 {
     partial class TestShellTestsBrowserForm
     {
