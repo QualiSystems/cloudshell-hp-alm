@@ -26,10 +26,10 @@ namespace QS.ALM.CloudShellApi
         public Api(ITDConnection tdConnection, string cloudShellUsername = null, string cloudShellPassword = null)
         {
             var conectionServant = new TDConnectionServant(tdConnection);
-            var url = conectionServant.GetTdParam("QS_SERVER_URL");
-            var almUsername = conectionServant.GetTdParam("QS_USERNAME");
-            var almPassword = conectionServant.GetTdParam("QS_PASSWORD");            
-            var domain = conectionServant.GetTdParam("QS_DOMAIN");
+            var url = conectionServant.GetTdParam("CLOUDSHELL_SERVER_URL");
+            var almUsername = conectionServant.GetTdParam("CLOUDSHELL_USERNAME");
+            var almPassword = conectionServant.GetTdParam("CLOUDSHELL_PASSWORD");
+            var domain = conectionServant.GetTdParam("CLOUDSHELL_DOMAIN");
             var mode = conectionServant.GetAlmMode();
 
             m_SuiteName = conectionServant.GetTdParam("CLOUDSHELL_SUITE_NAME", "ALM Suite"); // Changing suite name is undocumented
