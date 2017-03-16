@@ -1,6 +1,6 @@
 ﻿using TDAPIOLELib;
 
-namespace TestShellAgent
+namespace TsAlmRunner
 {
     class AlmConnection
     {

@@ -35,7 +35,7 @@ namespace TsTestType
           if (SettingsFile.DebugMode)
               Debugger.Launch();
 
-          //RegisterAgent.Register();
+          RegisterAgent.Register();
 
           return Resource.TestTypeImage;
       }

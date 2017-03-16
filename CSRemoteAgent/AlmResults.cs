@@ -1,7 +1,7 @@
 ﻿using QS.ALM.CloudShellApi;
 using TDAPIOLELib;
 
-namespace TestShellAgent
+namespace TsAlmRunner
 {
     class AlmResults
     {

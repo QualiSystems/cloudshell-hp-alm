@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace TestShellAgent
+namespace TsAlmRunner
 {
     /// <summary>
     /// Handles communication between ALM and the testing tool.

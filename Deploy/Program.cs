@@ -10,7 +10,7 @@ namespace QS.ALM.Deploy
     class Program
     {
         private const string TestTypeDllName = "TsTestType.dll";
-        private const string AgentDllName = "TestShellAgent.dll";
+        private const string RunnerDllName = "TsAlmRunner.dll";
         
         private const string AlmServerRoot = @"C:\ProgramData\HP\ALM\webapps\qcbin";
         static string m_SolutionRoot;
@@ -207,7 +207,8 @@ namespace QS.ALM.Deploy
         {
             // see options help: http://helpfiles.intactcloud.com/ALM/11.52/hp_man_ALM11.52_Custom_TestType_Dev_zip/CustomTestTypeNET/Content/cttIniFileParams.htm
             //return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
-            return filename.ToLower() == AgentDllName.ToLower() ? "DotNet=Y" + Environment.NewLine : "";
+            //return filename.ToLower() == RunnerDllName.ToLower() ? "DotNet=Y" + Environment.NewLine : "";
+            return "";
         }
     }
 }
