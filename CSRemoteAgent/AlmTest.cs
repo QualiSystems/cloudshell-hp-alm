@@ -20,18 +20,20 @@ namespace TestShellAgent
             SPAN
         }
 
-        public string GetTestPath(TSTest test)
+        public string GetTestPath(AlmConnection almConnection,TSTest test)
         {
+            string m_TestPathUserFieldName = new TDConnectionServant(almConnection.Connection).GetQualiTestPathFieldName();
+            //if (m_TestPathUserFieldName != null && m_TestPathUserFieldName != "")
+                //return m_TestPathUserFieldName;
             var theTest = (TDAPIOLELib.Test)test.Test;
-            if (theTest["TS_USER_01"] != null)
-                return theTest["TS_USER_01"].ToString();
-            
+            if (theTest[m_TestPathUserFieldName] != null)
+                return theTest[m_TestPathUserFieldName].ToString(); 
             throw new Exception("Test path not selected");
         }
 
         public TSTest FindTest(AlmConnection almConnection, AlmParameters almParameters)
         {
-            string testn;
+            string runTestName;
             var testSet = almParameters.TestSet;
             var testSetSplit = testSet.Split(',');
             var first = testSetSplit[0];
@@ -44,21 +46,20 @@ namespace TestShellAgent
                    strParmsArr = firstSplit[1].Split('\\');
                 else
                    strParmsArr = firstSplit[0].Split('\\');
-                //testF = strParmsArr[2];
-                testn = strParmsArr[strParmsArr.Count() - 1];
+                runTestName = strParmsArr[strParmsArr.Count() - 1];
 
             }
             else
             {
-                throw new Exception("ERROR 99");
+                throw new Exception("Can't Find the Set Test Pleas creat new one");
             }
 
             var testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
             var tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
-
-            var theTestSet = FindTestSet(tstSetFolder, testn);
             var testName = almParameters.TestName;
             var testId = almParameters.TestCycleIdInteger;
+
+            var theTestSet = FindTestSet(tstSetFolder, runTestName);
             var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
             var tsFilter = (TDFilter)tsTestFact.Filter;
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
@@ -70,7 +71,7 @@ namespace TestShellAgent
                     return tsTst;;
             }
 
-            throw new Exception("ERROR 98"); //TODO
+            throw new Exception("Can't return the Set Remove the test set you great now and mack new One");
         }
 
         private static TestSet FindTestSet(TestSetFolder testSetF, string tsName)

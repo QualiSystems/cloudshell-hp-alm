@@ -74,7 +74,7 @@ namespace TestShellAgent
                 almConnection = new AlmConnection(m_AlmParameters);
                 var almTestHelper = new AlmTest();
                 var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
-                var testPath = almTestHelper.GetTestPath(test);
+                var testPath = almTestHelper.GetTestPath(almConnection,test);
                 var testParameters = almTestHelper.GetTestParameters(test);
 
                 // Run the test
