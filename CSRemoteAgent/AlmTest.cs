@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TDAPIOLELib;
 
-namespace TestShellAgent
+namespace TsAlmRunner
 {
     class AlmTest
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace TestShellAgent
+namespace TsAlmRunner
 {
     class AlmParameters
     {

@@ -82,6 +82,7 @@ namespace TsTestType
                 m_Api = null;
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
                 Enabled = false;
+                return;
             }
 
             TextBoxPath.Text = m_CurrentTest[m_TestPathUserFieldName] == null ? "" : m_CurrentTest[m_TestPathUserFieldName].ToString();

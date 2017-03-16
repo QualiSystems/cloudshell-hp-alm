@@ -9,9 +9,9 @@ using TDAPIOLELib;
 [assembly: ApplicationActivation(ActivationOption.Server)]
 [assembly: ApplicationAccessControl(false)]
 
-namespace TestShellAgent
+namespace TsAlmRunner
 {
-    [Guid("479DFA08-CF6D-4890-AAAF-7CAFC39B6974"), ComVisible(true), ProgId("TestShellRemoteAgent1221")]
+    [Guid("E8A238DD-6D7E-4085-969D-700273173385"), ComVisible(true), ProgId("TestShellRemoteAgent1221")]
     public class Agent : ServicedComponent, IRAgent
     {
         private readonly AlmParameters m_AlmParameters = new AlmParameters();
