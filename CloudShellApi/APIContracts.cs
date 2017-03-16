@@ -90,10 +90,10 @@ namespace QS.ALM.CloudShellApi
     
     public class ApiSuiteTemplateDetails
     {
-        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, List<TestParameters> parameters)
+        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, int estimatedDuration, List<TestParameters> parameters)
         {
             SuiteName = suiteName;
-            JobsDetails = new[] { new ApiJobTemplate(jobName, testPath, parameters) };
+            JobsDetails = new[] { new ApiJobTemplate(jobName, testPath, estimatedDuration, parameters) };
         }
 
         public string SuiteTemplateName { get; set; }
@@ -109,9 +109,10 @@ namespace QS.ALM.CloudShellApi
 
     public class ApiJobTemplate
     {
-        public ApiJobTemplate(string jobName, string testPath, List<TestParameters> parameters)
+        public ApiJobTemplate(string jobName, string testPath, int estimatedDuration, List<TestParameters> parameters)
         {
             Name = jobName;
+            EstimatedDuration = estimatedDuration;
             Tests = new Test[] {new Test(testPath, parameters)};
         }
 
@@ -132,10 +133,7 @@ namespace QS.ALM.CloudShellApi
             get { return Config.LoggingProfile; }
         }
 
-        public int EstimatedDuration
-        {
-            get { return 10; }
-        }
+        public int EstimatedDuration { get; set; }
 
         public bool StopOnFail
         {
