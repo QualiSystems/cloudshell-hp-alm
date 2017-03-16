@@ -267,6 +267,10 @@ namespace QS.ALM.CloudShellApi
             return GetServerObject<APITestExplorerTestInfo>("/api/Scheduling/TestInfo/" + path, "GetTestParameter", out contentError, out isSuccess);
         }
 
+        public dynamic GetStringFromJson(string jsonSTR )
+        {
+            return JsonConvert.DeserializeObject(jsonSTR);
+        }
         private T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
         {
             string authorization;

@@ -72,13 +72,14 @@ namespace TestShellAgent
             try
             {
                 almConnection = new AlmConnection(m_AlmParameters);
+                var api = new Api(almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
+;
                 var almTestHelper = new AlmTest();
-                var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
+                var test = almTestHelper.FindTest(api ,almConnection, m_AlmParameters);
                 var testPath = almTestHelper.GetTestPath(almConnection,test);
                 var testParameters = almTestHelper.GetTestParameters(test);
 
                 // Run the test
-                var api = new Api(almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
                 var agentRunManager = new AgentRunManager(api, testPath, testParameters);
                 var runGuid = agentRunManager.RunTest();
 
