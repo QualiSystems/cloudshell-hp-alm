@@ -22,12 +22,12 @@ namespace TestShellAgent
 
         public string GetTestPath(AlmConnection almConnection,TSTest test)
         {
-            string m_TestPathUserFieldName = new TDConnectionServant(almConnection.Connection).GetQualiTestPathFieldName();
-            //if (m_TestPathUserFieldName != null && m_TestPathUserFieldName != "")
-                //return m_TestPathUserFieldName;
+            string testPathUserFieldName = new TDConnectionServant(almConnection.Connection).GetQualiTestPathFieldName();
             var theTest = (TDAPIOLELib.Test)test.Test;
-            if (theTest[m_TestPathUserFieldName] != null)
-                return theTest[m_TestPathUserFieldName].ToString(); 
+            
+            if (theTest[testPathUserFieldName] != null)
+                return theTest[testPathUserFieldName].ToString(); 
+
             throw new Exception("Test path not selected");
         }
 
@@ -51,7 +51,7 @@ namespace TestShellAgent
             }
             else
             {
-                throw new Exception("Can't Find the Set Test Pleas creat new one");
+                throw new Exception(string.Format("Test not found under Test Set '{0}'", testSet));
             }
 
             var testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
@@ -68,10 +68,10 @@ namespace TestShellAgent
             foreach (TSTest tsTst in testList)
             {
                 if (testName == tsTst.TestName && testId == (string)tsTst.ID)
-                    return tsTst;;
+                    return tsTst;
             }
 
-            throw new Exception("Can't return the Set Remove the test set you great now and mack new One");
+            throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under Test Set '{2}'", testName, testId, theTestSet.ID));
         }
 
         private static TestSet FindTestSet(TestSetFolder testSetF, string tsName)

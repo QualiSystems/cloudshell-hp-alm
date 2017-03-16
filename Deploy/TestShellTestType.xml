@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <TestTypes>
+  	<TestType name="TestShell">
+  		<CLSID>5FAE68EB-A552-449D-BD81-B85650577727</CLSID>
+  		<ImageProviderCLSID>TsTestType.ImageProvider,TsTestType</ImageProviderCLSID>
+  		<ScriptViewerCLSID>TsTestType.ScriptViewer,TsTestType</ScriptViewerCLSID>
+  		<ExecutionConfigurationViewerCLSID>TsTestType.ExecConfigViewer,TsTestType</ExecutionConfigurationViewerCLSID>
+  		<ResultViewerCLSID>TsTestType.ResultViewer,TsTestType</ResultViewerCLSID>
+  		<RemoteAgentCLSID>479DFA08-CF6D-4890-AAAF-7CAFC39B6974</RemoteAgentCLSID>
+  	</TestType>
+</TestTypes>

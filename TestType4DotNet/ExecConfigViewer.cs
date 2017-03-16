@@ -2,16 +2,16 @@
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 
-namespace TestType
+namespace TsTestType
 {
     /// <summary>
     /// Configures the testing tool for execution of a single test instance. This component is optional.
     /// </summary>
-  public partial class ExecConfigViewerControl : UserControl, IExecutionConfigurationViewer
+  public partial class ExecConfigViewer : UserControl, IExecutionConfigurationViewer
   {
     private ITDConnection m_tdc;
 
-    public ExecConfigViewerControl()
+    public ExecConfigViewer()
     {
       InitializeComponent();
     }

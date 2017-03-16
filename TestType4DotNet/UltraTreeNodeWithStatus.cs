@@ -1,6 +1,6 @@
 ﻿using Infragistics.Win.UltraWinTree;
 
-namespace TestType
+namespace TsTestType
 {
     /// <summary>
     /// Status node for filling data step by step on request

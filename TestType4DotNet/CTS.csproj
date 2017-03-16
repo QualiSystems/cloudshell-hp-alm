@@ -8,8 +8,8 @@
     <ProjectGuid>{E645EFAC-A997-4078-8A3C-87F2E80A77EC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestShellTestType</RootNamespace>
-    <AssemblyName>TestShellTestType</AssemblyName>
+    <RootNamespace>TsTestType</RootNamespace>
+    <AssemblyName>TsTestType</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\TestShellTestType.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\TsTestType.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -107,11 +107,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExecConfigViewerControl.cs">
+    <Compile Include="ExecConfigViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ExecConfigViewerControl.Designer.cs">
-      <DependentUpon>ExecConfigViewerControl.cs</DependentUpon>
+    <Compile Include="ExecConfigViewer.Designer.cs">
+      <DependentUpon>ExecConfigViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="ImageProvider.cs" />
     <Compile Include="SubFolderResovler.cs" />
@@ -122,17 +122,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Include="ResultViewerControl.cs">
+    <Compile Include="ResultViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ResultViewerControl.Designer.cs">
-      <DependentUpon>ResultViewerControl.cs</DependentUpon>
+    <Compile Include="ResultViewer.Designer.cs">
+      <DependentUpon>ResultViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScriptViewerControl.cs">
+    <Compile Include="ScriptViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ScriptViewerControl.Designer.cs">
-      <DependentUpon>ScriptViewerControl.cs</DependentUpon>
+    <Compile Include="ScriptViewer.Designer.cs">
+      <DependentUpon>ScriptViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="TestShellTestsBrowserForm.cs">
       <SubType>Form</SubType>
@@ -143,19 +143,19 @@
     <Compile Include="UltraTreeNodeWithStatus.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ExecConfigViewerControl.resx">
-      <DependentUpon>ExecConfigViewerControl.cs</DependentUpon>
+    <EmbeddedResource Include="ExecConfigViewer.resx">
+      <DependentUpon>ExecConfigViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ResultViewerControl.resx">
-      <DependentUpon>ResultViewerControl.cs</DependentUpon>
+    <EmbeddedResource Include="ResultViewer.resx">
+      <DependentUpon>ResultViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ScriptViewerControl.resx">
-      <DependentUpon>ScriptViewerControl.cs</DependentUpon>
+    <EmbeddedResource Include="ScriptViewer.resx">
+      <DependentUpon>ScriptViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestShellTestsBrowserForm.resx">
       <DependentUpon>TestShellTestsBrowserForm.cs</DependentUpon>

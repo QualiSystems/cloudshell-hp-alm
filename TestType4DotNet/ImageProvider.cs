@@ -2,7 +2,7 @@
 using QS.ALM.CloudShellApi;
 using System.Diagnostics;
 
-namespace TestType
+namespace TsTestType
 {
     /// <summary>
     /// Gets the test type's icons for display in the user interface.
@@ -35,7 +35,7 @@ namespace TestType
           if (SettingsFile.DebugMode)
               Debugger.Launch();
 
-          RegisterAgent.Register();
+          //RegisterAgent.Register();
 
           return Resource.TestTypeImage;
       }

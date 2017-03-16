@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace TestType
+namespace TsTestType
 {
     /// <summary>
     /// This class helps ALM to load the required assemblies for this test type from a sub-folder under the client folder.
