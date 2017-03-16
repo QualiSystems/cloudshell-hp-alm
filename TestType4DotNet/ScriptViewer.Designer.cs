@@ -1,6 +1,6 @@
-﻿namespace TestType
+﻿namespace TsTestType
 {
-  partial class ScriptViewerControl
+  partial class ScriptViewer
   {
     /// <summary> 
     /// Required designer variable.
@@ -28,7 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptViewerControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptViewer));
             this.TextBoxPath = new System.Windows.Forms.TextBox();
             this.labelTestPath = new System.Windows.Forms.Label();
             this.ButtonBrowse = new System.Windows.Forms.Button();
@@ -96,7 +96,7 @@
             this.LabelText2.Text = "Clicking the refresh button allows to update the test case\r\nparameters from TestS" +
     "hell. Click the refresh if a TestShell\r\ntest has changed its interface.";
             // 
-            // ScriptViewerControl
+            // ScriptViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -107,7 +107,7 @@
             this.Controls.Add(this.labelTestPath);
             this.Controls.Add(this.TextBoxPath);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "ScriptViewerControl";
+            this.Name = "ScriptViewer";
             this.Size = new System.Drawing.Size(596, 308);
             this.ResumeLayout(false);
             this.PerformLayout();

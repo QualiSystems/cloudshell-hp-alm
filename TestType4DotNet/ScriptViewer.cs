@@ -7,22 +7,24 @@ using Mercury.TD.Client.Ota.Api;
 using Mercury.TD.Client.Ota.Core;
 
 
-namespace TestType
+namespace TsTestType
 {
     /// <summary>
     /// Handles displaying test scripts from the project repository in the ALM user interface.
     /// </summary>
-    public partial class ScriptViewerControl : UserControl, IScriptViewer
+    public partial class ScriptViewer : UserControl, IScriptViewer
     {
         private Api m_Api;
         private HP.ALM.QC.OTA.Entities.Api.ITest m_CurrentTest;
         private string m_TestPathUserFieldName;//"TS_USER_01"
-        public ScriptViewerControl()
+        private IConnection m_AlmConnection;
+
+        public ScriptViewer()
         {
             InitializeComponent();
         }
 
-        public ScriptViewerControl(Api api)
+        public ScriptViewer(Api api)
         {
             m_Api = api;
             InitializeComponent();
@@ -36,19 +38,8 @@ namespace TestType
         /// <param name="connection">Output. The connection is connected to the server and authorized for the project.</param>
         public void InitViewer(IConnection connection)
         {
-            try
-            {
-                var tdConnectedObject = (ITDConnectedObject)connection;
-                var tdc = (ITDConnection)tdConnectedObject.TDConnection;
-                m_Api = new Api(tdc);
-                m_TestPathUserFieldName = new TDConnectionServant(tdc).GetQualiTestPathFieldName();
-            }
-            catch (Exception ex)
-            {
-                m_Api = null;
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
-                Enabled = false;
-            }
+            m_AlmConnection = connection;
+            
         }
 
         /// <summary>
@@ -76,15 +67,25 @@ namespace TestType
         /// <param name="test">Output. An ALM Open Test Architecture ITest object.</param>
         public void ShowTest(HP.ALM.QC.OTA.Entities.Api.ITest test)
         {
-            if (string.IsNullOrWhiteSpace(m_TestPathUserFieldName))
+            m_CurrentTest = test;
+
+            try
             {
+                var tdConnectedObject = (ITDConnectedObject)m_AlmConnection;
+                var tdc = (ITDConnection)tdConnectedObject.TDConnection;
+                m_Api = new Api(tdc);
+                m_TestPathUserFieldName = new TDConnectionServant(tdc).GetQualiTestPathFieldName();
+            }
+            catch (Exception ex)
+            {
+                m_CurrentTest = null;
+                m_Api = null;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
                 Enabled = false;
-                MessageBox.Show("TestPath field name is unknown", "Error", MessageBoxButtons.OK);
-                return;
             }
 
-            m_CurrentTest = test;
             TextBoxPath.Text = m_CurrentTest[m_TestPathUserFieldName] == null ? "" : m_CurrentTest[m_TestPathUserFieldName].ToString();
+            Enabled = true;
         }
 
         private void ButtonBrowse_Click(object sender, EventArgs e)

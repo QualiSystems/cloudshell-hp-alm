@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using HP.ALM.QC.UI.Modules.Shared.Api;
 using TDAPIOLELib;
 using System.Diagnostics;
 
-namespace TestType
+namespace TsTestType
 {
   /// <summary>
   /// Handles display of test run results in the ALM user interface. This component is optional.
   /// </summary>
-  public partial class ResultViewerControl : UserControl, IResultViewer
+  public partial class ResultViewer : UserControl, IResultViewer
   {
     private ITDConnection m_tdc;
-    public ResultViewerControl()
+    public ResultViewer()
     {
       InitializeComponent();
     }

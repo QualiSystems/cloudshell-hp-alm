@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace QS.ALM.Deploy
 {
     class Program
     {
+        private const string TestTypeDllName = "TsTestType.dll";
+        private const string AgentDllName = "TestShellAgent.dll";
+        
         private const string AlmServerRoot = @"C:\ProgramData\HP\ALM\webapps\qcbin";
         static string m_SolutionRoot;
 
@@ -190,25 +192,22 @@ namespace QS.ALM.Deploy
             string extensionReversed = new string (arr);
             string contentIni = "[File_" + index.ToString("D" + 4) + ']' + Environment.NewLine +
                 "URLName=%URL%/Extensions/TestShell/" + name + '.' + extensionReversed + Environment.NewLine +
-                "ShortName=" + QuallyStr(filename) + name + '.' + extension + Environment.NewLine +
-                "Description=" + DescriptionStr(name) + Environment.NewLine +
-                DotNetYStr(filename) + Environment.NewLine;
+                "ShortName=" + QuallySubFolder(filename) + name + '.' + extension + Environment.NewLine +
+                "Description=" + name + Environment.NewLine +
+                DotNetRegAsm(filename) + Environment.NewLine;
             return contentIni;
         }
 
-        private static string QuallyStr(string filename)
+        private static string QuallySubFolder(string filename)
         {
-            return filename.ToLower() == "testshelltesttype.dll" ? "" : "Quali\\";
+            return filename.ToLower() == TestTypeDllName.ToLower() ? "" : "Quali\\";
         }
 
-        private static string DotNetYStr(string filename)
+        private static string DotNetRegAsm(string filename)
         {
-            return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
+            // see options help: http://helpfiles.intactcloud.com/ALM/11.52/hp_man_ALM11.52_Custom_TestType_Dev_zip/CustomTestTypeNET/Content/cttIniFileParams.htm
+            //return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
+            return filename.ToLower() == AgentDllName.ToLower() ? "DotNet=Y" + Environment.NewLine : "";
         }
-
-        private static string DescriptionStr(string name)
-        {
-            return name.ToLower() == "customtesttype" ? "CTS by Moti" : name;
-        }        
     }
 }

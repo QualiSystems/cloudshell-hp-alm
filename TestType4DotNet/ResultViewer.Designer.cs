@@ -1,6 +1,6 @@
-﻿namespace TestType
+﻿namespace TsTestType
 {
-  partial class ResultViewerControl
+  partial class ResultViewer
   {
     /// <summary> 
     /// Required designer variable.
@@ -52,14 +52,14 @@
             this.linkLabelReportResult.Text = "linkLabel1";
             this.linkLabelReportResult.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelReportResult_LinkClicked);
             // 
-            // ResultViewerControl
+            // ResultViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.linkLabelReportResult);
             this.Controls.Add(this.label1);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "ResultViewerControl";
+            this.Name = "ResultViewer";
             this.Size = new System.Drawing.Size(701, 176);
             this.ResumeLayout(false);
             this.PerformLayout();

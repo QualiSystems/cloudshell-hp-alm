@@ -1,6 +1,6 @@
-﻿namespace TestType
+﻿namespace TsTestType
 {
-  partial class ExecConfigViewerControl
+  partial class ExecConfigViewer
   {
     /// <summary> 
     /// Required designer variable.
@@ -49,14 +49,14 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Config";
             // 
-            // ExecConfigViewerControl
+            // ExecConfigViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label1);
             this.Controls.Add(this.m_textBox);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "ExecConfigViewerControl";
+            this.Name = "ExecConfigViewer";
             this.Size = new System.Drawing.Size(405, 202);
             this.ResumeLayout(false);
             this.PerformLayout();

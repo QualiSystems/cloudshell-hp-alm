@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Collections.Generic;
 using QS.ALM.CloudShellApi;
-using TestType;
+using TsTestType;
 
 namespace Tester
 {
     public partial class Form1 : Form
     {
-        private ScriptViewerControl m_ScriptControl = null;
+        private ScriptViewer m_Script = null;
         private readonly Api m_Api;
         public Form1()
         {   
@@ -22,9 +21,9 @@ namespace Tester
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
                 Enabled = false;
             }
-            m_ScriptControl = new ScriptViewerControl(m_Api);
-            PanelScriptView.Controls.Add(m_ScriptControl);
-            m_ScriptControl.Dock = DockStyle.Fill;
+            m_Script = new ScriptViewer(m_Api);
+            PanelScriptView.Controls.Add(m_Script);
+            m_Script.Dock = DockStyle.Fill;
         }
 
         private void ButtonRunTest_Click(object sender, EventArgs e)
@@ -35,7 +34,7 @@ namespace Tester
             //List<TestParameters> parameters = new List<TestParameters>(); //for testing test parameters "Shared/Folder 1/Test A empty test"
             //parameters.Add(new TestParameters("Param1", "")); 
             //parameters.Add(new TestParameters("Param2_int", "0"));
-            string guiId = m_Api.RunTest(m_ScriptControl.TestPath, null/*parameters*/, out contentError, out isSuccess);
+            string guiId = m_Api.RunTest(m_Script.TestPath, null/*parameters*/, out contentError, out isSuccess);
 
             if (isSuccess)
             {
