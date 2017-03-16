@@ -14,7 +14,7 @@ namespace QS.ALM.CloudShellApi
 
         public string GetQualiTestPathFieldName()
         {
-            return GetUserFieldNameByLabel("QUALI_TEST_PATH", "TEST");
+            return GetUserFieldNameByLabel("CLOUDSHELL_TEST_PATH", "TEST");
         }
 
         public string GetUserFieldNameByLabel(string labelName, string entity)
@@ -23,7 +23,7 @@ namespace QS.ALM.CloudShellApi
             string columnName = null;
             foreach (TDField field in m_TdConnection.get_Fields(entity))
             {
-                if (((FieldProperty)field.Property).UserLabel.ToUpper().Equals(labelName))//"QUALI_TEST_PATH"
+                if (((FieldProperty)field.Property).UserLabel.ToUpper().Equals(labelName))//"CLOUDSHELL_TEST_PATH"
                 {
                     columnName =((FieldProperty)field.Property).DBColumnName;
                 }
@@ -37,17 +37,21 @@ namespace QS.ALM.CloudShellApi
 
         public AuthenticationMode GetAlmMode()
         {
-            var almMode = GetTdParam("QS_AUTH_MODE");
+            const string RunAuthModeKey = "CLOUDSHELL_RUN_AUTH_MODE";
+            const string AlmValue = "ALM";
+            const string CloudShellValue = "CLOUDSHELL";
+
+            var almMode = GetTdParam(RunAuthModeKey);
 
             almMode = almMode.ToUpper();
 
-            if (almMode == "ALM")
+            if (almMode == AlmValue)
                 return AuthenticationMode.Alm;
-            
-            if (almMode == "CLOUDSHELL")
+
+            if (almMode == CloudShellValue)
                 return AuthenticationMode.CloudShell;
-            
-            throw new Exception("QS_AUTH_MODE unknown : " + almMode);
+
+            throw new Exception(string.Format("{0} has invalid value '{1}'. Please specify one of: {2}, {3}", RunAuthModeKey, almMode, AlmValue, CloudShellValue));
         }
 
         public string GetTdParam(string paramName, string defaultValue = null)
