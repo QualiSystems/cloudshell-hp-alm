@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using QS.ALM.CloudShellApi;
 
 namespace TsTestType
 {
@@ -32,7 +33,15 @@ namespace TsTestType
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format("RemoteAgent registration failed.\n\n{0}\n\nCommand was:\n{1} {2}", ex.Message, process.StartInfo.FileName, process.StartInfo.Arguments));
+                Logger.Error("RegisterAgent Failed: " + ex);
+
+                var message = ex.Message;
+
+                // System.Transactions.TransactionException - The Transaction Manager is not available.
+                if (ex.Message.Contains("System.Transactions.TransactionException"))
+                    message = "The 'Distributed Transaction Coordinator' is disabled. Please start this service under Windows Services.";
+
+                MessageBox.Show(string.Format("RemoteAgent registration failed.\n\n{0}\n\nCommand was:\n{1} {2}", message, process.StartInfo.FileName, process.StartInfo.Arguments));
             }
         }
     }

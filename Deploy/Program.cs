@@ -11,6 +11,7 @@ namespace QS.ALM.Deploy
     {
         private const string TestTypeDllName = "TsTestType.dll";
         private const string RunnerDllName = "TsAlmRunner.dll";
+        private const string CabAndIniName = "TestShell";
         
         private const string AlmServerRoot = @"C:\ProgramData\HP\ALM\webapps\qcbin";
         static string m_SolutionRoot;
@@ -48,7 +49,7 @@ namespace QS.ALM.Deploy
                 if (missingFiles)
                     throw new Exception("Missing files");
 
-                var cabPath = Path.Combine(m_SolutionRoot, "Cab", flavor, "QSALM.CAB");
+                var cabPath = Path.Combine(m_SolutionRoot, "Cab", flavor, CabAndIniName + ".CAB");
 
                 if (!File.Exists(cabPath))
                     throw new Exception("File not found: " + cabPath);
@@ -71,6 +72,7 @@ namespace QS.ALM.Deploy
             }
 
             Console.WriteLine("Success.");
+            Console.WriteLine("Outputs: " + AlmServerRoot);
             Console.ReadLine();
             return 0;
         }
@@ -142,7 +144,7 @@ namespace QS.ALM.Deploy
             {
                 Directory.CreateDirectory(path);
             }            
-            path = Path.Combine(path, "QSALM.ini");
+            path = Path.Combine(path, CabAndIniName + ".ini");
             File.WriteAllText(path, contentIni);
             if(!File.Exists(path))
                 throw new Exception(string.Format("Creating {0} file error", path));
@@ -150,9 +152,9 @@ namespace QS.ALM.Deploy
 
         private static void CreateCabFile(string path)
         {
-            string fullFileName = Path.Combine(path, "QSALM.cab");
+            string fullFileName = Path.Combine(path, CabAndIniName + ".cab");
             RunExecOperation("makecab", 
-                string.Format(" {0} {1}", Path.Combine(path, "QSALM.ini"), fullFileName),
+                string.Format(" {0} {1}", Path.Combine(path, CabAndIniName + ".ini"), fullFileName),
                 fullFileName,  "Create Cab File");
 
             if (!File.Exists(fullFileName))
