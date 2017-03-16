@@ -9,7 +9,7 @@ namespace TsTestType
     {
         public static void Register()
         {
-            var assemblyPath = Path.Combine(SubFolderResovler.QualiSubFolder, "TestShellAgent.dll");
+            var assemblyPath = Path.Combine(SubFolderResovler.QualiSubFolder, "TsAlmRunner.dll");
 
             var process = new Process();
 

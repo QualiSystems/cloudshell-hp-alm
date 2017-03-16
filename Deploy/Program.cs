@@ -203,12 +203,15 @@ namespace QS.ALM.Deploy
             return filename.ToLower() == TestTypeDllName.ToLower() ? "" : "Quali\\";
         }
 
+        /// <summary>
+        /// see options here:
+        /// http://helpfiles.intactcloud.com/ALM/11.52/hp_man_ALM11.52_Custom_TestType_Dev_zip/CustomTestTypeNET/Content/cttIniFileParams.htm
+        /// </summary>
         private static string DotNetRegAsm(string filename)
         {
-            // see options help: http://helpfiles.intactcloud.com/ALM/11.52/hp_man_ALM11.52_Custom_TestType_Dev_zip/CustomTestTypeNET/Content/cttIniFileParams.htm
-            //return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
+            // we register the interop files so we can open a connection into ALM
+            return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
             //return filename.ToLower() == RunnerDllName.ToLower() ? "DotNet=Y" + Environment.NewLine : "";
-            return "";
         }
     }
 }
