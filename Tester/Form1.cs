@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using QS.ALM.CloudShellApi;
+using TsCloudShellApi;
 using TsTestType;
 
 namespace Tester

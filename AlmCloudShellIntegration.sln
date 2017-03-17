@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DADB9393-E97E-4E59-8589-A0DD43C5A308}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{EC7EBC34-740E-45F5-A67F-2B5A59136BB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CD3F61C3-C607-4C2C-BB5A-BBE3275CCAEB}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deploy", "Deploy\Deploy.csproj", "{57F672E5-4ABB-4616-BB22-BB6560411058}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsCloudShellApi", "TsCloudShellApi\TsCloudShellApi.csproj", "{C290F38C-AFD1-420B-9CC6-BB1EED921500}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsTestType", "TsTestType\TsTestType.csproj", "{E645EFAC-A997-4078-8A3C-87F2E80A77EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsAlmRunner", "TsAlmRunner\TsAlmRunner.csproj", "{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC7EBC34-740E-45F5-A67F-2B5A59136BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC7EBC34-740E-45F5-A67F-2B5A59136BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7EBC34-740E-45F5-A67F-2B5A59136BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC7EBC34-740E-45F5-A67F-2B5A59136BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57F672E5-4ABB-4616-BB22-BB6560411058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57F672E5-4ABB-4616-BB22-BB6560411058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57F672E5-4ABB-4616-BB22-BB6560411058}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57F672E5-4ABB-4616-BB22-BB6560411058}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C290F38C-AFD1-420B-9CC6-BB1EED921500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C290F38C-AFD1-420B-9CC6-BB1EED921500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C290F38C-AFD1-420B-9CC6-BB1EED921500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C290F38C-AFD1-420B-9CC6-BB1EED921500}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E645EFAC-A997-4078-8A3C-87F2E80A77EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E645EFAC-A997-4078-8A3C-87F2E80A77EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E645EFAC-A997-4078-8A3C-87F2E80A77EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E645EFAC-A997-4078-8A3C-87F2E80A77EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
