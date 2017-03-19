@@ -6,6 +6,6 @@
   		<ScriptViewerCLSID>TsTestType.ScriptViewer,TsTestType</ScriptViewerCLSID>
   		<ExecutionConfigurationViewerCLSID>TsTestType.ExecConfigViewer,TsTestType</ExecutionConfigurationViewerCLSID>
   		<ResultViewerCLSID>TsTestType.ResultViewer,TsTestType</ResultViewerCLSID>
-  		<RemoteAgentCLSID>479DFA08-CF6D-4890-AAAF-7CAFC39B6974</RemoteAgentCLSID>
+  		<RemoteAgentCLSID>E8A238DD-6D7E-4085-969D-700273173385</RemoteAgentCLSID>
   	</TestType>
 </TestTypes>
