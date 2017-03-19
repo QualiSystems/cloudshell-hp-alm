@@ -14,13 +14,13 @@ namespace TsCloudShellApi
         private string m_UserName;
         private string m_UserPassword;
         private string m_Domain;
-        private readonly string m_SuiteName;
-        private readonly string m_JobName;
-        private readonly int m_EstimatedDuration;
+        private string m_SuiteName;
+        private string m_JobName;
+        private int m_EstimatedDuration;
 
         public Api(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
         {
-            Init(urlString, almUsername, almPassword, cloudShellUsername, cloudShellPassword, authenticationMode, domain);
+            Init(urlString, almUsername, almPassword, cloudShellUsername, cloudShellPassword, authenticationMode, domain, "ALM Suite", "ALM Job", 10);
         }
 
         public Api(ITDConnection tdConnection, string cloudShellUsername = null, string cloudShellPassword = null)
@@ -32,20 +32,24 @@ namespace TsCloudShellApi
             var domain = conectionServant.GetTdParam("CLOUDSHELL_DOMAIN");
             var mode = conectionServant.GetAlmMode();
 
-            m_SuiteName = conectionServant.GetTdParam("CLOUDSHELL_SUITE_NAME", "ALM Suite"); // Changing suite name is undocumented
-            m_JobName = conectionServant.GetTdParam("CLOUDSHELL_JOB_NAME", "ALM Job"); // Changing job name is undocumented
+            var suiteName = conectionServant.GetTdParam("CLOUDSHELL_SUITE_NAME", "ALM Suite"); // Changing suite name is undocumented
+            var jobName = conectionServant.GetTdParam("CLOUDSHELL_JOB_NAME", "ALM Job"); // Changing job name is undocumented
 
             // Changing estimated duration is undocumented
-            if (!int.TryParse(conectionServant.GetTdParam("CLOUDSHELL_ESTIMATED_DURATION", "10"), out m_EstimatedDuration))
+            int estimatedDuration;
+            if (!int.TryParse(conectionServant.GetTdParam("CLOUDSHELL_ESTIMATED_DURATION", "10"), out estimatedDuration))
                 throw new Exception("CLOUDSHELL_ESTIMATED_DURATION must have a numeric value.");
 
-            Init(url, almUsername, almPassword, cloudShellUsername, cloudShellPassword, mode, domain);
+            Init(url, almUsername, almPassword, cloudShellUsername, cloudShellPassword, mode, domain, suiteName, jobName, estimatedDuration);
         }
 
-        private void Init(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
+        private void Init(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain, string suiteName, string jobName, int estimatedDuration)
         {
             m_UrlStringServer = urlString;
             m_Domain = domain;
+            m_SuiteName = suiteName;
+            m_JobName = jobName;
+            m_EstimatedDuration = estimatedDuration;
 
             // Ignore AuthenticationMode in design mode. Only in run mode we have the password of the logged-in user
             if (string.IsNullOrEmpty(cloudShellPassword))

@@ -12,11 +12,12 @@ using TsCloudShellApi;
 namespace TsAlmRunner
 {
     [Guid("E8A238DD-6D7E-4085-969D-700273173385"), ComVisible(true), ProgId("TestShellRemoteAgent1221")]
-    public class Agent : ServicedComponent, IRAgent
+    public class Agent : ServicedComponent, IRAgent, IRunTestWaiter
     {
         private readonly AlmParameters m_AlmParameters = new AlmParameters();
         private AlmRunStatus m_Status;
         private string m_StatusDesc;
+        private RunTestThread m_RunTestThread;
 
         public Agent()
         {
@@ -49,7 +50,7 @@ namespace TsAlmRunner
         public int get_status(ref string descr, ref string status)
         {
             descr = m_StatusDesc;
-            status = AlmRunStatusStrings.ToString(m_Status);
+            status = ResultsHelper.AlmRunStatusToString(m_Status);
             return 0;
         }
 
@@ -62,44 +63,94 @@ namespace TsAlmRunner
 
         public int run()
         {
-            SetStatus(AlmRunStatus.LogicalRunning, "Running test");
+            if (m_RunTestThread != null)
+            {
+                SetStatus(AlmRunStatus.Failed, "Previous test is still running");
+                return 1;
+            }
 
-            Exception runException = null;
-            AlmConnection almConnection;
-            string reportLink = null;
-            AlmRunStatus almRunStatus;
 
             try
             {
-                almConnection = new AlmConnection(m_AlmParameters);
+                var almConnection = new AlmConnection(m_AlmParameters);
                 var almTestHelper = new AlmTest();
                 var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
                 var testPath = almTestHelper.GetTestPath(almConnection,test);
                 var testParameters = almTestHelper.GetTestParameters(test);
 
-                // Run the test
                 var api = new Api(almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
-                var agentRunManager = new AgentRunManager(api, testPath, testParameters);
-                var runGuid = agentRunManager.RunTest();
 
-                var apiDetail = GetSuiteResult(api, runGuid);
-                var runResultStatus = RunStatusManager.GetRunResult(apiDetail);
-                reportLink = apiDetail.JobsDetails[0].Tests[0].ReportLink;
-                almRunStatus = AgentRunManager.ConvertTestShellResultToAlmRunStatus(runResultStatus);
+                string contentError;
+                bool isSuccess;
+                var runGuid = api.RunTest(testPath, testParameters, out contentError, out isSuccess);
+
+                if (!isSuccess)
+                    throw new Exception(contentError);
+
+                // Start the Run Test Thread
+                m_RunTestThread = new RunTestThread(api, runGuid, this);
+
+                SetStatus(AlmRunStatus.LogicalRunning, "Started");
+            }
+            catch (Exception ex)
+            {
+                SetStatus(AlmRunStatus.Failed, ex.Message);
+                return 2;
+            }
+
+            return 0;
+        }
+        
+        public int stop()
+        {
+            if (m_RunTestThread != null)
+            {
+                m_RunTestThread.Abort();
+                m_RunTestThread = null;
+            }
+
+            Process.GetCurrentProcess().Kill();
+            return 0;
+        }
+
+        public void OnTestRunStatusChanged(string suiteStatus)
+        {
+            SetStatus(AlmRunStatus.LogicalRunning, suiteStatus + " " + DateTime.Now.ToString("T"));
+        }
+
+        public void OnTestRunEnded(ApiSuiteDetails suiteDetails, string unexpectedError)
+        {
+            if (!string.IsNullOrEmpty(unexpectedError))
+            {
+                SetStatus(AlmRunStatus.Failed, "Test ended unexpectedly: " + unexpectedError);
+                return;
+            }
+
+            // get test result from Quali
+            SetStatus(AlmRunStatus.LogicalRunning, "Getting test results");
+
+            string reportLink;
+            AlmRunStatus almRunStatus;
+
+            try
+            {
+
+                var runResultStatus = ResultsHelper.GetRunResult(suiteDetails);
+                reportLink = suiteDetails.JobsDetails[0].Tests[0].ReportLink;
+                almRunStatus = ResultsHelper.ConvertTestShellResultToAlmRunStatus(runResultStatus);
 
                 SetStatus(almRunStatus, runResultStatus.ToString());
             }
             catch (Exception ex)
             {
-                almRunStatus = AlmRunStatus.Failed;
-                SetStatus(almRunStatus, ex.Message);
-                runException = ex;
+                SetStatus(AlmRunStatus.Failed, ex.Message);
+                return;
             }
 
+            // Save test result to ALM
             try
             {
-                // Renew connection (not sure needed):
-                almConnection = new AlmConnection(m_AlmParameters);
+                var almConnection = new AlmConnection(m_AlmParameters);
                 var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
                 var almResults = new AlmResults(m_AlmParameters, testSetFactory);
                 almResults.SaveRunResults(almRunStatus, reportLink);
@@ -107,22 +158,7 @@ namespace TsAlmRunner
             catch (Exception ex)
             {
                 SetStatus(AlmRunStatus.Failed, ex.Message);
-                runException = ex;
             }
-            return runException != null ? 1 : 0;
-        }
-
-        private static ApiSuiteDetails GetSuiteResult(Api api, string runGuid)
-        {
-            string contentError;
-            bool isSuccess;
-            return api.GetRunResult(runGuid, out contentError, out isSuccess);
-        }
-
-        public int stop()
-        {
-            Process.GetCurrentProcess().Kill();
-            return 0;
         }
     }
 }

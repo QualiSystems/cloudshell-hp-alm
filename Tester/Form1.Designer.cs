@@ -31,6 +31,8 @@
             this.txtTestPath = new System.Windows.Forms.TextBox();
             this.PanelScriptView = new System.Windows.Forms.Panel();
             this.ButtonRunTest = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblTestRunStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtTestPath
@@ -54,6 +56,7 @@
             // 
             // ButtonRunTest
             // 
+            this.ButtonRunTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ButtonRunTest.Location = new System.Drawing.Point(277, 261);
             this.ButtonRunTest.Name = "ButtonRunTest";
             this.ButtonRunTest.Size = new System.Drawing.Size(75, 54);
@@ -62,11 +65,33 @@
             this.ButtonRunTest.UseVisualStyleBackColor = true;
             this.ButtonRunTest.Click += new System.EventHandler(this.ButtonRunTest_Click);
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(237, 318);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(80, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Test run status:";
+            // 
+            // lblTestRunStatus
+            // 
+            this.lblTestRunStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTestRunStatus.AutoSize = true;
+            this.lblTestRunStatus.Location = new System.Drawing.Point(323, 318);
+            this.lblTestRunStatus.Name = "lblTestRunStatus";
+            this.lblTestRunStatus.Size = new System.Drawing.Size(65, 13);
+            this.lblTestRunStatus.TabIndex = 10;
+            this.lblTestRunStatus.Text = "<run status>";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 357);
+            this.Controls.Add(this.lblTestRunStatus);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.ButtonRunTest);
             this.Controls.Add(this.PanelScriptView);
             this.Controls.Add(this.txtTestPath);
@@ -83,6 +108,8 @@
         private System.Windows.Forms.TextBox txtTestPath;
         private System.Windows.Forms.Panel PanelScriptView;
         private System.Windows.Forms.Button ButtonRunTest;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblTestRunStatus;
     }
 }
 
