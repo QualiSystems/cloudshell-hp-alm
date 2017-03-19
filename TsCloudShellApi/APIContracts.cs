@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TsCloudShellApi
 {
@@ -90,7 +91,7 @@ namespace TsCloudShellApi
     
     public class ApiSuiteTemplateDetails
     {
-        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, int estimatedDuration, List<TestParameters> parameters)
+        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, int estimatedDuration, TestParameters[] parameters)
         {
             SuiteName = suiteName;
             JobsDetails = new[] { new ApiJobTemplate(jobName, testPath, estimatedDuration, parameters) };
@@ -109,7 +110,7 @@ namespace TsCloudShellApi
 
     public class ApiJobTemplate
     {
-        public ApiJobTemplate(string jobName, string testPath, int estimatedDuration, List<TestParameters> parameters)
+        public ApiJobTemplate(string jobName, string testPath, int estimatedDuration, TestParameters[] parameters)
         {
             Name = jobName;
             EstimatedDuration = estimatedDuration;
@@ -162,7 +163,7 @@ namespace TsCloudShellApi
 
     public class Test
     {
-        public Test(string testPath, List<TestParameters> parameters) 
+        public Test(string testPath, TestParameters[] parameters) 
         { 
             TestPath = testPath;
             if (parameters == null)
@@ -171,7 +172,7 @@ namespace TsCloudShellApi
             }
             else
             {
-                Parameters = parameters;
+                Parameters = parameters.ToList();
             }
         }
         public string TestPath {get; private set;}
