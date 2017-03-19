@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using RestSharp;
@@ -197,7 +198,7 @@ namespace TsCloudShellApi
             Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + Environment.NewLine + "ErrorMessage = '{2}'" + Environment.NewLine + "ErrorException = '{3}'" + Environment.NewLine + "StatusCode = '{4}'", method, contentError, res.ErrorMessage, res.ErrorException == null ? "null" : res.ErrorException.ToString(), ((int) res.StatusCode).ToString());
         }
 
-        public string RunTest(string testPath, List<TestParameters> parameters, out string contentError, out bool isSuccess)
+        public string RunTest(string testPath, TestParameters[] parameters, out string contentError, out bool isSuccess)
         {
             string authorization;
             RestClient client;
@@ -214,6 +215,9 @@ namespace TsCloudShellApi
             {
                 return null;
             }
+
+            // Remove parameters with null value (not valid by the server side)
+            parameters = parameters.Where(x => x.ParameterValue != null).ToArray();
 
             var request = new RestRequest("/api/Scheduling/Suites/", Method.POST);
             request.AddHeader("Authorization", authorization);

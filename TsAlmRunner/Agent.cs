@@ -82,7 +82,7 @@ namespace TsAlmRunner
 
                 string contentError;
                 bool isSuccess;
-                var runGuid = api.RunTest(testPath, testParameters, out contentError, out isSuccess);
+                var runGuid = api.RunTest(testPath, testParameters.ToArray(), out contentError, out isSuccess);
 
                 if (!isSuccess)
                     throw new Exception(contentError);
