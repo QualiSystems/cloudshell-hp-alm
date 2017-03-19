@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TsCloudShellApi;
 using TsTestType;
 
 namespace Tester
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, IRunTestWaiter
     {
         private ScriptViewer m_Script = null;
         private readonly Api m_Api;
@@ -34,22 +35,52 @@ namespace Tester
             //List<TestParameters> parameters = new List<TestParameters>(); //for testing test parameters "Shared/Folder 1/Test A empty test"
             //parameters.Add(new TestParameters("Param1", "")); 
             //parameters.Add(new TestParameters("Param2_int", "0"));
-            string guiId = m_Api.RunTest(m_Script.TestPath, null/*parameters*/, out contentError, out isSuccess);
+            string runGuid = m_Api.RunTest(m_Script.TestPath, new List<TestParameters>(), out contentError, out isSuccess);
 
             if (isSuccess)
             {
-                MessageBox.Show("Result Test = \"" + guiId + '\"', "Returned Key", MessageBoxButtons.OK);
+                MessageBox.Show("Result Test = \"" + runGuid + '\"', "Returned Key", MessageBoxButtons.OK);
 
-                using (var runStatusManager = new RunStatusManager(m_Api, guiId))
-                    runStatusManager.WaitForRunEnd();
-
-
-                //~TODO: write the runResult to ALM ...
+                new RunTestThread(m_Api, runGuid, this);
+                ButtonRunTest.Enabled = false;
             }
             else
             {
                 MessageBox.Show(contentError, "Error", MessageBoxButtons.OK);
             }
+        }
+
+        public void OnTestRunStatusChanged(string suiteStatus)
+        {
+            BeginInvoke(new Action(() => { lblTestRunStatus.Text = suiteStatus + " " + DateTime.Now.ToString("T"); }));
+        }
+
+        public void OnTestRunEnded(ApiSuiteDetails suiteDetails, string unexpectedError)
+        {
+            BeginInvoke(new Action(() =>
+            {
+                ButtonRunTest.Enabled = true;
+                lblTestRunStatus.Text = "Not running";
+
+                if (!string.IsNullOrEmpty(unexpectedError))
+                {
+                    MessageBox.Show("Test ended with error: " + unexpectedError);
+                    return;
+                }
+
+                try
+                {
+
+                    var runResultStatus = ResultsHelper.GetRunResult(suiteDetails);
+                    var almRunStatus = ResultsHelper.ConvertTestShellResultToAlmRunStatus(runResultStatus);
+                    var reportLink = suiteDetails.JobsDetails[0].Tests[0].ReportLink;
+                    MessageBox.Show(string.Format("Test ended.\n\nResult: {0}\nLink: {1}", almRunStatus, reportLink));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(string.Format("Error getting test result: " + ex.Message));
+                }
+            }));
         }
     }
 }

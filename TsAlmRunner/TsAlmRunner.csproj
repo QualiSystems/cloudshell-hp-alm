@@ -72,8 +72,6 @@
   <ItemGroup>
     <Compile Include="AlmParameters.cs" />
     <Compile Include="AlmResults.cs" />
-    <Compile Include="AgentRunManager.cs" />
-    <Compile Include="AlmRunStatus.cs" />
     <Compile Include="AlmTest.cs" />
     <Compile Include="AlmConnection.cs" />
     <Compile Include="Agent.cs" />

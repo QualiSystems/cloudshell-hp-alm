@@ -73,12 +73,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlmRunStatus.cs" />
     <Compile Include="Api.cs" />
     <Compile Include="APIContracts.cs" />
     <Compile Include="AuthenticationMode.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="RunTestThread.cs" />
     <Compile Include="TDConnectionServant.cs" />
-    <Compile Include="RunStatusManager.cs" />
+    <Compile Include="ResultsHelper.cs" />
     <Compile Include="SettingsFile.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Logger.cs" />
