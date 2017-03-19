@@ -267,7 +267,9 @@ namespace QS.ALM.CloudShellApi
             return GetServerObject<APITestExplorerTestInfo>("/api/Scheduling/TestInfo/" + path, "GetTestParameter", out contentError, out isSuccess);
         }
 
-        public dynamic GetStringFromJson(string jsonSTR )
+        // jesonSTR can look like:
+        //                        "{ 'Kek1': 'value1', 'key2': value2, 'key': 'value3' ........ }"
+        static public dynamic GetStringFromJson(string jsonSTR )
         {
             return JsonConvert.DeserializeObject(jsonSTR);
         }

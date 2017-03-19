@@ -31,16 +31,17 @@ namespace TestShellAgent
             throw new Exception("Test path not selected");
         }
 
-        public TSTest FindTest(Api api, AlmConnection almConnection, AlmParameters almParameters)
+        public TSTest FindTest(AlmConnection almConnection, AlmParameters almParameters)
         {
-            var ret = api.GetStringFromJson(almParameters.TestSet);
-            string retStr = ret.test_set;
-            string[] retArray = retStr.Split('\\');
-            string runTestName = retArray[retArray.Count() - 1];
+            var testSetRunInfo = Api.GetStringFromJson(almParameters.TestSet);
+            string testSetFullPath = testSetRunInfo.test_set;
+            string[] testSetSplitPsth = testSetFullPath.Split('\\');
+            string testSetName = testSetSplitPsth[testSetSplitPsth.Count() - 1];
             var testSetTreeManager = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
-            var rootFolder = (TestSetFolder)testSetTreeManager.NodeByPath[retArray[0]];
+            var testSetPath = testSetSplitPsth[0];
+            var testSetParentFolder = (TestSetFolder)testSetTreeManager.NodeByPath[testSetPath];
            
-            var theTestSet = FindTestSet(rootFolder, runTestName);
+            var theTestSet = FindTestSet(testSetParentFolder, testSetName);
             var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
             var tsFilter = (TDFilter)tsTestFact.Filter;
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
@@ -55,18 +56,18 @@ namespace TestShellAgent
             throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under Test Set '{2}'", almParameters.TestName, almParameters.TestCycleIdInteger, theTestSet.ID));
         }
 
-        private static TestSet FindTestSet(TestSetFolder testSetF, string tsName)
+        private static TestSet FindTestSet(TestSetFolder testSetParentFolder, string testSetName)
         {
             TestSet testSet1 = null;
 
-            var tsList = testSetF.FindTestSets(tsName);
+            var tsList = testSetParentFolder.FindTestSets(testSetName);
             if (tsList != null)
             {
                 if (tsList.Count > 0)
                 {
                     foreach (TestSet ts in tsList)
                     {
-                        if (ts.Name == tsName)
+                        if (ts.Name == testSetName)
                         {
                             testSet1 = ts;
                             break;
