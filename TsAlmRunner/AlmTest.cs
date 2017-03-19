@@ -33,33 +33,16 @@ namespace TsAlmRunner
 
         public TSTest FindTest(AlmConnection almConnection, AlmParameters almParameters)
         {
-            string runTestName;
-            var testSet = almParameters.TestSet;
-            var testSetSplit = testSet.Split(',');
-            var first = testSetSplit[0];
-            var firstSplit = first.Split('\"');
 
-            if (firstSplit[0].IndexOfAny("ntest_set".ToCharArray()) > -1)
-            {
-                string [] strParmsArr;
-                if(firstSplit.Length > 1)
-                   strParmsArr = firstSplit[1].Split('\\');
-                else
-                   strParmsArr = firstSplit[0].Split('\\');
-                runTestName = strParmsArr[strParmsArr.Count() - 1];
+            var testSetRunInfo = Api.GetStringFromJson(almParameters.TestSet);
+            string testSetFullPath = testSetRunInfo.test_set;
+            string[] testSetSplitPsth = testSetFullPath.Split('\\');
+            string testSetName = testSetSplitPsth[testSetSplitPsth.Count() - 1];
+            var testSetTreeManager = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
+            var testSetPath = testSetSplitPsth[0];
+            var testSetParentFolder = (TestSetFolder)testSetTreeManager.NodeByPath[testSetPath];
 
-            }
-            else
-            {
-                throw new Exception(string.Format("Test not found under Test Set '{0}'", testSet));
-            }
-
-            var testSetFolderF = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
-            var tstSetFolder = (TestSetFolder)testSetFolderF.NodeByPath["Root"];
-            var testName = almParameters.TestName;
-            var testId = almParameters.TestCycleIdInteger;
-
-            var theTestSet = FindTestSet(tstSetFolder, runTestName);
+            var theTestSet = FindTestSet(testSetParentFolder, testSetName);
             var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
             var tsFilter = (TDFilter)tsTestFact.Filter;
             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
@@ -67,25 +50,25 @@ namespace TsAlmRunner
 
             foreach (TSTest tsTst in testList)
             {
-                if (testName == tsTst.TestName && testId == (string)tsTst.ID)
+                if (almParameters.TestCycleIdInteger == (string)tsTst.ID)
                     return tsTst;
             }
 
-            throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under Test Set '{2}'", testName, testId, theTestSet.ID));
+            throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under Test Set '{2}'", almParameters.TestName, almParameters.TestCycleIdInteger, theTestSet.ID));
         }
 
-        private static TestSet FindTestSet(TestSetFolder testSetF, string tsName)
+        private static TestSet FindTestSet(TestSetFolder testSetParentFolder, string testSetName)
         {
             TestSet testSet1 = null;
 
-            var tsList = testSetF.FindTestSets(tsName);
+            var tsList = testSetParentFolder.FindTestSets(testSetName);
             if (tsList != null)
             {
                 if (tsList.Count > 0)
                 {
                     foreach (TestSet ts in tsList)
                     {
-                        if (ts.Name == tsName)
+                        if (ts.Name == testSetName)
                         {
                             testSet1 = ts;
                             break;
