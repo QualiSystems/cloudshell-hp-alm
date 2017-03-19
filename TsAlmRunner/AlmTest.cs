@@ -37,7 +37,7 @@ namespace TsAlmRunner
                 List myList = tsFact.NewList("");
                 foreach (TSTest tsTest in myList)
                 {
-                    if (tsTest.Name == almParameters.GetValue("tstest_name") && (string)tsTest.ID == almParameters.GetValue("testcycle_id_integer"))
+                    if ((string)tsTest.ID == almParameters.TestCycleIdInteger)
                     {
                         return tsTest;
                     }
@@ -63,7 +63,7 @@ namespace TsAlmRunner
                     return tsTst;
             }*/
 
-                throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under id '{2}'", almParameters.TestName, almParameters.TestCycleIdInteger, almParameters.GetValue("testcycle_id_integer")));
+            throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under id '{2}'", almParameters.TestName, almParameters.TestCycleIdInteger, almParameters.GetValue("testcycle_id_integer")));
         }
 
         private static TestSet FindTestSet(TestSetFolder testSetParentFolder, string testSetName)
