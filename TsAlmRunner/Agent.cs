@@ -66,9 +66,8 @@ namespace TsAlmRunner
             if (m_RunTestThread != null)
             {
                 SetStatus(AlmRunStatus.Failed, "Previous test is still running");
-                return 1;
+                return 0;
             }
-
 
             try
             {
@@ -95,7 +94,6 @@ namespace TsAlmRunner
             catch (Exception ex)
             {
                 SetStatus(AlmRunStatus.Failed, ex.Message);
-                return 2;
             }
 
             return 0;
