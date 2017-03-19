@@ -53,6 +53,10 @@
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="QCClient.Library, Version=12.21.0.0, Culture=neutral, PublicKeyToken=792843134cf0407a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\QCClient.Library.dll</HintPath>
+    </Reference>
     <Reference Include="QCClient.QCExtension.OTA">
       <HintPath>..\Lib\QCClient.QCExtension.OTA.dll</HintPath>
     </Reference>

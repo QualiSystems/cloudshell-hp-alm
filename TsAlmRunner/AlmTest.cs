@@ -33,8 +33,17 @@ namespace TsAlmRunner
 
         public TSTest FindTest(AlmConnection almConnection, AlmParameters almParameters)
         {
+            TSTestFactory tsFact = (TSTestFactory)almConnection.Connection.TSTestFactory;
+                List myList = tsFact.NewList("");
+                foreach (TSTest tsTest in myList)
+                {
+                    if (tsTest.Name == almParameters.GetValue("tstest_name") && (string)tsTest.ID == almParameters.GetValue("testcycle_id_integer"))
+                    {
+                        return tsTest;
+                    }
+                }
 
-            var testSetRunInfo = Api.GetStringFromJson(almParameters.TestSet);
+           /* var testSetRunInfo = Api.GetStringFromJson(almParameters.TestSet);
             string testSetFullPath = testSetRunInfo.test_set;
             string[] testSetSplitPsth = testSetFullPath.Split('\\');
             string testSetName = testSetSplitPsth[testSetSplitPsth.Count() - 1];
@@ -52,9 +61,9 @@ namespace TsAlmRunner
             {
                 if (almParameters.TestCycleIdInteger == (string)tsTst.ID)
                     return tsTst;
-            }
+            }*/
 
-            throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under Test Set '{2}'", almParameters.TestName, almParameters.TestCycleIdInteger, theTestSet.ID));
+                throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under id '{2}'", almParameters.TestName, almParameters.TestCycleIdInteger, almParameters.GetValue("testcycle_id_integer")));
         }
 
         private static TestSet FindTestSet(TestSetFolder testSetParentFolder, string testSetName)
@@ -109,7 +118,15 @@ namespace TsAlmRunner
 
         private string GetParameterValue(string parameterName, object html)
         {
-            string parameterValue = null;
+
+            //string tmp = Mercury.TD.Client.Library.Utilities.StripHtmlHeader((string)html);
+            //string tmp1 = Mercury.TD.Client.Library.Utilities.SanitizeHtml((string)html);
+            
+
+            return Mercury.TD.Client.Library.Utilities.RichContentToText((string)html);
+
+
+            /*string parameterValue = null;
             IHTMLDocument2 doc = (IHTMLDocument2)new HTMLDocument();
             doc.write((string)html);
 
@@ -159,11 +176,12 @@ namespace TsAlmRunner
                 }
                 
                 if (count7 > count)
+            catch
                 {
                     throw new Exception(string.Format("Parameter value must contain plain text only. Please make sure that the value of parameter '{0}' has no special formatting or other html elements such as tables, numbering, bullets, bold, italic, etc ...", parameterName));
-                }
-            }
-            return parameterValue;
+                }*/
+            //}
+            //return parameterValue;
         }
     }
 }
