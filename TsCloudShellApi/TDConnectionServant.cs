@@ -14,7 +14,7 @@ namespace TsCloudShellApi
 
         public string GetTestPathFieldName()
         {
-            return GetUserFieldNameByLabel("CLOUDSHELL_TEST_PATH", "TEST");
+            return GetUserFieldNameByLabel("CloudShellTestPath", "TEST");
         }
 
         public string GetUserFieldNameByLabel(string labelName, string entity)
@@ -23,7 +23,7 @@ namespace TsCloudShellApi
             string columnName = null;
             foreach (TDField field in m_TdConnection.get_Fields(entity))
             {
-                if (((FieldProperty)field.Property).UserLabel.ToUpper().Equals(labelName))//"CLOUDSHELL_TEST_PATH"
+                if (((FieldProperty)field.Property).UserLabel.ToUpper().Equals(labelName))//"CloudShellTestPath"
                 {
                     columnName =((FieldProperty)field.Property).DBColumnName;
                 }
