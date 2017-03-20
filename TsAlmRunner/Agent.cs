@@ -137,7 +137,14 @@ namespace TsAlmRunner
                 reportLink = suiteDetails.JobsDetails[0].Tests[0].ReportLink;
                 almRunStatus = ResultsHelper.ConvertTestShellResultToAlmRunStatus(runResultStatus);
 
-                SetStatus(almRunStatus, runResultStatus.ToString());
+                if (!string.IsNullOrWhiteSpace(suiteDetails.JobsDetails[0].JobFailureDescription))
+                {
+                    SetStatus(almRunStatus, suiteDetails.JobsDetails[0].JobFailureDescription);
+                }
+                else
+                {
+                    SetStatus(almRunStatus, runResultStatus.ToString());
+                }
             }
             catch (Exception ex)
             {
