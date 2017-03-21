@@ -36,34 +36,34 @@ namespace TsAlmRunner
         public TSTest FindTest(AlmConnection almConnection, AlmParameters almParameters)
         {
             TSTestFactory tsFact = (TSTestFactory)almConnection.Connection.TSTestFactory;
-                List myList = tsFact.NewList("");
-                foreach (TSTest tsTest in myList)
-                {
-                    if ((string)tsTest.ID == almParameters.TestCycleIdInteger)
-                    {
-                        return tsTest;
-                    }
-                }
-
-           /* var testSetRunInfo = Api.GetStringFromJson(almParameters.TestSet);
-            string testSetFullPath = testSetRunInfo.test_set;
-            string[] testSetSplitPsth = testSetFullPath.Split('\\');
-            string testSetName = testSetSplitPsth[testSetSplitPsth.Count() - 1];
-            var testSetTreeManager = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
-            var testSetPath = testSetSplitPsth[0];
-            var testSetParentFolder = (TestSetFolder)testSetTreeManager.NodeByPath[testSetPath];
-
-            var theTestSet = FindTestSet(testSetParentFolder, testSetName);
-            var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
-            var tsFilter = (TDFilter)tsTestFact.Filter;
-            tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
-            var testList = tsTestFact.NewList(tsFilter.Text);
-
-            foreach (TSTest tsTst in testList)
+            List myList = tsFact.NewList("");
+            foreach (TSTest tsTest in myList)
             {
-                if (almParameters.TestCycleIdInteger == (string)tsTst.ID)
-                    return tsTst;
-            }*/
+                if ((string)tsTest.ID == almParameters.TestCycleIdInteger)
+                {
+                    return tsTest;
+                }
+            }
+
+            /* var testSetRunInfo = Api.GetStringFromJson(almParameters.TestSet);
+             string testSetFullPath = testSetRunInfo.test_set;
+             string[] testSetSplitPsth = testSetFullPath.Split('\\');
+             string testSetName = testSetSplitPsth[testSetSplitPsth.Count() - 1];
+             var testSetTreeManager = (TestSetTreeManager)almConnection.Connection.TestSetTreeManager;
+             var testSetPath = testSetSplitPsth[0];
+             var testSetParentFolder = (TestSetFolder)testSetTreeManager.NodeByPath[testSetPath];
+
+             var theTestSet = FindTestSet(testSetParentFolder, testSetName);
+             var tsTestFact = (TSTestFactory)theTestSet.TSTestFactory;
+             var tsFilter = (TDFilter)tsTestFact.Filter;
+             tsFilter["TC_CYCLE_ID"] = theTestSet.ID.ToString();
+             var testList = tsTestFact.NewList(tsFilter.Text);
+
+             foreach (TSTest tsTst in testList)
+             {
+                 if (almParameters.TestCycleIdInteger == (string)tsTst.ID)
+                     return tsTst;
+             }*/
 
             throw new Exception(string.Format("Cloud not find test with name '{0}' and id '{1}' under id '{2}'", almParameters.TestName, almParameters.TestCycleIdInteger, almParameters.GetValue("testcycle_id_integer")));
         }

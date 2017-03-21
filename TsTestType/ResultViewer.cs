@@ -47,6 +47,11 @@ namespace TsTestType
         var legacyRun = (IRun2)legacyBaseFieldProvider.LegacyBaseField;
         var stepFact = (StepFactory)legacyRun.StepFactory;
         var stepList = stepFact.NewList("");
+        if (stepList.Count == 0)
+        {
+            linkLabelReportResult.Enabled = false;
+            linkLabelReportResult.Text = "No run result";
+        }
 
         foreach (Step step in stepList)
         {

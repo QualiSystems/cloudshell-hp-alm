@@ -11,7 +11,7 @@ namespace QS.ALM.Deploy
             
             try
             {
-                VersionHelper.VerifyVersion(files);
+                
 
                 Console.WriteLine("Please select:");
                 Console.WriteLine();

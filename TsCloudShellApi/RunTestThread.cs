@@ -31,6 +31,11 @@ namespace TsCloudShellApi
 
                     var apiSuiteStatusDetails = m_Api.GetRunStatus(m_RunGuid, out contentError, out isSuccess);
 
+                    if (!isSuccess)
+                    {
+                        throw new Exception(contentError);
+                    }
+
                     if (HasRunEnded(apiSuiteStatusDetails))
                         break;
 
@@ -64,6 +69,7 @@ namespace TsCloudShellApi
             if (apiSuiteStatusDetails == null)
             {
                 Logger.Error("RunTestThread.HasRunEnded ApiSuiteStatusDetails = null");
+                //throw new Exception
                 return true;
             }
 
@@ -80,7 +86,12 @@ namespace TsCloudShellApi
         {
             string contentError;
             bool isSuccess;
-            return m_Api.GetRunResult(m_RunGuid, out contentError, out isSuccess);
+            ApiSuiteDetails apiSuiteDetails = m_Api.GetRunResult(m_RunGuid, out contentError, out isSuccess);
+            if (!isSuccess)
+            {
+                throw new Exception(contentError);
+            }
+            return apiSuiteDetails;
         }
 
         public void Abort()

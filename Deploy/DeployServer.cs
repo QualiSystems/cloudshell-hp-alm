@@ -13,6 +13,7 @@ namespace QS.ALM.Deploy
 
         public static void Deploy(List<string> files, string flavor)
         {
+            VersionHelper.VerifyVersion(files);
             VerifyAlmNotRunning();
 
             var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Binaries", flavor, "Cab");

@@ -282,12 +282,6 @@ namespace TsCloudShellApi
             return GetServerObject<APITestExplorerTestInfo>("/api/Scheduling/TestInfo/" + path, "GetTestParameter", out contentError, out isSuccess);
         }
 
-        // jesonSTR can look like:
-        //                        "{ 'Kek1': 'value1', 'key2': value2, 'key': 'value3' ........ }"
-        public static dynamic GetStringFromJson(string jsonSTR)
-        {
-            return JsonConvert.DeserializeObject(jsonSTR);
-        }
         private T GetServerObject<T>(string nameFunctionOnServer, string nameCallingMethod, out string contentError, out bool isSuccess)
         {
             string authorization;
