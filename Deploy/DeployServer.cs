@@ -11,10 +11,24 @@ namespace QS.ALM.Deploy
     {
         private const string AlmServerRoot = @"C:\ProgramData\HP\ALM\webapps\qcbin";
 
-        public static void Deploy(List<string> files, string flavor)
+        public static bool Deploy(List<string> files, string flavor)
         {
-            VersionHelper.VerifyVersion(files);
-            VerifyAlmNotRunning();
+            try
+            {
+                VersionHelper.VerifyVersion(files);
+                VerifyAlmNotRunning();
+            }
+            catch (Exception ex)
+            {
+                if (!string.IsNullOrEmpty(ex.Message))
+                    Console.WriteLine("Error: " + ex.Message + "");
+
+                Console.WriteLine();
+                Console.WriteLine("Error: " + ex.Message + "Press enter to exit");
+
+                Console.ReadLine();
+                return false;
+            }
 
             var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Binaries", flavor, "Cab");
             Directory.CreateDirectory(cabFolder);
@@ -48,9 +62,11 @@ namespace QS.ALM.Deploy
             CopyToServerAndSign(files.ToArray(), @"Extensions\" + DeployHelper.TestShell);
             CopyToServerAndSign(new[] { cabPath }, "Extensions");
 
-            Console.WriteLine("Outputs: " + AlmServerRoot);
-            
             VersionHelper.IncrementLastDeployVersion();
+
+            Console.WriteLine("Outputs: " + AlmServerRoot);
+
+            return true;
         }
 
         private static void VerifyAlmNotRunning()

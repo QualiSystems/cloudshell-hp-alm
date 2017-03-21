@@ -8,42 +8,30 @@ namespace QS.ALM.Deploy
         {
             const string flavor = @"Debug";
             var files = DeployHelper.HarvestFiles(flavor);
-            
-            try
+
+
+            Console.WriteLine("Please select:");
+            Console.WriteLine();
+            Console.WriteLine("1. Deploy Server");
+            Console.WriteLine("2. Deploy Client");
+            Console.WriteLine();
+            Console.Write("Choice: ");
+
+            var choice = Console.ReadLine();
+
+            switch (choice)
             {
-                
-
-                Console.WriteLine("Please select:");
-                Console.WriteLine();
-                Console.WriteLine("1. Deploy Server");
-                Console.WriteLine("2. Deploy Client");
-                Console.WriteLine();
-                Console.Write("Choice: ");
-
-                var choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        DeployServer.Deploy(files, flavor);
-                        break;
-                    case "2":
-                        DeployClient.Deploy(files);
-                        break;
-                    default:
-                        throw new Exception(string.Format("Invalid choice '{0}'", choice));
-                }
-            }
-            catch (Exception ex)
-            {
-                if (!string.IsNullOrEmpty(ex.Message))
-                    Console.WriteLine("Error: " + ex.Message + "");
-
-                Console.WriteLine();
-                Console.WriteLine("Error: " + ex.Message + "Press enter to exit");
-
-                Console.ReadLine();
-                return -1;
+                case "1":
+                    if(!DeployServer.Deploy(files, flavor))
+                    {
+                        return -1;
+                    }
+                    break;
+                case "2":
+                    DeployClient.Deploy(files);
+                    break;
+                default:
+                    throw new Exception(string.Format("Invalid choice '{0}'", choice));
             }
 
             Console.WriteLine();
