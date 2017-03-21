@@ -11,12 +11,11 @@ namespace QS.ALM.Deploy
     {
         private const string AlmServerRoot = @"C:\ProgramData\HP\ALM\webapps\qcbin";
 
-        public static void Deploy(string flavor)
+        public static void Deploy(List<string> files, string flavor)
         {
             VerifyAlmNotRunning();
-            var files = DeployHelper.HarvestFiles(flavor);
 
-            var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Cab", flavor);
+            var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Binaries", flavor, "Cab");
             Directory.CreateDirectory(cabFolder);
             var cabPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".cab");
             var iniPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".ini");
@@ -97,22 +96,12 @@ namespace QS.ALM.Deploy
             if(files == null || files.Count == 0)
                 throw new Exception("List files is empty");
 
-            var hashFiles = new HashSet<string>();
-
-            foreach(string fileName in files)
-                hashFiles.Add(Path.GetFileName(fileName));
-
             var contentIni = "";
             var index = 0;
 
-            // get vertion and need to cheng it every time you run that in assembltinfo.cs
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            string version = fvi.FileVersion;
+            foreach (var file in files)
+                contentIni += AddFileToIni(file, ++index);
 
-            foreach (var fileName in hashFiles)
-                contentIni += FileNameToIni(fileName, ++index , version);
-            
             File.WriteAllText(iniPath, contentIni);
         }
 
@@ -148,22 +137,31 @@ namespace QS.ALM.Deploy
             }
         }
 
-        private static string FileNameToIni(string filename, int index , string version)
+        private static string AddFileToIni(string path, int index)
         {
-            string name = Path.GetFileNameWithoutExtension(filename);
-            string extension = Path.GetExtension(filename).Substring(1);
-            char[] arr = extension.ToCharArray();
+            var filename = Path.GetFileName(path);
+            var name = Path.GetFileNameWithoutExtension(filename);
+            var extension = Path.GetExtension(filename).Substring(1);
+            var arr = extension.ToCharArray();
             Array.Reverse(arr);
-            string extensionReversed = new string (arr);
+            var extensionReversed = new string (arr);
             var subFolder = DeployHelper.DeployToTestShellFolder(filename) ? DeployHelper.TestShell + "\\" : "";
 
-                // add version here for every file you want to update
+            var versionString = string.Empty;
+
+            if (extension.ToLower() == "dll" || extension.ToLower() == "exe")
+            {
+                var version = FileVersionInfo.GetVersionInfo(path).FileVersion;
+                versionString = "version=" + version + Environment.NewLine;
+            }
+
+            // add version here for every file you want to update
             var contentIni =
                 "[File_" + index.ToString("D" + 4) + ']' + Environment.NewLine +
                 "URLName=%URL%/Extensions/TestShell/" + name + '.' + extensionReversed + Environment.NewLine +
                 "ShortName=" + subFolder + name + '.' + extension + Environment.NewLine +
                 "Description=" + name + Environment.NewLine +
-                "version=" + version +  Environment.NewLine +
+                versionString +
                 DotNetRegAsm(filename) + Environment.NewLine;
 
             return contentIni;
@@ -175,8 +173,9 @@ namespace QS.ALM.Deploy
         /// </summary>
         private static string DotNetRegAsm(string filename)
         {
+            return string.Empty;
             // we register the interop files so we can open a connection into ALM
-            return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
+            //return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
             //return filename.ToLower() == RunnerDllName.ToLower() ? "DotNet=Y" + Environment.NewLine : "";
         }
     }
