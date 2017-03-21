@@ -43,15 +43,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeployClient.cs" />
+    <Compile Include="VersionHelper.cs" />
     <Compile Include="DeployHelper.cs" />
     <Compile Include="DeployServer.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LastDeployVersion.txt" />
     <Content Include="TestShellTestType.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

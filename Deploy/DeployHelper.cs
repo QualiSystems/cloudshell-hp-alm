@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -26,9 +27,10 @@ namespace QS.ALM.Deploy
         {
             var files = new List<string>();
 
-            HarvestDllsFromFolder(files, Path.Combine(SolutionRoot, "TsCloudShellApi", flavor));
-            HarvestDllsFromFolder(files, Path.Combine(SolutionRoot, "TsTestType", flavor));
-            HarvestDllsFromFolder(files, Path.Combine(SolutionRoot, "TsAlmRunner", flavor));
+            HarvestDllsFromFolder(files, Path.Combine(SolutionRoot, "Binaries", flavor));
+            //HarvestDllsFromFolder(files, Path.Combine(SolutionRoot, "TsCloudShellApi", flavor));
+            //HarvestDllsFromFolder(files, Path.Combine(SolutionRoot, "TsTestType", flavor));
+            //HarvestDllsFromFolder(files, Path.Combine(SolutionRoot, "TsAlmRunner", flavor));
 
             return files;
         }
@@ -36,6 +38,22 @@ namespace QS.ALM.Deploy
         private static void HarvestDllsFromFolder(List<string> files, string folder)
         {
             files.AddRange(Directory.GetFiles(folder, "*.dll"));
+        }
+
+        public static Version GetLastDeployVersion()
+        {
+            var version = File.ReadAllText(LastDeployVersionFilePath);
+            return Version.Parse(version);
+        }
+
+        public static void SetLastDeployVersion(Version version)
+        {
+            File.WriteAllText(LastDeployVersionFilePath, version.ToString());
+        }
+
+        private static string LastDeployVersionFilePath
+        {
+            get { return Path.Combine(SolutionRoot, "Deploy", "LastDeployVersion.txt"); }
         }
     }
 }

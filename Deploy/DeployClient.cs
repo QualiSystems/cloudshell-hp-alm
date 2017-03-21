@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace QS.ALM.Deploy
 {
     static class DeployClient
     {
-        public static void Deploy(string flavor)
+        public static void Deploy(List<string> files)
         {
             var userProfile = Environment.ExpandEnvironmentVariables("%USERPROFILE%");
             var destRoot = Path.Combine(userProfile, "AppData\\Local\\HP\\ALM-Client\\localhost");
@@ -29,8 +30,6 @@ namespace QS.ALM.Deploy
             }
 
             System.Threading.Thread.Sleep(1000);
-
-            var files = DeployHelper.HarvestFiles(flavor);
 
             foreach (var source in files)
             {
