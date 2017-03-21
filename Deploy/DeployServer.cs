@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace QS.ALM.Deploy
 {
@@ -104,8 +105,13 @@ namespace QS.ALM.Deploy
             var contentIni = "";
             var index = 0;
 
+            // get vertion and need to cheng it every time you run that in assembltinfo.cs
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            string version = fvi.FileVersion;
+
             foreach (var fileName in hashFiles)
-                contentIni += FileNameToIni(fileName, ++index);
+                contentIni += FileNameToIni(fileName, ++index , version);
             
             File.WriteAllText(iniPath, contentIni);
         }
@@ -142,7 +148,7 @@ namespace QS.ALM.Deploy
             }
         }
 
-        private static string FileNameToIni(string filename, int index)
+        private static string FileNameToIni(string filename, int index , string version)
         {
             string name = Path.GetFileNameWithoutExtension(filename);
             string extension = Path.GetExtension(filename).Substring(1);
@@ -151,11 +157,13 @@ namespace QS.ALM.Deploy
             string extensionReversed = new string (arr);
             var subFolder = DeployHelper.DeployToTestShellFolder(filename) ? DeployHelper.TestShell + "\\" : "";
 
-            var contentIni = 
+                // add version here for every file you want to update
+            var contentIni =
                 "[File_" + index.ToString("D" + 4) + ']' + Environment.NewLine +
                 "URLName=%URL%/Extensions/TestShell/" + name + '.' + extensionReversed + Environment.NewLine +
                 "ShortName=" + subFolder + name + '.' + extension + Environment.NewLine +
                 "Description=" + name + Environment.NewLine +
+                "version=" + version +  Environment.NewLine +
                 DotNetRegAsm(filename) + Environment.NewLine;
 
             return contentIni;
