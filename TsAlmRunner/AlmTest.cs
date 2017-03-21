@@ -24,10 +24,12 @@ namespace TsAlmRunner
         {
             string testPathUserFieldName = new TDConnectionServant(almConnection.Connection).GetTestPathFieldName();
             var theTest = (TDAPIOLELib.Test)test.Test;
-            
-            if (theTest[testPathUserFieldName] != null)
-                return theTest[testPathUserFieldName].ToString(); 
 
+            if (theTest[testPathUserFieldName] != null)
+            {
+                theTest.Refresh();
+                return theTest[testPathUserFieldName].ToString();
+            }
             throw new Exception("Test path not selected");
         }
 

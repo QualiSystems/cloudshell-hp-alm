@@ -103,6 +103,7 @@ namespace TsTestType
             {
                 m_CurrentTest[m_TestPathUserFieldName] = TextBoxPath.Text = path;
                 RefreshTestParameter(path);
+                m_CurrentTest.Post();
             }
         }
 
