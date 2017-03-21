@@ -91,7 +91,7 @@ namespace TsCloudShellApi
     
     public class ApiSuiteTemplateDetails
     {
-        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, int estimatedDuration, TestParameters[] parameters)
+        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, TimeSpan estimatedDuration, TestParameters[] parameters)
         {
             SuiteName = suiteName;
             JobsDetails = new[] { new ApiJobTemplate(jobName, testPath, estimatedDuration, parameters) };
@@ -110,10 +110,10 @@ namespace TsCloudShellApi
 
     public class ApiJobTemplate
     {
-        public ApiJobTemplate(string jobName, string testPath, int estimatedDuration, TestParameters[] parameters)
+        public ApiJobTemplate(string jobName, string testPath, TimeSpan estimatedDuration, TestParameters[] parameters)
         {
             Name = jobName;
-            EstimatedDuration = estimatedDuration;
+            EstimatedDuration = (int)estimatedDuration.TotalMinutes;
             Tests = new Test[] {new Test(testPath, parameters)};
         }
 
