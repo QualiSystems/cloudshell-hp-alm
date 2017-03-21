@@ -167,8 +167,9 @@ namespace QS.ALM.Deploy
         /// </summary>
         private static string DotNetRegAsm(string filename)
         {
+            return string.Empty;
             // we register the interop files so we can open a connection into ALM
-            return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
+            //return filename.Split('.').First().ToLower() == "interop" ? "DotNet=Y" + Environment.NewLine: "";
             //return filename.ToLower() == RunnerDllName.ToLower() ? "DotNet=Y" + Environment.NewLine : "";
         }
     }
