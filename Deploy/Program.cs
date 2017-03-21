@@ -46,7 +46,6 @@ namespace QS.ALM.Deploy
                 return -1;
             }
 
-            VersionHelper.IncrementLastDeployVersion();
             Console.WriteLine();
             Console.WriteLine("Success. Deploy Version: {0}", VersionHelper.GetLastDeployVersion());
             Console.WriteLine();

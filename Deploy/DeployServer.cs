@@ -49,6 +49,8 @@ namespace QS.ALM.Deploy
             CopyToServerAndSign(new[] { cabPath }, "Extensions");
 
             Console.WriteLine("Outputs: " + AlmServerRoot);
+            
+            VersionHelper.IncrementLastDeployVersion();
         }
 
         private static void VerifyAlmNotRunning()
