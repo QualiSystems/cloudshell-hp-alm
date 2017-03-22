@@ -19,19 +19,19 @@ namespace TsCloudShellApi
         private string m_JobName;
         private TimeSpan m_EstimatedDuration;
 
-        public Api(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain)
+        public Api(string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain)
         {
-            Init(urlString, almUsername, almPassword, cloudShellUsername, cloudShellPassword, authenticationMode, domain, "ALM Suite", "ALM Job", null);
+            Init(urlString, globalUsername, globalPassword, loggedInUsername, loggedInPassword, authenticationMode, domain, "ALM Suite", "ALM Job", null);
         }
 
-        public Api(ITDConnection tdConnection, string cloudShellUsername = null, string cloudShellPassword = null)
+        public Api(ITDConnection tdConnection, string loggedInUsername = null, string loggedInPassword = null)
         {
             var conectionServant = new TDConnectionServant(tdConnection);
             var url = conectionServant.GetTdParam("CLOUDSHELL_SERVER_URL");
-            var almUsername = conectionServant.GetTdParam("CLOUDSHELL_USERNAME");
-            var almPassword = conectionServant.GetTdParam("CLOUDSHELL_PASSWORD");
+            var globalUsername = conectionServant.GetTdParam("CLOUDSHELL_USERNAME");
+            var globalPassword = conectionServant.GetTdParam("CLOUDSHELL_PASSWORD");
             var domain = conectionServant.GetTdParam("CLOUDSHELL_DOMAIN");
-            var mode = conectionServant.GetAlmMode();
+            var mode = conectionServant.GetRunAuthMode();
 
             var suiteName = conectionServant.GetTdParam("CLOUDSHELL_SUITE_NAME", "ALM Suite"); // Changing suite name is undocumented
             var jobName = conectionServant.GetTdParam("CLOUDSHELL_JOB_NAME", "ALM Job"); // Changing job name is undocumented
@@ -42,10 +42,10 @@ namespace TsCloudShellApi
             if (int.TryParse(conectionServant.GetTdParam("CLOUDSHELL_ESTIMATED_DURATION", "0"), out estimatedDurationNumberMinutes) && estimatedDurationNumberMinutes != 0)
                 estimatedDuration = TimeSpan.FromMinutes(estimatedDurationNumberMinutes);
 
-            Init(url, almUsername, almPassword, cloudShellUsername, cloudShellPassword, mode, domain, suiteName, jobName, estimatedDuration);
+            Init(url, globalUsername, globalPassword, loggedInUsername, loggedInPassword, mode, domain, suiteName, jobName, estimatedDuration);
         }
 
-        private void Init(string urlString, string almUsername, string almPassword, string cloudShellUsername, string cloudShellPassword, AuthenticationMode authenticationMode, string domain, string suiteName, string jobName, TimeSpan? estimatedDuration)
+        private void Init(string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain, string suiteName, string jobName, TimeSpan? estimatedDuration)
         {
             m_UrlStringServer = urlString;
             m_Domain = domain;
@@ -54,22 +54,22 @@ namespace TsCloudShellApi
             m_EstimatedDuration = estimatedDuration ?? TimeSpan.FromDays(365);
 
             // Ignore AuthenticationMode in design mode. Only in run mode we have the password of the logged-in user
-            if (string.IsNullOrEmpty(cloudShellPassword))
+            if (string.IsNullOrEmpty(loggedInPassword))
             {
-                m_UserName = almUsername;
-                m_UserPassword = almPassword;
+                m_UserName = globalUsername;
+                m_UserPassword = globalPassword;
             }
             else
             {
                 switch (authenticationMode)
                 {
-                    case AuthenticationMode.Alm:
-                        m_UserName = almUsername;
-                        m_UserPassword = almPassword;
+                    case AuthenticationMode.Global:
+                        m_UserName = globalUsername;
+                        m_UserPassword = globalPassword;
                         break;
-                    case AuthenticationMode.CloudShell:
-                        m_UserName = cloudShellUsername;
-                        m_UserPassword = cloudShellPassword;
+                    case AuthenticationMode.User:
+                        m_UserName = loggedInUsername;
+                        m_UserPassword = loggedInPassword;
                         break;
                     default:
                         throw new Exception("Invalid authentication mode: " +  authenticationMode);

@@ -33,6 +33,7 @@
             this.ButtonRunTest = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lblTestRunStatus = new System.Windows.Forms.Label();
+            this.btnRegisterAgent = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtTestPath
@@ -85,11 +86,23 @@
             this.lblTestRunStatus.TabIndex = 10;
             this.lblTestRunStatus.Text = "<run status>";
             // 
+            // btnRegisterAgent
+            // 
+            this.btnRegisterAgent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRegisterAgent.Location = new System.Drawing.Point(12, 261);
+            this.btnRegisterAgent.Name = "btnRegisterAgent";
+            this.btnRegisterAgent.Size = new System.Drawing.Size(75, 54);
+            this.btnRegisterAgent.TabIndex = 11;
+            this.btnRegisterAgent.Text = "Register Agent";
+            this.btnRegisterAgent.UseVisualStyleBackColor = true;
+            this.btnRegisterAgent.Click += new System.EventHandler(this.btnRegisterAgent_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 357);
+            this.Controls.Add(this.btnRegisterAgent);
             this.Controls.Add(this.lblTestRunStatus);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ButtonRunTest);
@@ -110,6 +123,7 @@
         private System.Windows.Forms.Button ButtonRunTest;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblTestRunStatus;
+        private System.Windows.Forms.Button btnRegisterAgent;
     }
 }
 
