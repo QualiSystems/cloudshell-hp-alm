@@ -3,45 +3,60 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using TsCloudShellApi;
+using System.Security.Principal;
 
 namespace TsTestType
 {
     static class RegisterAgent
     {
-        public static void Register()
+        private static bool HasAdminPrivileges()
         {
-            var assemblyPath = Path.Combine(SubFolderResovler.TestShellSubFolder, "TsAlmRunner.dll");
-
-            var process = new Process();
-
+            bool isAdmin;
             try
             {
-                process.StartInfo.FileName = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegSvcs.exe";
-                process.StartInfo.Arguments = assemblyPath;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.Start();
-                process.WaitForExit();
-
-                var standardOutput = process.StandardOutput.ReadToEnd();
-                var standardError = process.StandardError.ReadToEnd();
-
-                if (process.ExitCode != 0)
-                    throw new Exception(string.Format("Exit code: {0}\n\n{1}", process.ExitCode, standardOutput + Environment.NewLine + standardError));
+                WindowsIdentity user = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(user);
+                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                isAdmin = false;
             }
             catch (Exception ex)
             {
-                Logger.Error("RegisterAgent Failed: " + ex);
-
-                var message = ex.Message;
-
-                // System.Transactions.TransactionException - The Transaction Manager is not available.
-                if (ex.Message.Contains("System.Transactions.TransactionException"))
-                    message = "The 'Distributed Transaction Coordinator' service is disabled. Please start this service under Windows Services.";
-
-                MessageBox.Show(string.Format("RemoteAgent registration failed.\n\n{0}\n\nCommand was:\n{1} {2}", message, process.StartInfo.FileName, process.StartInfo.Arguments));
+                isAdmin = false;
+            }
+            return isAdmin;
+        }
+        public static void Register()
+        {
+            string output = null;
+            var assemblyPath = Path.Combine(SubFolderResovler.TestShellSubFolder, "TsAlmRunner.dll");
+            try
+            {
+                ProcessStartInfo processInfo = new ProcessStartInfo("cmd");
+                processInfo.Arguments = @"/c C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegSvcs.exe " + assemblyPath + " > " + Path.Combine(SubFolderResovler.TestShellSubFolder, "TsAlmRunnerReg.txt");
+                processInfo.Verb = "runas";
+                processInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                // Starts the process
+                using (Process process = Process.Start(processInfo))
+                {
+                    // Waits for the process to exit must come *after* StandardOutput is "empty"
+                    // so that we don't deadlock because the intermediate kernel pipe is full.
+                    process.WaitForExit();
+                }
+            }
+            catch (Exception ex)
+            {
+                // manage errors
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                if (output != null)
+                {
+                    // Process your output
+                }
             }
         }
     }
