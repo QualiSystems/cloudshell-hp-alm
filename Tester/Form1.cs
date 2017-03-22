@@ -15,7 +15,7 @@ namespace Tester
             InitializeComponent();
             try
             {
-                m_Api = new Api("http://192.168.42.35:9000", null, null, "admin", "admin", AuthenticationMode.CloudShell, "Global");
+                m_Api = new Api("http://192.168.42.35:9000", null, null, "admin", "admin", AuthenticationMode.User, "Global");
             }
             catch (Exception ex)
             {
@@ -81,6 +81,11 @@ namespace Tester
                     MessageBox.Show(string.Format("Error getting test result: " + ex.Message));
                 }
             }));
+        }
+
+        private void btnRegisterAgent_Click(object sender, EventArgs e)
+        {
+            RegisterAgent.RegisterIfNeeded();
         }
     }
 }

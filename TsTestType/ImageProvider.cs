@@ -31,13 +31,12 @@ namespace TsTestType
     /// <returns></returns>
       public System.Drawing.Image TestTypeIcon(int status)
       {
-          var assemblyPath = Path.Combine(SubFolderResovler.TestShellSubFolder, "TsAlmRunner.tlb");
           // WARNING: don't move this code:
           // The "SettingsFile" class is loaded from the "Quai sub folder (when running in ALM), so the "Hook" must be called first
           if (SettingsFile.DebugMode)
               Debugger.Launch();
-          if (!System.IO.File.Exists(assemblyPath))
-            RegisterAgent.Register();
+          
+        RegisterAgent.RegisterIfNeeded();
 
           return Resource.TestTypeImage;
       }

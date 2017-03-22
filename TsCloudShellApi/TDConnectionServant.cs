@@ -35,23 +35,23 @@ namespace TsCloudShellApi
             return columnName;
         }
 
-        public AuthenticationMode GetAlmMode()
+        public AuthenticationMode GetRunAuthMode()
         {
             const string RunAuthModeKey = "CLOUDSHELL_RUN_AUTH_MODE";
-            const string AlmValue = "ALM";
-            const string CloudShellValue = "CLOUDSHELL";
+            const string GlobalValue = "GLOBAL";
+            const string UserValue = "USER";
 
-            var almMode = GetTdParam(RunAuthModeKey);
+            var mode = GetTdParam(RunAuthModeKey);
 
-            almMode = almMode.ToUpper();
+            mode = mode.ToUpper();
 
-            if (almMode == AlmValue)
-                return AuthenticationMode.Alm;
+            if (mode == GlobalValue)
+                return AuthenticationMode.Global;
 
-            if (almMode == CloudShellValue)
-                return AuthenticationMode.CloudShell;
+            if (mode == UserValue)
+                return AuthenticationMode.User;
 
-            throw new Exception(string.Format("{0} has invalid value '{1}'. Please specify one of: {2}, {3}", RunAuthModeKey, almMode, AlmValue, CloudShellValue));
+            throw new Exception(string.Format("{0} has invalid value '{1}'. Please specify one of: {2}, {3}", RunAuthModeKey, mode, GlobalValue, UserValue));
         }
 
         public string GetTdParam(string paramName, string defaultValue = null)
