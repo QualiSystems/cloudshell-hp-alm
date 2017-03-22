@@ -18,28 +18,40 @@ namespace QS.ALM.Deploy
             Console.Write("Choice: ");
 
             var choice = Console.ReadLine();
+            var exitCode = 0;
 
-            switch (choice)
+            try
             {
-                case "1":
-                    if(!DeployServer.Deploy(files, flavor))
-                    {
-                        return -1;
-                    }
-                    break;
-                case "2":
-                    DeployClient.Deploy(files);
-                    break;
-                default:
-                    throw new Exception(string.Format("Invalid choice '{0}'", choice));
-            }
+                switch (choice)
+                {
+                    case "1":
+                        DeployServer.Deploy(files, flavor);
+                        break;
+                    case "2":
+                        DeployClient.Deploy(files);
+                        break;
+                    default:
+                        throw new Exception(string.Format("Invalid choice '{0}'", choice));
+                }
 
-            Console.WriteLine();
-            Console.WriteLine("Success. Deploy Version: {0}", VersionHelper.GetLastDeployVersion());
+                Console.WriteLine();
+                Console.WriteLine("Success. Deploy Version: {0}", VersionHelper.GetLastDeployVersion());
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message != string.Empty)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+
+                exitCode = - 1;
+            }
+            
             Console.WriteLine();
             Console.WriteLine("Press enter to exit");
             Console.ReadLine();
-            return 0;
+            return exitCode;
         }
     }
 }
