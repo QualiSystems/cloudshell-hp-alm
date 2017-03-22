@@ -9,6 +9,7 @@ namespace QS.ALM.Deploy
 {
     static class VersionHelper
     {
+        private static string m_VersionCsFileneme = "AlmCloudShellVersion.cs";
         public static void VerifyVersion(List<string> files)
         {
             var qualiFiles = new List<string>();
@@ -34,6 +35,18 @@ namespace QS.ALM.Deploy
             var fileVersion = Version.Parse(versionInfo.FileVersion);
             var lastDeployedVersion = GetLastDeployVersion();
 
+            var versionFile = Path.Combine(DeployHelper.SolutionRoot, m_VersionCsFileneme);
+            var reg2 = new Regex("AssemblyFileVersion\\(.*\\)");
+            var text2 = File.ReadAllText(versionFile);
+            string match2 = reg2.Match(text2).Value;
+            string ver2 = match2.Substring(match2.IndexOf('\"')+1, match2.LastIndexOf('\"') - match2.IndexOf('\"')-1);
+
+
+            if (fileVersion.ToString() != ver2)
+            {
+                throw new Exception("Build version not success. Please rebuild the project.");
+            }
+
             if (fileVersion == lastDeployedVersion)
             {
                 Console.WriteLine("Version was not incremented.");
@@ -56,7 +69,7 @@ namespace QS.ALM.Deploy
 
         private static void IncrementVersionInQualiAssemblies()
         {
-            var versionFile = Path.Combine(DeployHelper.SolutionRoot, "AlmCloudShellVersion.cs");
+            var versionFile = Path.Combine(DeployHelper.SolutionRoot, m_VersionCsFileneme);
             var reg2 = new Regex("AssemblyFileVersion\\(.*\\)");
             var text2 = File.ReadAllText(versionFile);
             var match2 = reg2.Match(text2);
