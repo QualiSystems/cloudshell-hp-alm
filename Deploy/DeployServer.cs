@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace QS.ALM.Deploy
 {
@@ -11,25 +10,11 @@ namespace QS.ALM.Deploy
     {
         private const string AlmServerRoot = @"C:\ProgramData\HP\ALM\webapps\qcbin";
 
-        public static bool Deploy(List<string> files, string flavor)
+        public static void Deploy(List<string> files, string flavor)
         {
-            try
-            {
-                VersionHelper.VerifyVersion(files);
-                VerifyAlmNotRunning();
-            }
-            catch (Exception ex)
-            {
-                if (!string.IsNullOrEmpty(ex.Message))
-                    Console.WriteLine("Error: " + ex.Message + "");
-
-                Console.WriteLine();
-                Console.WriteLine("Error: " + ex.Message + "Press enter to exit");
-
-                Console.ReadLine();
-                return false;
-            }
-
+            VersionHelper.VerifyVersion(files);
+            VerifyAlmNotRunning();
+          
             var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Binaries", flavor, "Cab");
             Directory.CreateDirectory(cabFolder);
             var cabPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".cab");
@@ -64,9 +49,7 @@ namespace QS.ALM.Deploy
 
             VersionHelper.IncrementLastDeployVersion();
 
-            Console.WriteLine("Outputs: " + AlmServerRoot);
-
-            return true;
+            Console.WriteLine("Outputs can be found under: " + AlmServerRoot);
         }
 
         private static void VerifyAlmNotRunning()

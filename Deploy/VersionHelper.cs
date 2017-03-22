@@ -9,7 +9,8 @@ namespace QS.ALM.Deploy
 {
     static class VersionHelper
     {
-        private static string m_VersionCsFileneme = "AlmCloudShellVersion.cs";
+        private const string VersionCsFileneme = "AlmCloudShellVersion.cs";
+
         public static void VerifyVersion(List<string> files)
         {
             var qualiFiles = new List<string>();
@@ -35,7 +36,7 @@ namespace QS.ALM.Deploy
             var fileVersion = Version.Parse(versionInfo.FileVersion);
             var lastDeployedVersion = GetLastDeployVersion();
 
-            var versionFile = Path.Combine(DeployHelper.SolutionRoot, m_VersionCsFileneme);
+            var versionFile = Path.Combine(DeployHelper.SolutionRoot, VersionCsFileneme);
             var reg2 = new Regex("AssemblyFileVersion\\(.*\\)");
             var text2 = File.ReadAllText(versionFile);
             string match2 = reg2.Match(text2).Value;
@@ -43,11 +44,9 @@ namespace QS.ALM.Deploy
 
 
             if (fileVersion.ToString() != ver2)
-            {
-                throw new Exception("Build version not success. Please rebuild the project.");
-            }
+                throw new Exception("You forgot to build the solution (version in .dll doesn't match version in .cs).\nPLEASE BUILD THE SOLUTION.");
 
-            if (fileVersion == lastDeployedVersion)
+            if (fileVersion <= lastDeployedVersion)
             {
                 Console.WriteLine("Version was not incremented.");
                 Console.WriteLine();
@@ -60,16 +59,16 @@ namespace QS.ALM.Deploy
                 {
                     IncrementVersionInQualiAssemblies();
                     Console.WriteLine("Version incremented.");
+                    Console.WriteLine("PLEASE REBUILD THE SOLUTION and run Deploy again.");
                 }
 
-                Console.WriteLine("PLEASE REBUILD THE SOLUTION and run Deploy again.");
                 throw new Exception(string.Empty);
             }
         }
 
         private static void IncrementVersionInQualiAssemblies()
         {
-            var versionFile = Path.Combine(DeployHelper.SolutionRoot, m_VersionCsFileneme);
+            var versionFile = Path.Combine(DeployHelper.SolutionRoot, VersionCsFileneme);
             var reg2 = new Regex("AssemblyFileVersion\\(.*\\)");
             var text2 = File.ReadAllText(versionFile);
             var match2 = reg2.Match(text2);
