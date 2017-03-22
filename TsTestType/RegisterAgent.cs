@@ -47,9 +47,7 @@ namespace TsTestType
             if (File.Exists(tlbPath))
                 return;
 
-            string error;
-            Register(out error);
-            //RegisterInLoop();
+            RegisterInLoop();
         }
 
         private static void RegisterInLoop()
@@ -65,11 +63,11 @@ namespace TsTestType
                     case RegisterResult.Success:
                         return;
                     case RegisterResult.Error:
-                        if (ShowErrorForm("Register Error", string.Format("There was an error during {0} agent registration:", Config.TestShell), error))
+                        if (ShowErrorForm("Registeration Error", string.Format("There was an error during {0} agent registration:", Config.TestShell), error))
                             return;
                         break;
                     case RegisterResult.Canceled:
-                        if (ShowErrorForm("Register Canceled", string.Format("You must complete {0} agent registration in order to enable {0} integration.", Config.TestShell), null))
+                        if (ShowErrorForm("Registeration Canceled", "User canceled registration.", string.Format("You must complete {0} agent registration in order to enable {0} integration.", Config.TestShell)))
                             return;
                         break;
                     default:
@@ -78,9 +76,9 @@ namespace TsTestType
             }
         }
 
-        private static bool ShowErrorForm(string title, string explain, string error)
+        private static bool ShowErrorForm(string title, string explain, string details)
         {
-            var form = new RegisterErrorForm(title, explain, error);
+            var form = new RegisterErrorForm(Config.TestShell + " " + title, explain, details);
             var result = form.ShowDialog();
 
             // Return true to abort register loop
@@ -92,8 +90,6 @@ namespace TsTestType
 
         private static RegisterResult Register(out string error)
         {
-            error = null;
-
             if (!File.Exists(DllPath))
             {
                 error = "File not found: " + DllPath;

@@ -217,8 +217,8 @@ namespace TsCloudShellApi
                 return null;
             }
 
-            // Remove parameters with null value (not valid by the server side)
-            parameters = parameters.Where(x => x.ParameterValue != null).ToArray();
+            // Remove parameters with null or empty string value (not valid by the server side)
+            parameters = parameters.Where(x => !string.IsNullOrEmpty(x.ParameterValue)).ToArray();
 
             var request = new RestRequest("/api/Scheduling/Suites/", Method.POST);
             request.AddHeader("Authorization", authorization);
