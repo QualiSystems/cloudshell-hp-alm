@@ -131,7 +131,7 @@ namespace TsTestType
 
         private static bool UserCanceldUacDialog(Exception exception)
         {
-            //TODO: handle user canceled UAC dialog
+            //TODO: handle user canceled UAC dialog 
             return false;
         }
 
