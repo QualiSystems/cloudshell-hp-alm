@@ -117,11 +117,22 @@ namespace TsTestType
             {
                 Logger.Error("RegisterAgent: " + ex);
 
-                //TODO: handle user canceled UAC dialog
+                if (UserCanceldUacDialog(ex))
+                {
+                    error = null;
+                    return RegisterResult.Canceled;
+                }
+
                 error = ex.Message;
             }
 
             return error == null ? RegisterResult.Success : RegisterResult.Error;
+        }
+
+        private static bool UserCanceldUacDialog(Exception exception)
+        {
+            //TODO: handle user canceled UAC dialog
+            return false;
         }
 
         private static string GetRegisterError(Process process, string outputFile)
