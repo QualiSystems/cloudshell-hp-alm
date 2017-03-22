@@ -28,63 +28,68 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblError = new System.Windows.Forms.Label();
             this.lblExplain = new System.Windows.Forms.Label();
-            this.ButtonCancel = new System.Windows.Forms.Button();
-            this.ButtonOK = new System.Windows.Forms.Button();
+            this.btnAbort = new System.Windows.Forms.Button();
+            this.btnRetry = new System.Windows.Forms.Button();
+            this.txtDetails = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // lblError
-            // 
-            this.lblError.AutoSize = true;
-            this.lblError.Location = new System.Drawing.Point(12, 84);
-            this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(54, 13);
-            this.lblError.TabIndex = 0;
-            this.lblError.Text = "label Error";
             // 
             // lblExplain
             // 
             this.lblExplain.AutoSize = true;
+            this.lblExplain.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblExplain.Location = new System.Drawing.Point(12, 22);
             this.lblExplain.Name = "lblExplain";
-            this.lblExplain.Size = new System.Drawing.Size(62, 13);
+            this.lblExplain.Size = new System.Drawing.Size(78, 16);
             this.lblExplain.TabIndex = 1;
             this.lblExplain.Text = "Explenation";
             // 
-            // ButtonCancel
+            // btnAbort
             // 
-            this.ButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonCancel.Location = new System.Drawing.Point(217, 219);
-            this.ButtonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ButtonCancel.Name = "ButtonCancel";
-            this.ButtonCancel.Size = new System.Drawing.Size(112, 35);
-            this.ButtonCancel.TabIndex = 5;
-            this.ButtonCancel.Text = "Abort";
-            this.ButtonCancel.UseVisualStyleBackColor = true;
+            this.btnAbort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbort.Location = new System.Drawing.Point(276, 234);
+            this.btnAbort.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnAbort.Name = "btnAbort";
+            this.btnAbort.Size = new System.Drawing.Size(112, 35);
+            this.btnAbort.TabIndex = 5;
+            this.btnAbort.Text = "Abort";
+            this.btnAbort.UseVisualStyleBackColor = true;
+            this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
             // 
-            // ButtonOK
+            // btnRetry
             // 
-            this.ButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonOK.Enabled = false;
-            this.ButtonOK.Location = new System.Drawing.Point(81, 219);
-            this.ButtonOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ButtonOK.Name = "ButtonOK";
-            this.ButtonOK.Size = new System.Drawing.Size(112, 35);
-            this.ButtonOK.TabIndex = 4;
-            this.ButtonOK.Text = "Retry";
-            this.ButtonOK.UseVisualStyleBackColor = true;
+            this.btnRetry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRetry.Location = new System.Drawing.Point(140, 234);
+            this.btnRetry.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnRetry.Name = "btnRetry";
+            this.btnRetry.Size = new System.Drawing.Size(112, 35);
+            this.btnRetry.TabIndex = 4;
+            this.btnRetry.Text = "Retry";
+            this.btnRetry.UseVisualStyleBackColor = true;
+            this.btnRetry.Click += new System.EventHandler(this.btnRetry_Click);
+            // 
+            // txtDetails
+            // 
+            this.txtDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDetails.Location = new System.Drawing.Point(12, 50);
+            this.txtDetails.Multiline = true;
+            this.txtDetails.Name = "txtDetails";
+            this.txtDetails.ReadOnly = true;
+            this.txtDetails.Size = new System.Drawing.Size(505, 165);
+            this.txtDetails.TabIndex = 6;
             // 
             // RegisterErrorForm
             // 
+            this.AcceptButton = this.btnRetry;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(429, 268);
-            this.Controls.Add(this.ButtonCancel);
-            this.Controls.Add(this.ButtonOK);
+            this.ClientSize = new System.Drawing.Size(529, 283);
+            this.Controls.Add(this.txtDetails);
+            this.Controls.Add(this.btnAbort);
+            this.Controls.Add(this.btnRetry);
             this.Controls.Add(this.lblExplain);
-            this.Controls.Add(this.lblError);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "RegisterErrorForm";
@@ -99,9 +104,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lblError;
         private System.Windows.Forms.Label lblExplain;
-        private System.Windows.Forms.Button ButtonCancel;
-        private System.Windows.Forms.Button ButtonOK;
+        private System.Windows.Forms.Button btnAbort;
+        private System.Windows.Forms.Button btnRetry;
+        private System.Windows.Forms.TextBox txtDetails;
     }
 }
