@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Infragistics.Win.UltraWinTree;
 using TsCloudShellApi;
+using TsTestType.Tree;
 
 namespace TsTestType
 {
@@ -13,13 +13,13 @@ namespace TsTestType
     {
         private string m_StartTestPath;
         private readonly Api m_Api;
-        private Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree m_TestsBrouserQcTree;
-        private readonly Dictionary<string, UltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, UltraTreeNodeWithStatus>();
-        
+        private readonly Dictionary<string, IUltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, IUltraTreeNodeWithStatus>();
+        private ITreeProvider m_TreeProvider;
+
         /// <summary>
         /// Current node, selected in tree.
         /// </summary>
-        private UltraTreeNodeWithStatus m_SelectedNode { get; set; }
+        private IUltraTreeNodeWithStatus m_SelectedNode { get; set; }
 
         public TestShellTestsBrowserForm(Api api)
         {
@@ -46,13 +46,13 @@ namespace TsTestType
 
         private bool AddQcTree()
         {
-            m_TestsBrouserQcTree = new Mercury.TD.Client.UI.Components.ThirdParty.QCTree.QCTree();
-            TreeViewPanel.Controls.Add(m_TestsBrouserQcTree);
-            m_TestsBrouserQcTree.Dock = DockStyle.Fill;
-            m_TestsBrouserQcTree.HideSelection = false;
-            m_TestsBrouserQcTree.BeforeExpand += TestsBrowserQcTree_BeforeExpand;
-            m_TestsBrouserQcTree.AfterSelect += TestsBrowsTestsBrouserQcTreeAfterSelect;
-            m_TestsBrouserQcTree.TabIndex = 0;
+            m_TreeProvider = new AlmTreeProvider();
+            m_TreeProvider.AfterSelect += TreeProviderAfterSelect;
+            m_TreeProvider.BeforeExpand += TreeProviderBeforeExpand;
+            var treeControl = m_TreeProvider.GetTreeControl();
+            TreeViewPanel.Controls.Add(treeControl);
+            treeControl.Dock = DockStyle.Fill;
+            treeControl.TabIndex = 0;
 
             //add root node
             return AddLayerToTree("");
@@ -65,7 +65,7 @@ namespace TsTestType
                 path = path.Replace('\\', '/');
                 string[] arrPath = path.Split('\\', '/');
                 var curPath = string.Empty;
-                UltraTreeNodeWithStatus tmpNode;
+                IUltraTreeNodeWithStatus tmpNode;
 
                 for(int i = 0; i < arrPath.Length; ++i)
                 {
@@ -103,12 +103,20 @@ namespace TsTestType
             return true;
         }
 
-        private void TestsBrowsTestsBrouserQcTreeAfterSelect(object sender, SelectEventArgs e)
+        private void TreeProviderBeforeExpand(ITreeNode node, ref bool cancel)
         {
-            if (e.NewSelections.Count > 0)
+            if (!AddLayerToTree(node.FullPath.Replace('\\', '/')))
             {
-                UltraTreeNodeWithStatus tmpNode;
-                m_DictonaryNodes.TryGetValue(e.NewSelections[0].FullPath.Replace('\\', '/'), out tmpNode);
+                cancel = true;
+            }
+        }
+
+        private void TreeProviderAfterSelect(ITreeNode node)
+        {
+            if (node != null)
+            {
+                IUltraTreeNodeWithStatus tmpNode;
+                m_DictonaryNodes.TryGetValue(node.FullPath.Replace('\\', '/'), out tmpNode);
                 m_SelectedNode = tmpNode;
                 CheckButtunOkEnabledStatus();                
             }
@@ -118,17 +126,9 @@ namespace TsTestType
             }
         }
 
-        private void TestsBrowserQcTree_BeforeExpand(object sender, CancelableNodeEventArgs e)
-        {
-            if (!AddLayerToTree(e.TreeNode.FullPath.Replace('\\', '/')))
-            {
-                e.Cancel = true;
-            }
-        }
-
         private bool AddLayerToTree(string path)
         {
-            UltraTreeNodeWithStatus node = null;
+            IUltraTreeNodeWithStatus node = null;
 
             if(path == null)
                 path = "";
@@ -189,14 +189,14 @@ namespace TsTestType
                     {
                         string nameNode = nodeTmp.Name;                       
                         string newPath = path + nameNode;
-                        UltraTreeNode ultraTreeNode;
+                        ITreeNode ultraTreeNode;
                         if(node == null)
                         {
-                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(newPath, nameNode);//add layer root
+                            ultraTreeNode = m_TreeProvider.AddNode(newPath, nameNode); //add layer root
                         }
                         else
                         {
-                            ultraTreeNode = m_TestsBrouserQcTree.AddRow(node.Node, newPath, nameNode);//Insert node to tree control under node.Node.
+                            ultraTreeNode = m_TreeProvider.AddNode(node.Node, newPath, nameNode); //Insert node to tree control under node.Node.
                         }
 
                         if (nodeTmp.Type == TypeNode.Folder)
@@ -234,14 +234,14 @@ namespace TsTestType
                         curPath += "/";
                     }
                     curPath = curPath + arrPath[i];
-                    m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(new UltraTreeNode(), StatusNode.Filled));
+                    m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(m_TreeProvider.CreateNewNode(), StatusNode.Filled));
                 }                
             }
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)
         {
-            UltraTreeNodeWithStatus tmp = m_SelectedNode;
+            IUltraTreeNodeWithStatus tmp = m_SelectedNode;
             this.Close();
             m_SelectedNode = tmp;
         }
