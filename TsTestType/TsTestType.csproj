@@ -110,6 +110,13 @@
     <Compile Include="..\AlmCloudShellVersion.cs">
       <Link>AlmCloudShellVersion.cs</Link>
     </Compile>
+    <Compile Include="DeveloperTools\DeveloperToolsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DeveloperTools\DeveloperToolsForm.Designer.cs">
+      <DependentUpon>DeveloperToolsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeveloperTools\HookDeveloperWindow.cs" />
     <Compile Include="ExecConfigViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -149,7 +156,11 @@
     <Compile Include="TestShellTestsBrowserForm.Designer.cs">
       <DependentUpon>TestShellTestsBrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UltraTreeNodeWithStatus.cs" />
+    <Compile Include="Tree\AlmTreeNode.cs" />
+    <Compile Include="Tree\AlmTreeProvider.cs" />
+    <Compile Include="Tree\ITreeNode.cs" />
+    <Compile Include="Tree\ITreeProvider.cs" />
+    <Compile Include="Tree\UltraTreeNodeWithStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ExecConfigViewer.resx">

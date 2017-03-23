@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,4 +19,5 @@ namespace Tester
             Application.Run(new Form1());
         }
     }
+
 }
