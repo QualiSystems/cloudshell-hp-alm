@@ -13,13 +13,13 @@ namespace TsTestType
     {
         private string m_StartTestPath;
         private readonly Api m_Api;
-        private readonly Dictionary<string, IUltraTreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, IUltraTreeNodeWithStatus>();
+        private readonly Dictionary<string, ITreeNodeWithStatus> m_DictonaryNodes = new Dictionary<string, ITreeNodeWithStatus>();
         private ITreeProvider m_TreeProvider;
 
         /// <summary>
         /// Current node, selected in tree.
         /// </summary>
-        private IUltraTreeNodeWithStatus m_SelectedNode { get; set; }
+        private ITreeNodeWithStatus m_SelectedNode { get; set; }
 
         public TestShellTestsBrowserForm(Api api)
         {
@@ -46,7 +46,7 @@ namespace TsTestType
 
         private bool AddQcTree()
         {
-            m_TreeProvider = new AlmTreeProvider();
+            m_TreeProvider = new MsTreeProvider();//  AlmTreeProvider();
             m_TreeProvider.AfterSelect += TreeProviderAfterSelect;
             m_TreeProvider.BeforeExpand += TreeProviderBeforeExpand;
             var treeControl = m_TreeProvider.GetTreeControl();
@@ -65,7 +65,7 @@ namespace TsTestType
                 path = path.Replace('\\', '/');
                 string[] arrPath = path.Split('\\', '/');
                 var curPath = string.Empty;
-                IUltraTreeNodeWithStatus tmpNode;
+                ITreeNodeWithStatus tmpNode;
 
                 for(int i = 0; i < arrPath.Length; ++i)
                 {
@@ -115,7 +115,7 @@ namespace TsTestType
         {
             if (node != null)
             {
-                IUltraTreeNodeWithStatus tmpNode;
+                ITreeNodeWithStatus tmpNode;
                 m_DictonaryNodes.TryGetValue(node.FullPath.Replace('\\', '/'), out tmpNode);
                 m_SelectedNode = tmpNode;
                 CheckButtunOkEnabledStatus();                
@@ -128,7 +128,7 @@ namespace TsTestType
 
         private bool AddLayerToTree(string path)
         {
-            IUltraTreeNodeWithStatus node = null;
+            ITreeNodeWithStatus node = null;
 
             if(path == null)
                 path = "";
@@ -202,11 +202,15 @@ namespace TsTestType
                         if (nodeTmp.Type == TypeNode.Folder)
                         {
                             m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.NotFilled));
+                            if(node != null)
+                                ultraTreeNode.ImageIndex = 2;
                         }
                         else
                         {
                             m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
                             ultraTreeNode.Expanded = true;//For remove picture plus near node in tree control.
+                            if (node != null)
+                                ultraTreeNode.ImageIndex = 3;
                         }
                     }
                 }
@@ -241,7 +245,7 @@ namespace TsTestType
 
         private void ButtonOK_Click(object sender, EventArgs e)
         {
-            IUltraTreeNodeWithStatus tmp = m_SelectedNode;
+            ITreeNodeWithStatus tmp = m_SelectedNode;
             this.Close();
             m_SelectedNode = tmp;
         }

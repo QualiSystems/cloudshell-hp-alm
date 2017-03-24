@@ -4,17 +4,14 @@ using Mercury.TD.Client.UI.Components.ThirdParty.QCTree;
 
 namespace TsTestType.Tree
 {
-    public delegate void TreeSelectHandler(ITreeNode node);
-    public delegate void TreeViewCancelHandler(ITreeNode node, ref bool cancel);
-
     public class AlmTreeProvider : ITreeProvider
     {
-        private readonly QCTree m_Tree;
+        private readonly QCTree m_Tree;      
 
         public AlmTreeProvider()
         {
             m_Tree = new QCTree();
-            m_Tree.HideSelection = false;
+            m_Tree.HideSelection = false;            
             m_Tree.BeforeExpand += OnBeforeExpand;
             m_Tree.AfterSelect += OnAfterSelect;
         }
@@ -43,7 +40,16 @@ namespace TsTestType.Tree
         public ITreeNode AddNode(string newPath, string nameNode)
         {
             var node = m_Tree.AddRow(newPath, nameNode);
-            return new AlmTreeNode(node);
+            AlmTreeNode almNode = new AlmTreeNode(node);
+            if (nameNode.ToLower() == "local")
+            {
+                almNode.ImageIndex = 0;
+            }
+            else if (nameNode.ToLower() == "shared")
+            {
+                almNode.ImageIndex = 1;
+            }
+            return almNode;
         }
 
         public ITreeNode AddNode(ITreeNode parent, string newPath, string nameNode)

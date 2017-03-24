@@ -18,7 +18,7 @@
     /// <summary>
     /// Node for dictionary for filling data step by step on request
     /// </summary>
-    public class UltraTreeNodeWithStatus : IUltraTreeNodeWithStatus
+    public class UltraTreeNodeWithStatus : ITreeNodeWithStatus
     {
         public ITreeNode Node { get; private set; }
         public StatusNode Status { get; set; }
@@ -30,7 +30,7 @@
         }
     }
 
-    public interface IUltraTreeNodeWithStatus
+    public interface ITreeNodeWithStatus
     {
         ITreeNode Node { get; }
         StatusNode Status { get; set; }

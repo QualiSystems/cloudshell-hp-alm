@@ -2,6 +2,8 @@ using System.Windows.Forms;
 
 namespace TsTestType.Tree
 {
+    public delegate void TreeSelectHandler(ITreeNode node);
+    public delegate void TreeViewCancelHandler(ITreeNode node, ref bool cancel);
     public interface ITreeProvider
     {
         ITreeNode AddNode(string newPath, string nameNode);

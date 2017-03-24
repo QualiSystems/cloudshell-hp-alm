@@ -160,6 +160,8 @@
     <Compile Include="Tree\AlmTreeProvider.cs" />
     <Compile Include="Tree\ITreeNode.cs" />
     <Compile Include="Tree\ITreeProvider.cs" />
+    <Compile Include="Tree\MsTreeNode.cs" />
+    <Compile Include="Tree\MsTreeProvider.cs" />
     <Compile Include="Tree\UltraTreeNodeWithStatus.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +197,12 @@
       <Project>{c290f38c-afd1-420b-9cc6-bb1eed921500}</Project>
       <Name>TsCloudShellApi</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Folder.bmp" />
+    <Content Include="Resources\Local.bmp" />
+    <Content Include="Resources\Shared.bmp" />
+    <Content Include="Resources\Test.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
