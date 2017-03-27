@@ -199,10 +199,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Folder.bmp" />
-    <Content Include="Resources\Local.bmp" />
-    <Content Include="Resources\Shared.bmp" />
-    <Content Include="Resources\Test.bmp" />
+    <Content Include="Resources\TreeNodeFolder.png" />
+    <Content Include="Resources\TreeNodeLocal.png" />
+    <Content Include="Resources\TreeNodeShared.png" />
+    <Content Include="Resources\TreeNodeTest.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

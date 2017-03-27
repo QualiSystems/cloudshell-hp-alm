@@ -36,12 +36,12 @@ namespace TsTestType.Tree
             }
         }
 
-        public bool Selected
+        /*public bool Selected
         {
             get { return Node.IsSelected; }
             set { if (value == true) { Node.TreeView.SelectedNode = Node; } }
-        }
+        }*/
 
-        public int ImageIndex { get { return Node.ImageIndex; } set { Node.ImageIndex = value;} }
+        //public int ImageIndex { get { return Node.ImageIndex; } set { Node.ImageIndex = value; Node.SelectedImageIndex = value;}}
     }
 }
