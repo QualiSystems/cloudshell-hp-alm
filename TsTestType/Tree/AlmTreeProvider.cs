@@ -37,17 +37,33 @@ namespace TsTestType.Tree
             e.Cancel = cancel;
         }
 
+        public ITreeNode SelectedNode
+        {
+            get 
+            {
+                if (m_Tree.SelectedNodes.Count > 0)
+                {
+                    foreach(UltraTreeNode node in m_Tree.SelectedNodes)
+                    {
+                        return new AlmTreeNode(node);
+                    }
+                }
+                return null; 
+            }
+            set { ((AlmTreeNode)value).Node.Selected = true; }
+        }
+
         public ITreeNode AddNode(string newPath, string nameNode)
         {
             var node = m_Tree.AddRow(newPath, nameNode);
             AlmTreeNode almNode = new AlmTreeNode(node);
             if (nameNode.ToLower() == "local")
             {
-                almNode.ImageIndex = 0;
+                SetNodeImage(almNode, TreeImage.Local);
             }
             else if (nameNode.ToLower() == "shared")
             {
-                almNode.ImageIndex = 1;
+                SetNodeImage(almNode, TreeImage.Shared);
             }
             return almNode;
         }
@@ -62,5 +78,7 @@ namespace TsTestType.Tree
         {
             return new AlmTreeNode(new UltraTreeNode());
         }
+
+        public void SetNodeImage(ITreeNode node, TreeImage image) { }
     }
 }

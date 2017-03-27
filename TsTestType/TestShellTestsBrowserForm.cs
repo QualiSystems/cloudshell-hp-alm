@@ -97,7 +97,7 @@ namespace TsTestType
 
                 if (tmpNode != null)
                 {
-                    tmpNode.Node.Selected = true;
+                    m_TreeProvider.SelectedNode = tmpNode.Node;
                 }
             }
             return true;
@@ -189,28 +189,28 @@ namespace TsTestType
                     {
                         string nameNode = nodeTmp.Name;                       
                         string newPath = path + nameNode;
-                        ITreeNode ultraTreeNode;
+                        ITreeNode treeNode;
                         if(node == null)
                         {
-                            ultraTreeNode = m_TreeProvider.AddNode(newPath, nameNode); //add layer root
+                            treeNode = m_TreeProvider.AddNode(newPath, nameNode); //add layer root
                         }
                         else
                         {
-                            ultraTreeNode = m_TreeProvider.AddNode(node.Node, newPath, nameNode); //Insert node to tree control under node.Node.
+                            treeNode = m_TreeProvider.AddNode(node.Node, newPath, nameNode); //Insert node to tree control under node.Node.
                         }
 
                         if (nodeTmp.Type == TypeNode.Folder)
                         {
-                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.NotFilled));
+                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(treeNode, StatusNode.NotFilled));
                             if(node != null)
-                                ultraTreeNode.ImageIndex = 2;
+                                m_TreeProvider.SetNodeImage(treeNode, TreeImage.Folder);
                         }
                         else
                         {
-                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
-                            ultraTreeNode.Expanded = true;//For remove picture plus near node in tree control.
+                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(treeNode, StatusNode.Test));
+                            treeNode.Expanded = true;//For remove picture plus near node in tree control.
                             if (node != null)
-                                ultraTreeNode.ImageIndex = 3;
+                                m_TreeProvider.SetNodeImage(treeNode, TreeImage.Test);
                         }
                     }
                 }
