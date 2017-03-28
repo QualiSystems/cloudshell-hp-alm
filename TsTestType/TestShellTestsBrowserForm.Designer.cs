@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestShellTestsBrowserForm));
             this.ButtonOK = new System.Windows.Forms.Button();
             this.ButtonCancel = new System.Windows.Forms.Button();
             this.TreeViewPanel = new System.Windows.Forms.Panel();
@@ -37,12 +38,17 @@
             // 
             this.ButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ButtonOK.Enabled = false;
-            this.ButtonOK.Location = new System.Drawing.Point(406, 499);
+            this.ButtonOK.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.ButtonOK.FlatAppearance.BorderSize = 0;
+            this.ButtonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+            this.ButtonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+            this.ButtonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonOK.Image = ((System.Drawing.Image)(resources.GetObject("ButtonOK.Image")));
+            this.ButtonOK.Location = new System.Drawing.Point(406, 495);
             this.ButtonOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ButtonOK.Name = "ButtonOK";
-            this.ButtonOK.Size = new System.Drawing.Size(112, 35);
+            this.ButtonOK.Size = new System.Drawing.Size(142, 42);
             this.ButtonOK.TabIndex = 2;
-            this.ButtonOK.Text = "OK";
             this.ButtonOK.UseVisualStyleBackColor = true;
             this.ButtonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
@@ -50,12 +56,17 @@
             // 
             this.ButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonCancel.Location = new System.Drawing.Point(542, 499);
+            this.ButtonCancel.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.ButtonCancel.FlatAppearance.BorderSize = 0;
+            this.ButtonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+            this.ButtonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+            this.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonCancel.Image = ((System.Drawing.Image)(resources.GetObject("ButtonCancel.Image")));
+            this.ButtonCancel.Location = new System.Drawing.Point(562, 495);
             this.ButtonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ButtonCancel.Name = "ButtonCancel";
-            this.ButtonCancel.Size = new System.Drawing.Size(112, 35);
+            this.ButtonCancel.Size = new System.Drawing.Size(142, 42);
             this.ButtonCancel.TabIndex = 3;
-            this.ButtonCancel.Text = "Cancel";
             this.ButtonCancel.UseVisualStyleBackColor = true;
             // 
             // TreeViewPanel
@@ -63,10 +74,10 @@
             this.TreeViewPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TreeViewPanel.Location = new System.Drawing.Point(75, 46);
+            this.TreeViewPanel.Location = new System.Drawing.Point(0, 0);
             this.TreeViewPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TreeViewPanel.Name = "TreeViewPanel";
-            this.TreeViewPanel.Size = new System.Drawing.Size(579, 425);
+            this.TreeViewPanel.Size = new System.Drawing.Size(740, 471);
             this.TreeViewPanel.TabIndex = 1;
             // 
             // TestShellTestsBrowserForm

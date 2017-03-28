@@ -5,7 +5,7 @@ using TDAPIOLELib;
 using Mercury.TD.Client.Ota.Api;
 using Mercury.TD.Client.Ota.Core;
 using TsCloudShellApi;
-
+using System.Drawing;
 
 namespace TsTestType
 {
@@ -28,6 +28,10 @@ namespace TsTestType
         {
             m_Api = api;
             InitializeComponent();
+            ButtonBrowse.BackColor = Color.White;
+            ButtonBrowse.ForeColor = Color.White;
+            ButtonRefresh.BackColor = Color.White;
+            ButtonRefresh.ForeColor = Color.White;               
         }
 
         /// <summary>
