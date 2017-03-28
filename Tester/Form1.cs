@@ -3,12 +3,13 @@ using System.Reflection;
 using System.Windows.Forms;
 using TsCloudShellApi;
 using TsTestType;
+using TsTestType.DeveloperTools;
 
 namespace Tester
 {
     public partial class Form1 : Form, IRunTestWaiter
     {
-        private ScriptViewer m_Script = null;
+        private readonly ScriptViewer m_Script = null;
         private readonly Api m_Api;
         private readonly Logger m_Logger = new Logger("Tester");
 
@@ -16,6 +17,7 @@ namespace Tester
         {   
             InitializeComponent();
 
+            HookDeveloperWindow.HookOnce(m_Logger);
             StartupHelper.ReportStart(m_Logger, "Tester", Assembly.GetExecutingAssembly());
 
             try

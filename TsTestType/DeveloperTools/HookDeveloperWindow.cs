@@ -1,20 +1,22 @@
-﻿using System.Diagnostics;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using TsCloudShellApi;
 
 namespace TsTestType.DeveloperTools
 {
-    static class HookDeveloperWindow
+    public static class HookDeveloperWindow
     {
         private static bool m_IsOpened;
+        private static Logger m_Logger;
 
         static HookDeveloperWindow()
         {
             Application.AddMessageFilter(new KeyMessageFilter());
         }
 
-        public static void HookOnce()
+        public static void HookOnce(Logger logger)
         {
-            // Nothing to do. the static ctor will do the job
+            m_Logger = logger;
+            // the static ctor did the rest of the job
         }
 
         private class KeyMessageFilter : IMessageFilter
@@ -23,7 +25,7 @@ namespace TsTestType.DeveloperTools
             private const int WM_KEYUP = 0x0101;
 
             private bool m_CtrlDown;
-            private bool m_TabDown;
+            private bool m_CapsDown;
             private bool m_ShiftDown;
 
             public bool PreFilterMessage(ref Message m)
@@ -36,12 +38,10 @@ namespace TsTestType.DeveloperTools
                         m_ShiftDown = true;
                     else if (key == Keys.ControlKey)
                         m_CtrlDown = true;
-                    else if (key == Keys.Tab)
-                        m_TabDown = true;
-                    else if (key == Keys.D && m_CtrlDown && m_TabDown && m_ShiftDown)
+                    else if (key == Keys.CapsLock)
+                        m_CapsDown = true;
+                    else if (key == Keys.T && m_CtrlDown && m_CapsDown && m_ShiftDown)
                         OpenDeveloperWindowIfNeeded();
-
-                    Trace.WriteLine("Key down: " + key);
                 }
                 else if (m.Msg == WM_KEYUP)
                 {
@@ -49,10 +49,8 @@ namespace TsTestType.DeveloperTools
                         m_ShiftDown = false;
                     else if (key == Keys.ControlKey)
                         m_CtrlDown = false;
-                    else if (key == Keys.Tab)
-                        m_TabDown = false;
-
-                    Trace.WriteLine("Key up: " + key);
+                    else if (key == Keys.CapsLock)
+                        m_CapsDown = false;
                 }
 
                 return false;
@@ -68,7 +66,7 @@ namespace TsTestType.DeveloperTools
                     m_IsOpened = true;
                 }
 
-                var form = new DeveloperToolsForm();
+                var form = new DeveloperToolsForm(m_Logger);
                 form.ShowDialog();
 
                 lock (typeof(HookDeveloperWindow))
