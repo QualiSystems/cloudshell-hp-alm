@@ -59,7 +59,7 @@
             // 
             // ButtonBrowse
             // 
-            this.ButtonBrowse.BackColor = System.Drawing.Color.White;
+            this.ButtonBrowse.BackColor = System.Drawing.SystemColors.Control;
             this.ButtonBrowse.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.ButtonBrowse.FlatAppearance.BorderSize = 0;
             this.ButtonBrowse.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
@@ -68,7 +68,7 @@
             this.ButtonBrowse.Image = ((System.Drawing.Image)(resources.GetObject("ButtonBrowse.Image")));
             this.ButtonBrowse.Location = new System.Drawing.Point(453, 101);
             this.ButtonBrowse.Name = "ButtonBrowse";
-            this.ButtonBrowse.Size = new System.Drawing.Size(140, 40);
+            this.ButtonBrowse.Size = new System.Drawing.Size(142, 42);
             this.ButtonBrowse.TabIndex = 2;
             this.ButtonBrowse.UseVisualStyleBackColor = false;
             this.ButtonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
@@ -80,10 +80,10 @@
             this.ButtonRefresh.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
             this.ButtonRefresh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.ButtonRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonRefresh.Image = ((System.Drawing.Image)(resources.GetObject("ButtonRefresh.Image")));
-            this.ButtonRefresh.Location = new System.Drawing.Point(453, 234);
+            this.ButtonRefresh.Image = global::TsTestType.Resource.RefreshButton;
+            this.ButtonRefresh.Location = new System.Drawing.Point(452, 218);
             this.ButtonRefresh.Name = "ButtonRefresh";
-            this.ButtonRefresh.Size = new System.Drawing.Size(140, 40);
+            this.ButtonRefresh.Size = new System.Drawing.Size(144, 48);
             this.ButtonRefresh.TabIndex = 3;
             this.ButtonRefresh.UseVisualStyleBackColor = true;
             this.ButtonRefresh.Click += new System.EventHandler(this.ButtonRefresh_Click);

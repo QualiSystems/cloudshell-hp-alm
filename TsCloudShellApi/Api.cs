@@ -18,9 +18,12 @@ namespace TsCloudShellApi
         private string m_SuiteName;
         private string m_JobName;
         private TimeSpan m_EstimatedDuration;
+        private NotificationsLevelOptions m_NotificationsLevelOptions;
+      
 
         public Api(string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain)
         {
+            m_NotificationsLevelOptions = NotificationsLevelOptions.SuiteAndErrors;
             Init(urlString, globalUsername, globalPassword, loggedInUsername, loggedInPassword, authenticationMode, domain, "ALM Suite", "ALM Job", null);
         }
 
@@ -32,10 +35,10 @@ namespace TsCloudShellApi
             var globalPassword = conectionServant.GetTdParam("CLOUDSHELL_PASSWORD");
             var domain = conectionServant.GetTdParam("CLOUDSHELL_DOMAIN");
             var mode = conectionServant.GetRunAuthMode();
-
             var suiteName = conectionServant.GetTdParam("CLOUDSHELL_SUITE_NAME", "ALM Suite"); // Changing suite name is undocumented
             var jobName = conectionServant.GetTdParam("CLOUDSHELL_JOB_NAME", "ALM Job"); // Changing job name is undocumented
-
+            string notificationsLevelOptions = conectionServant.GetTdParam("CLOUDSHELL_EMAIL_NOTIFY", "SuiteAndErrors");
+            m_NotificationsLevelOptions = ConvertToNotificationsLevelOptions(notificationsLevelOptions);
             // Changing estimated duration is undocumented
             TimeSpan? estimatedDuration = null;
             int estimatedDurationNumberMinutes;
@@ -224,7 +227,7 @@ namespace TsCloudShellApi
             request.AddHeader("Authorization", authorization);
             request.AddHeader("Content-Type", "application/json");
             testPath = "TestShell\\Tests\\" + testPath.Replace('/', '\\');
-            request.AddJsonBody(new ApiSuiteTemplateDetails(m_SuiteName, m_JobName, testPath, m_EstimatedDuration, parameters));
+            request.AddJsonBody(new ApiSuiteTemplateDetails(m_SuiteName, m_JobName, testPath, m_EstimatedDuration, m_NotificationsLevelOptions, parameters));
             string content = ExecuteServerRequest(client, request, "RunTest", out contentError, out isSuccess);
             if (content == null)
             {
@@ -265,6 +268,29 @@ namespace TsCloudShellApi
             isSuccess = true;
             contentError = "";
             return res.Content;
+        }
+
+        public void StopTest(string runGuid, out string contentError, out bool isSuccess)
+        {
+            string authorization;
+            RestClient client;
+
+            if (string.IsNullOrEmpty(runGuid))
+            {
+                isSuccess = false;
+                contentError = "Guid is Empty";
+                return;
+            }
+            Login(out client, out authorization, out contentError, out isSuccess);
+            if (!isSuccess)
+            {
+                return;
+            }
+
+            var request = new RestRequest("/api/Scheduling/Suites/" + runGuid, Method.DELETE);
+            request.AddHeader("Authorization", authorization);
+            request.AddHeader("Content-Type", "application/json");
+            ExecuteServerRequest(client, request, "StopTest", out contentError, out isSuccess);
         }
 
         public ApiSuiteStatusDetails GetRunStatus(string runGuid, out string contentError, out bool isSuccess)
@@ -312,6 +338,26 @@ namespace TsCloudShellApi
                 isSuccess = false;
                 LoggerErrorException(nameCallingMethod, contentError, e);
                 return default(T); //null;
+            }
+        }
+
+        private NotificationsLevelOptions ConvertToNotificationsLevelOptions(string options)
+        {
+            string val = options.ToLower();
+            switch (val)
+            {
+                case "none" :
+                    return NotificationsLevelOptions.None;
+                case "errorsonly" :
+                    return NotificationsLevelOptions.ErrorsOnly;
+                case "suiteanderrors" :
+                    return NotificationsLevelOptions.SuiteAndErrors;
+                case "all" :
+                    return NotificationsLevelOptions.All;
+
+                default:
+                    Logger.Error("Invalid NotificationsLevelOptions = {0}", options);
+                    throw new Exception(string.Format("Invalid Value '{0}' for CLOUDSHELL_EMAIL_NOTIFY in Site Configuration", options));
             }
         }
 
