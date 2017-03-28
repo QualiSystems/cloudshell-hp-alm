@@ -166,6 +166,9 @@
     <Compile Include="Tree\UltraTreeNodeWithStatus.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DeveloperTools\DeveloperToolsForm.resx">
+      <DependentUpon>DeveloperToolsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ExecConfigViewer.resx">
       <DependentUpon>ExecConfigViewer.cs</DependentUpon>
     </EmbeddedResource>

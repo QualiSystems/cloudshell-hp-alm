@@ -57,6 +57,11 @@ namespace TsTestType
             RegisterInLoop();
         }
 
+        public void ForceRegister()
+        {
+            RegisterInLoop();
+        }
+
         private void RegisterInLoop()
         {
             while (true)

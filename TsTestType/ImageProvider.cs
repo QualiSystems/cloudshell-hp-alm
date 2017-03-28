@@ -1,6 +1,5 @@
 ﻿using HP.ALM.QC.UI.Modules.Shared.Api;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using TsCloudShellApi;
 using TsTestType.DeveloperTools;
@@ -43,7 +42,7 @@ namespace TsTestType
 
             StartupHelper.ReportStart(TestTypeLogger.Instance, "CustomTest", Assembly.GetExecutingAssembly());
 
-            HookDeveloperWindow.HookOnce();
+            HookDeveloperWindow.HookOnce(TestTypeLogger.Instance);
 
             new RegisterAgent(TestTypeLogger.Instance).RegisterIfNeeded();
 
