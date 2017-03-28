@@ -16,9 +16,9 @@ namespace TsTestType.Tree
         private List<TreeNode> m_ListSelectedNodes = new List<TreeNode>();
         private TreeNode m_SelectedNode = null;
         private bool m_TreeViewWasNewlyFocused = false;
-        private readonly int m_SizeFontRootNode = 14;
-        private readonly int m_SizeFontSimpleNode = 12;
-        private readonly string m_Shared = "shared";
+        private const int SizeFontRootNode = 12;
+        private const int SizeFontSimpleNode = 12;
+        private const string Shared = "shared";
 
         public MsTreeProvider()
         {
@@ -37,7 +37,9 @@ namespace TsTestType.Tree
             m_Tree.BeforeSelect += OnBeforeSelect;
             m_Tree.ShowPlusMinus = false;
             m_Tree.PathSeparator = "\\";
-            m_Tree.Font = new Font(m_Tree.Font.Name, m_SizeFontRootNode, FontStyle.Bold);
+            m_Tree.Font = new Font(m_Tree.Font.Name, SizeFontRootNode, FontStyle.Bold);
+            m_Tree.BorderStyle = BorderStyle.None;
+            //m_Tree.ItemHeight = 23;
         }
 
         public Control GetTreeControl()
@@ -113,7 +115,7 @@ namespace TsTestType.Tree
         {            
             TreeNode node = new TreeNode(nameNode, new TreeNode[]{new TreeNode()});
             node.Name = nameNode;
-            if (nameNode.ToLower() == m_Shared)
+            if (nameNode.ToLower() == Shared)
             {
                 SetNodeImage(new MsTreeNode(node), TreeImage.Shared);
             }
@@ -146,7 +148,7 @@ namespace TsTestType.Tree
             msNode.ForeColor = Color.Gray;
             if (image == TreeImage.Folder || image == TreeImage.Test)
             {
-                msNode.NodeFont = new Font(m_Tree.Font.Name, m_SizeFontSimpleNode, FontStyle.Regular);
+                msNode.NodeFont = new Font(m_Tree.Font.Name, SizeFontSimpleNode, FontStyle.Regular);
             }
         }
 
