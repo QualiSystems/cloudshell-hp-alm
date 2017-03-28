@@ -156,6 +156,7 @@
     <Compile Include="TestShellTestsBrowserForm.Designer.cs">
       <DependentUpon>TestShellTestsBrowserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestTypeLogger.cs" />
     <Compile Include="Tree\AlmTreeNode.cs" />
     <Compile Include="Tree\AlmTreeProvider.cs" />
     <Compile Include="Tree\ITreeNode.cs" />

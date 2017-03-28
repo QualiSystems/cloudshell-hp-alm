@@ -4,23 +4,30 @@ namespace TsCloudShellApi
 {
     public class ResultsHelper
     {
-        public static ExecutionJobResult GetRunResult(ApiSuiteDetails cloudShellStatus)
+        private readonly Logger m_Logger;
+
+        public ResultsHelper(Logger logger)
+        {
+            m_Logger = logger;
+        }
+
+        public ExecutionJobResult GetRunResult(ApiSuiteDetails cloudShellStatus)
         {
             if (cloudShellStatus == null)
             {
-                Logger.Error("CloudShellStatus is null");
+                m_Logger.Error("CloudShellStatus is null");
                 return ExecutionJobResult.Unknown;
             }
 
             if (cloudShellStatus.JobsDetails.Length == 0)
             {
-                Logger.Error("CloudShellStatus.JobsDetails is null");
+                m_Logger.Error("CloudShellStatus.JobsDetails is null");
                 return ExecutionJobResult.Unknown;
             }
 
             var jobResult = cloudShellStatus.JobsDetails[0].JobResult;
 
-            Logger.Debug("JobResult = {0}", jobResult);
+            m_Logger.Debug("JobResult = {0}", jobResult);
             
             switch(jobResult)
             {
@@ -41,7 +48,7 @@ namespace TsCloudShellApi
                 case "ManuallyStopped":
                     return ExecutionJobResult.ManuallyStopped;
                 default :
-                    Logger.Error("Invalid JobResult = {0}", jobResult);
+                    m_Logger.Error("Invalid JobResult = {0}", jobResult);
                     return ExecutionJobResult.Unknown;
             }
         }

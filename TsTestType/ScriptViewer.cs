@@ -77,7 +77,7 @@ namespace TsTestType
             {
                 var tdConnectedObject = (ITDConnectedObject)m_AlmConnection;
                 var tdc = (ITDConnection)tdConnectedObject.TDConnection;
-                m_Api = new Api(tdc);
+                m_Api = new Api(TestTypeLogger.Instance, tdc);
                 m_TestPathUserFieldName = new TDConnectionServant(tdc).GetTestPathFieldName();
             }
             catch (Exception ex)
