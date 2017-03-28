@@ -35,22 +35,26 @@
             this.ButtonRefresh = new System.Windows.Forms.Button();
             this.LabelText1 = new System.Windows.Forms.Label();
             this.LabelText2 = new System.Windows.Forms.Label();
-            this.labelSeparator = new System.Windows.Forms.Label();
+            this.panelSeparator = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // TextBoxPath
             // 
-            this.TextBoxPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.TextBoxPath.Location = new System.Drawing.Point(7, 55);
+            this.TextBoxPath.BackColor = System.Drawing.Color.White;
+            this.TextBoxPath.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TextBoxPath.Location = new System.Drawing.Point(2, 7);
             this.TextBoxPath.Margin = new System.Windows.Forms.Padding(2);
             this.TextBoxPath.Name = "TextBoxPath";
             this.TextBoxPath.ReadOnly = true;
-            this.TextBoxPath.Size = new System.Drawing.Size(587, 20);
+            this.TextBoxPath.Size = new System.Drawing.Size(582, 13);
             this.TextBoxPath.TabIndex = 0;
             // 
             // labelTestPath
             // 
             this.labelTestPath.AutoSize = true;
+            this.labelTestPath.ForeColor = System.Drawing.SystemColors.GrayText;
             this.labelTestPath.Location = new System.Drawing.Point(4, 34);
             this.labelTestPath.Name = "labelTestPath";
             this.labelTestPath.Size = new System.Drawing.Size(95, 13);
@@ -81,9 +85,9 @@
             this.ButtonRefresh.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.ButtonRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ButtonRefresh.Image = global::TsTestType.Resource.RefreshButton;
-            this.ButtonRefresh.Location = new System.Drawing.Point(452, 218);
+            this.ButtonRefresh.Location = new System.Drawing.Point(453, 234);
             this.ButtonRefresh.Name = "ButtonRefresh";
-            this.ButtonRefresh.Size = new System.Drawing.Size(144, 48);
+            this.ButtonRefresh.Size = new System.Drawing.Size(142, 42);
             this.ButtonRefresh.TabIndex = 3;
             this.ButtonRefresh.UseVisualStyleBackColor = true;
             this.ButtonRefresh.Click += new System.EventHandler(this.ButtonRefresh_Click);
@@ -109,28 +113,41 @@
             this.LabelText2.Text = "Clicking the refresh button allows to update the test case\r\nparameters from TestS" +
     "hell. Click the refresh if a TestShell\r\ntest has changed its interface.";
             // 
-            // labelSeparator
+            // panelSeparator
             // 
-            this.labelSeparator.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelSeparator.Location = new System.Drawing.Point(7, 194);
-            this.labelSeparator.Name = "labelSeparator";
-            this.labelSeparator.Size = new System.Drawing.Size(360, 1);
-            this.labelSeparator.TabIndex = 6;
+            this.panelSeparator.BackColor = System.Drawing.Color.LightGray;
+            this.panelSeparator.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panelSeparator.Location = new System.Drawing.Point(7, 194);
+            this.panelSeparator.Name = "panelSeparator";
+            this.panelSeparator.Size = new System.Drawing.Size(586, 1);
+            this.panelSeparator.TabIndex = 9;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.TextBoxPath);
+            this.panel1.Location = new System.Drawing.Point(7, 51);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(587, 30);
+            this.panel1.TabIndex = 10;
             // 
             // ScriptViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.labelSeparator);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panelSeparator);
             this.Controls.Add(this.LabelText2);
             this.Controls.Add(this.LabelText1);
             this.Controls.Add(this.ButtonRefresh);
             this.Controls.Add(this.ButtonBrowse);
             this.Controls.Add(this.labelTestPath);
-            this.Controls.Add(this.TextBoxPath);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ScriptViewer";
             this.Size = new System.Drawing.Size(596, 308);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,6 +161,7 @@
     private System.Windows.Forms.Button ButtonRefresh;
     private System.Windows.Forms.Label LabelText1;
     private System.Windows.Forms.Label LabelText2;
-    private System.Windows.Forms.Label labelSeparator;
+    private System.Windows.Forms.Panel panelSeparator;
+    private System.Windows.Forms.Panel panel1;
   }
 }

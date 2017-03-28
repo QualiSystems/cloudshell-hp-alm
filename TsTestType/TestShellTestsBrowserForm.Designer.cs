@@ -32,6 +32,8 @@
             this.ButtonOK = new System.Windows.Forms.Button();
             this.ButtonCancel = new System.Windows.Forms.Button();
             this.TreeViewPanel = new System.Windows.Forms.Panel();
+            this.panelSeparator = new System.Windows.Forms.Panel();
+            this.panelSeparator1 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // ButtonOK
@@ -74,23 +76,45 @@
             this.TreeViewPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TreeViewPanel.Location = new System.Drawing.Point(0, 0);
+            this.TreeViewPanel.Location = new System.Drawing.Point(10, 10);
             this.TreeViewPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TreeViewPanel.Name = "TreeViewPanel";
-            this.TreeViewPanel.Size = new System.Drawing.Size(740, 471);
+            this.TreeViewPanel.Size = new System.Drawing.Size(730, 461);
             this.TreeViewPanel.TabIndex = 1;
+            // 
+            // panelSeparator
+            // 
+            this.panelSeparator.BackColor = System.Drawing.Color.LightGray;
+            this.panelSeparator.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panelSeparator.Location = new System.Drawing.Point(0, 470);
+            this.panelSeparator.Name = "panelSeparator";
+            this.panelSeparator.Size = new System.Drawing.Size(740, 1);
+            this.panelSeparator.TabIndex = 8;
+            // 
+            // panelSeparator1
+            // 
+            this.panelSeparator1.BackColor = System.Drawing.Color.LightGray;
+            this.panelSeparator1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panelSeparator1.Location = new System.Drawing.Point(0, 0);
+            this.panelSeparator1.Name = "panelSeparator1";
+            this.panelSeparator1.Size = new System.Drawing.Size(740, 1);
+            this.panelSeparator1.TabIndex = 9;
             // 
             // TestShellTestsBrowserForm
             // 
             this.AcceptButton = this.ButtonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.ButtonCancel;
             this.ClientSize = new System.Drawing.Size(740, 561);
-            this.Controls.Add(this.TreeViewPanel);
+            this.Controls.Add(this.panelSeparator1);
+            this.Controls.Add(this.panelSeparator);
             this.Controls.Add(this.ButtonCancel);
             this.Controls.Add(this.ButtonOK);
+            this.Controls.Add(this.TreeViewPanel);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "TestShellTestsBrowserForm";
@@ -106,5 +130,7 @@
         private System.Windows.Forms.Button ButtonOK;
         private System.Windows.Forms.Button ButtonCancel;
         private System.Windows.Forms.Panel TreeViewPanel;
+        private System.Windows.Forms.Panel panelSeparator;
+        private System.Windows.Forms.Panel panelSeparator1;
     }
 }
