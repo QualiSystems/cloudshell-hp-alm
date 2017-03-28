@@ -50,8 +50,7 @@ namespace TsCloudShellApi
                 m_RunTestWaiter.OnTestRunEnded(suiteDetails, null);
             }
             catch (ThreadAbortException)
-            {
-            }
+            {}
             catch (Exception ex)
             {
                 Logger.Error("Unexpected error in RunTestThread: {0}", ex);
@@ -96,7 +95,21 @@ namespace TsCloudShellApi
 
         public void Abort()
         {
-            m_Thread.Abort();
+            try
+            {
+                m_Thread.Abort();
+                string contentError;
+                bool isSuccess;
+                m_Api.StopTest(m_RunGuid, out contentError, out isSuccess);
+                if (!isSuccess)
+                {
+                    Logger.Error(contentError);
+                }
+            }
+            catch //In case trying abort thread in case when it yet ended
+            { 
+            }
+
         }
     }
 
