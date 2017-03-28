@@ -15,6 +15,7 @@ namespace TsAlmRunner
     [Guid("E8A238DD-6D7E-4085-969D-700273173385"), ComVisible(true), ProgId("TestShellRemoteAgent1221")]
     public class Agent : ServicedComponent, IRAgent, IRunTestWaiter
     {
+        private readonly Logger m_Logger = new Logger("Agent");
         private readonly AlmParameters m_AlmParameters = new AlmParameters();
         private AlmRunStatus m_Status;
         private string m_StatusDesc;
@@ -27,7 +28,7 @@ namespace TsAlmRunner
 
             m_Status = AlmRunStatus.Init;
 
-            StartupHelper.ReportStart("Agent", Assembly.GetExecutingAssembly());
+            StartupHelper.ReportStart(m_Logger, "Agent", Assembly.GetExecutingAssembly());
         }
 
         private void SetStatus(AlmRunStatus almRunStatus, string statusDesc)
@@ -74,13 +75,13 @@ namespace TsAlmRunner
 
             try
             {
-                var almConnection = new AlmConnection(m_AlmParameters);
+                var almConnection = new AlmConnection(m_Logger, m_AlmParameters);
                 var almTestHelper = new AlmTest();
                 var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
                 var testPath = almTestHelper.GetTestPath(almConnection,test);
                 var testParameters = almTestHelper.GetTestParameters(test);
 
-                var api = new Api(almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
+                var api = new Api(m_Logger, almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
 
                 string contentError;
                 bool isSuccess;
@@ -90,7 +91,7 @@ namespace TsAlmRunner
                     throw new Exception(contentError);
 
                 // Start the Run Test Thread
-                m_RunTestThread = new RunTestThread(api, runGuid, this);
+                m_RunTestThread = new RunTestThread(m_Logger, api, runGuid, this);
 
                 SetStatus(AlmRunStatus.LogicalRunning, "Started");
             }
@@ -136,7 +137,7 @@ namespace TsAlmRunner
             try
             {
 
-                var runResultStatus = ResultsHelper.GetRunResult(suiteDetails);
+                var runResultStatus = new ResultsHelper(m_Logger).GetRunResult(suiteDetails);
                 reportLink = suiteDetails.JobsDetails[0].Tests[0].ReportLink;
                 almRunStatus = ResultsHelper.ConvertTestShellResultToAlmRunStatus(runResultStatus);
 
@@ -158,7 +159,7 @@ namespace TsAlmRunner
             // Save test result to ALM
             try
             {
-                var almConnection = new AlmConnection(m_AlmParameters);
+                var almConnection = new AlmConnection(m_Logger, m_AlmParameters);
                 var testSetFactory = (TestSetFactory)almConnection.Connection.TestSetFactory;
                 var almResults = new AlmResults(m_AlmParameters, testSetFactory);
                 almResults.SaveRunResults(almRunStatus, reportLink);

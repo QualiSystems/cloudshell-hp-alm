@@ -6,11 +6,13 @@ namespace TsAlmRunner
 {
     class AlmConnection
     {
+        private readonly Logger m_Logger;
         private readonly AlmParameters m_AlmParameters;
         public TDConnectionClass Connection { get; private set; }
 
-        public AlmConnection(AlmParameters almParameters)
+        public AlmConnection(Logger logger, AlmParameters almParameters)
         {
+            m_Logger = logger;
             m_AlmParameters = almParameters;
             OpenConnection();
         }
@@ -23,7 +25,7 @@ namespace TsAlmRunner
             }
             catch (Exception ex)
             {
-                Logger.Error("Open connection to ALM error: " + ex);
+                m_Logger.Error("Open connection to ALM error: " + ex);
 
                 // This is a common error that happens on a clean machine, some of the ALM-Client COM components must be registered first.
                 // "Retrieving the COM class factory for component with CLSID {C5CBD7B2-490C-45F5-8C40-B8C3D108E6D7} failed due to the following error: 80040154 Class not registered (Exception from HRESULT: 0x80040154 (REGDB_E_CLASSNOTREG))."

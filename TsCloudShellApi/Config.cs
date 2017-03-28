@@ -19,7 +19,7 @@ namespace TsCloudShellApi
                     if (int.TryParse(queueTimeoutMinutesStr, out queueTimeoutMinutes))
                         return TimeSpan.FromMinutes(queueTimeoutMinutes);
                     
-                    Logger.Error("Invalid value for 'CloudShell.QueueTimeoutMinutes': {0}", queueTimeoutMinutesStr);
+                    Logger.EventLogError("Invalid value for 'CloudShell.QueueTimeoutMinutes': {0}", queueTimeoutMinutesStr);
                 }
 
                 return TimeSpan.FromHours(1);
@@ -39,9 +39,6 @@ namespace TsCloudShellApi
         private static string GetEnvVar(string name, string defaultValue)
         {
             var value = Environment.GetEnvironmentVariable(name);
-            
-            Logger.Debug("Environment variable: {0}={1}", name, value ?? "EMPTY");
-
             return string.IsNullOrEmpty(value) ? defaultValue : value;
         }
     }

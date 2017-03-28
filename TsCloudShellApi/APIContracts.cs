@@ -42,7 +42,6 @@ namespace TsCloudShellApi
             {
                 Type = TypeNode.Test;
             }
-            Logger.Debug("Method QS.ALM.CloudShellApi.TestNode.TestNode(APIExplorerResult) apiExplorerResult.Type = {0}", apiExplorerResult.Type);
         }
         public static TestNode[] ConvertFromArrAPIExplorerResult(ArrAPIExplorerResult arrAPIExplorerResult)
         {

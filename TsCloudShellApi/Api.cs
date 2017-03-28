@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
@@ -10,6 +9,7 @@ namespace TsCloudShellApi
 {
     public class Api
     {
+        private readonly Logger m_Logger;
         private const string LoginContentType = "application/x-www-form-urlencoded";
         private string m_UrlStringServer;
         private string m_UserName;
@@ -18,17 +18,18 @@ namespace TsCloudShellApi
         private string m_SuiteName;
         private string m_JobName;
         private TimeSpan m_EstimatedDuration;
-        private NotificationsLevelOptions m_NotificationsLevelOptions;
+        private readonly NotificationsLevelOptions m_NotificationsLevelOptions;
       
-
-        public Api(string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain)
+        public Api(Logger logger, string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain)
         {
             m_NotificationsLevelOptions = NotificationsLevelOptions.SuiteAndErrors;
+            m_Logger = logger;
             Init(urlString, globalUsername, globalPassword, loggedInUsername, loggedInPassword, authenticationMode, domain, "ALM Suite", "ALM Job", null);
         }
 
-        public Api(ITDConnection tdConnection, string loggedInUsername = null, string loggedInPassword = null)
+        public Api(Logger logger, ITDConnection tdConnection, string loggedInUsername = null, string loggedInPassword = null)
         {
+            m_Logger = logger;
             var conectionServant = new TDConnectionServant(tdConnection);
             var url = conectionServant.GetTdParam("CLOUDSHELL_SERVER_URL");
             var globalUsername = conectionServant.GetTdParam("CLOUDSHELL_USERNAME");
@@ -187,19 +188,19 @@ namespace TsCloudShellApi
             return arrTestNode;
         }
 
-        private static void LoggerErrorException(string method, string contentError, Exception e)
+        private void LoggerErrorException(string method, string contentError, Exception e)
         {
-            Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'," + Environment.NewLine + "Exception = '{2}'", method, contentError, e.ToString());
+            m_Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'," + Environment.NewLine + "Exception = '{2}'", method, contentError, e.ToString());
         }
 
-        private static void LoggerContentError(string method, string contentError)
+        private void LoggerContentError(string method, string contentError)
         {
-            Logger.Error("QS.ALM.CloudShellApi.Api{0}: ContentError = '{1}'", method, contentError);
+            m_Logger.Error("QS.ALM.CloudShellApi.Api{0}: ContentError = '{1}'", method, contentError);
         }
 
-        private static void LoggerRestSharpError(string method, string contentError, IRestResponse res)
+        private void LoggerRestSharpError(string method, string contentError, IRestResponse res)
         {
-            Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + Environment.NewLine + "ErrorMessage = '{2}'" + Environment.NewLine + "ErrorException = '{3}'" + Environment.NewLine + "StatusCode = '{4}'", method, contentError, res.ErrorMessage, res.ErrorException == null ? "null" : res.ErrorException.ToString(), ((int) res.StatusCode).ToString());
+            m_Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + Environment.NewLine + "ErrorMessage = '{2}'" + Environment.NewLine + "ErrorException = '{3}'" + Environment.NewLine + "StatusCode = '{4}'", method, contentError, res.ErrorMessage, res.ErrorException == null ? "null" : res.ErrorException.ToString(), ((int)res.StatusCode).ToString());
         }
 
         public string RunTest(string testPath, TestParameters[] parameters, out string contentError, out bool isSuccess)
@@ -356,7 +357,7 @@ namespace TsCloudShellApi
                     return NotificationsLevelOptions.All;
 
                 default:
-                    Logger.Error("Invalid NotificationsLevelOptions = {0}", options);
+                    m_Logger.Error("Invalid NotificationsLevelOptions = {0}", options);
                     throw new Exception(string.Format("Invalid Value '{0}' for CLOUDSHELL_EMAIL_NOTIFY in Site Configuration", options));
             }
         }

@@ -9,13 +9,14 @@ namespace TsCloudShellApi
         /// <summary>
         /// Write to log that component started
         /// </summary>
+        /// <param name="logger">Logger</param>
         /// <param name="componentName">name of component (Agent, CustomTest)</param>
         /// <param name="assembly">Assembly of component to get the version</param>
-        public static void ReportStart(string componentName, Assembly assembly)
+        public static void ReportStart(Logger logger, string componentName, Assembly assembly)
         {
             var version = assembly.GetName().Version;
             var runningFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Logger.Info("{0} started: {1}", componentName, runningFolder);
+            logger.Info("{0} started: {1}", componentName, runningFolder);
 
             UpdateDeployments(componentName, runningFolder, version);
         }

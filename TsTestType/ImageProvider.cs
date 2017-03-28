@@ -41,11 +41,11 @@ namespace TsTestType
             if (SettingsFile.DebugMode)
                 Debugger.Launch();
 
-            StartupHelper.ReportStart("CustomTest", Assembly.GetExecutingAssembly());
+            StartupHelper.ReportStart(TestTypeLogger.Instance, "CustomTest", Assembly.GetExecutingAssembly());
 
             HookDeveloperWindow.HookOnce();
 
-            RegisterAgent.RegisterIfNeeded();
+            new RegisterAgent(TestTypeLogger.Instance).RegisterIfNeeded();
 
             return Resource.TestTypeImage;
         }

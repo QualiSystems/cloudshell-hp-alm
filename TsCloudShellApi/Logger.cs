@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
@@ -9,51 +8,14 @@ using log4net.Repository.Hierarchy;
 
 namespace TsCloudShellApi
 {
-    public static class Logger
+    public class Logger
     {
-        static Logger()
-        {
-            Setup();
-        }
+        private readonly string m_Category;
 
-        public static void Debug(string format, params object[] args)
+        public Logger(string category)
         {
-            InternalLogger.Debug(FormatMessage(format, args));
-        }
-
-        public static void Info(string format, params object[] args)
-        {
-            InternalLogger.Info(FormatMessage(format, args));
-        }
-
-        public static void Warn(string format, params object[] args)
-        {
-            InternalLogger.Warn(FormatMessage(format, args));
-        }
-
-        public static void Error(string format, params object[] args)
-        {
-            InternalLogger.Error(FormatMessage(format, args));
-        }
-        
-        private static string FormatMessage(string format, object[] args)
-        {
-            try
-            {
-                format = string.Format(format, args);
-            }
-            catch { }
-
-            return format;
-        }
-
-        private static ILog InternalLogger
-        {
-            get { return LogManager.GetLogger("AlmCloudShell"); } 
-        }
-
-        private static void Setup()
-        {
+            m_Category = category;
+            
             var hierarchy = (Hierarchy)LogManager.GetRepository();
             hierarchy.Root.RemoveAllAppenders();
 
@@ -64,7 +26,7 @@ namespace TsCloudShellApi
             var roller = new RollingFileAppender
             {
                 AppendToFile = true,
-                File = Path.Combine(Constants.LogsFolder, "AlmCloudShell.log"),
+                File = Path.Combine(Constants.LogsFolder, m_Category + ".log"),
                 Layout = patternLayout,
                 MaxSizeRollBackups = 10,
                 MaximumFileSize = "1MB",
@@ -83,6 +45,47 @@ namespace TsCloudShellApi
             hierarchy.Configured = true;
         }
 
+        public void Debug(string format, params object[] args)
+        {
+            InternalLogger.Debug(FormatMessage(format, args));
+        }
+
+        public void Info(string format, params object[] args)
+        {
+            InternalLogger.Info(FormatMessage(format, args));
+        }
+
+        public void Warn(string format, params object[] args)
+        {
+            InternalLogger.Warn(FormatMessage(format, args));
+        }
+
+        public void Error(string format, params object[] args)
+        {
+            InternalLogger.Error(FormatMessage(format, args));
+        }
+
+        public static void EventLogError(string format, params object[] args)
+        {
+            EventLog.WriteEntry("AlmCloudShell", FormatMessage(format, args), EventLogEntryType.Error);
+        }
+
+        private static string FormatMessage(string format, object[] args)
+        {
+            try
+            {
+                format = string.Format(format, args);
+            }
+            catch { }
+
+            return format;
+        }
+
+        private ILog InternalLogger
+        {
+            get { return LogManager.GetLogger(m_Category); } 
+        }
+        
         private static Level ReadVerbosity()
         {
             var verbosity = SettingsFile.Verbosity;
@@ -98,7 +101,7 @@ namespace TsCloudShellApi
                 case "error":
                     return Level.Error;
                 default:
-                    EventLog.WriteEntry("AlmCloudShell", "Invalid verbosity: " + verbosity, EventLogEntryType.Error);
+                    EventLogError("Invalid verbosity: {0}", verbosity);
                     return Level.Info;
             }
         }
