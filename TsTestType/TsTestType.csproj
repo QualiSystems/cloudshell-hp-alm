@@ -199,6 +199,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\BrowseButton.png" />
+    <Content Include="Resources\CancelButton.png" />
+    <Content Include="Resources\OkButton.png" />
+    <Content Include="Resources\RefreshButton.png" />
     <Content Include="Resources\TreeNodeFolder.png" />
     <Content Include="Resources\TreeNodeLocal.png" />
     <Content Include="Resources\TreeNodeShared.png" />

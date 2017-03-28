@@ -57,14 +57,6 @@ namespace TsTestType.Tree
         {
             var node = m_Tree.AddRow(newPath, nameNode);
             AlmTreeNode almNode = new AlmTreeNode(node);
-            if (nameNode.ToLower() == "local")
-            {
-                SetNodeImage(almNode, TreeImage.Local);
-            }
-            else if (nameNode.ToLower() == "shared")
-            {
-                SetNodeImage(almNode, TreeImage.Shared);
-            }
             return almNode;
         }
 

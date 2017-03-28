@@ -18,6 +18,7 @@ namespace TsTestType.Tree
         private bool m_TreeViewWasNewlyFocused = false;
         private readonly int m_SizeFontRootNode = 14;
         private readonly int m_SizeFontSimpleNode = 12;
+        private readonly string m_Shared = "shared";
 
         public MsTreeProvider()
         {
@@ -112,7 +113,7 @@ namespace TsTestType.Tree
         {            
             TreeNode node = new TreeNode(nameNode, new TreeNode[]{new TreeNode()});
             node.Name = nameNode;
-            if(nameNode.ToLower() == "shared")
+            if (nameNode.ToLower() == m_Shared)
             {
                 SetNodeImage(new MsTreeNode(node), TreeImage.Shared);
             }
