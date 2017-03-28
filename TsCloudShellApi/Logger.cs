@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
@@ -34,7 +35,7 @@ namespace TsCloudShellApi
         {
             InternalLogger.Error(FormatMessage(format, args));
         }
-
+        
         private static string FormatMessage(string format, object[] args)
         {
             try

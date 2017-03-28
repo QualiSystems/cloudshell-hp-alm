@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows.Forms;
 using TsCloudShellApi;
 using TsTestType;
@@ -13,6 +14,9 @@ namespace Tester
         public Form1()
         {   
             InitializeComponent();
+
+            StartupHelper.ReportStart("Tester", Assembly.GetExecutingAssembly());
+
             try
             {
                 m_Api = new Api("http://192.168.42.35:9000", null, null, "admin", "admin", AuthenticationMode.User, "Global");

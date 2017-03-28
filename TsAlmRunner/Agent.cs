@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.EnterpriseServices;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using TDAPIOLELib;
 using TsCloudShellApi;
@@ -25,6 +26,8 @@ namespace TsAlmRunner
                 Debugger.Launch();
 
             m_Status = AlmRunStatus.Init;
+
+            StartupHelper.ReportStart("Agent", Assembly.GetExecutingAssembly());
         }
 
         private void SetStatus(AlmRunStatus almRunStatus, string statusDesc)
