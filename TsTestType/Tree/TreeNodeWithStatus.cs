@@ -18,12 +18,12 @@
     /// <summary>
     /// Node for dictionary for filling data step by step on request
     /// </summary>
-    public class UltraTreeNodeWithStatus : ITreeNodeWithStatus
+    public class TreeNodeWithStatus : ITreeNodeWithStatus
     {
         public ITreeNode Node { get; private set; }
         public StatusNode Status { get; set; }
 
-        public UltraTreeNodeWithStatus(ITreeNode node, StatusNode status)
+        public TreeNodeWithStatus(ITreeNode node, StatusNode status)
         {
             Node = node;
             Status = status;
