@@ -146,8 +146,8 @@ namespace TsTestType
             ////////////////////////////////FOR TEST CANCELED EXPAND
             /*if (path == "Shared" && node.Status == StatusNode.NotFilled)
             {
-                
-                TreeNode node1 = m_TestsBrouserQcTree.AddRow(node.Node, "Shared/NodeTestCollaps", "NodeTestCollaps");
+
+                ITreeNode node1 = m_TreeProvider.AddNode(node.Node, "Shared/NodeTestCollaps", "NodeTestCollaps");
                 m_DictonaryNodes.Add("Shared/NodeTestCollaps", new TreeNodeWithStatus(node1, StatusNode.NotFilled));
             }*/
             if (node == null || node.Status == StatusNode.NotFilled)//Or root or data about it layer yet not read from server.
