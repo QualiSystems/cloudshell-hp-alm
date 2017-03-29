@@ -163,7 +163,7 @@
     <Compile Include="Tree\ITreeProvider.cs" />
     <Compile Include="Tree\MsTreeNode.cs" />
     <Compile Include="Tree\MsTreeProvider.cs" />
-    <Compile Include="Tree\UltraTreeNodeWithStatus.cs" />
+    <Compile Include="Tree\TreeNodeWithStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DeveloperTools\DeveloperToolsForm.resx">
