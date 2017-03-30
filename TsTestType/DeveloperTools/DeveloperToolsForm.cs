@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,9 +17,9 @@ namespace TsTestType.DeveloperTools
             m_Logger = logger;
             InitializeComponent();
 
-            var assembly = Assembly.GetExecutingAssembly();
-            lblVersion.Text = assembly.GetName().Version.ToString();
-            txtFolder.Text = Path.GetDirectoryName(assembly.Location);
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            lblVersion.Text = FileVersionInfo.GetVersionInfo(assemblyPath).FileVersion;
+            txtFolder.Text = Path.GetDirectoryName(assemblyPath);
             RefreshProcessInfo();
         }
 

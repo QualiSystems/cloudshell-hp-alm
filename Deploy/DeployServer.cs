@@ -12,22 +12,10 @@ namespace QS.ALM.Deploy
 
         public static void Deploy(List<string> files, string flavor)
         {
-
-            VersionHelper.VerifyVersion(files);
+            var version = VersionHelper.VerifyVersion(files);
             VerifyAlmNotRunning();
 
-            var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Binaries", flavor, "Cab");
-            var txtPath = Path.Combine(cabFolder, DeployHelper.CabVersion + VersionHelper.Lastversion+ ".txt") ;
-            CreateVerFile(txtPath, VersionHelper.Lastversion);
-            files.Add(txtPath);
-
-          
-            Directory.CreateDirectory(cabFolder);
-            var cabPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".cab");
-            var iniPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".ini");
-            
-            CreateIniFile(files, iniPath);
-            CreateCabFile(cabPath, iniPath);
+            var cabPath = CreateCabFile(files, flavor, version);
 
             var missingFiles = false;
 
@@ -78,9 +66,7 @@ namespace QS.ALM.Deploy
 
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
                 File.Copy(file, targetFile, true);
-                string[] str = file.Split('.');
-                if(str[str.Length - 1].ToUpper() != "TXT")
-                    Sign(targetFile);
+                Sign(targetFile);
             }
         }
 
@@ -111,27 +97,60 @@ namespace QS.ALM.Deploy
             var index = 0;
 
             foreach (var file in files)
-            {
-                string[] str = file.Split('.');
-                if (str[str.Length - 1].ToUpper() != "TXT")
-                    contentIni += AddFileToIni(file, ++index);
-            }
+                contentIni += AddFileToIni(file, ++index);
+            
             File.WriteAllText(iniPath, contentIni);
         }
 
-        private static void CreateCabFile(string cabPath, string iniPath)
-        {            
-            RunExecOperation("makecab", string.Format(" {0} {1}", iniPath,  cabPath), "Create Cab File");
+        private static string CreateCabFile(List<string> files, string flavor, Version version)
+        {
+            var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Binaries", flavor, "Cab");
+            Directory.CreateDirectory(cabFolder);
+
+            var cabPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".cab");
+            var iniPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".ini");
+            var versionFilePath = Path.Combine(cabFolder, version + ".txt");
+            var ddfPath = Path.Combine(cabFolder, "cab.ddf");
+
+            CreateIniFile(files, iniPath);
+            CreateVersionFile(versionFilePath, version);
+            
+            CreateCabDdfFile(ddfPath, cabFolder, iniPath, versionFilePath);
+
+            if (File.Exists(cabPath))
+                File.Delete(cabPath);
+
+            RunExecOperation("makecab", string.Format("/F \"{0}\"", ddfPath), "Create Cab File");
 
             if (!File.Exists(cabPath))
                 throw new Exception(string.Format("Creating {0} file error", cabPath));
+
+            return cabPath;
         }
 
-        private static void CreateVerFile(string txtPath, string version)
+        private static void CreateVersionFile(string versionFilePath, Version version)
         {
-            //version = "version = 1.1.1.1";
-            File.WriteAllText(txtPath, version);
+            var text =
+                "Version: " + version + Environment.NewLine +
+                "Create Date: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+
+            File.WriteAllText(versionFilePath, text);
         }
+
+        private static void CreateCabDdfFile(string ddfPath, string cabFolder, string iniPath, string versionFilePath)
+        {
+            var ddfTemplatePath = Path.Combine(DeployHelper.SolutionRoot, @"Deploy\CabTemplate.ddf");
+            var ddfText = File.ReadAllText(ddfTemplatePath);
+
+            ddfText += 
+                Environment.NewLine +
+                ".set DiskDirectory1=" + "\"" + cabFolder + "\"" + Environment.NewLine + 
+                "\"" + iniPath + "\"" + Environment.NewLine + 
+                "\"" + versionFilePath + "\"";
+
+            File.WriteAllText(ddfPath, ddfText);
+        }
+
         private static void RunExecOperation(string nameRunFile, string arguments, string nameOperationForExeption)
         {
             try
