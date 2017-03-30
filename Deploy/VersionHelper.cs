@@ -9,8 +9,13 @@ namespace QS.ALM.Deploy
 {
     static class VersionHelper
     {
+        private static string lastversion = "";
         private const string VersionCsFileneme = "AlmCloudShellVersion.cs";
 
+        public static string Lastversion
+        {
+            get { return lastversion; }
+        }
         public static void VerifyVersion(List<string> files)
         {
             var qualiFiles = new List<string>();
@@ -28,12 +33,14 @@ namespace QS.ALM.Deploy
 
             foreach (var file in qualiFiles)
                 VerifyVersionIncremented(file);
+
         }
 
         private static void VerifyVersionIncremented(string file)
         {
             var versionInfo = FileVersionInfo.GetVersionInfo(file);
             var fileVersion = Version.Parse(versionInfo.FileVersion);
+            lastversion = fileVersion.ToString();
             var lastDeployedVersion = GetLastDeployVersion();
 
             var versionFile = Path.Combine(DeployHelper.SolutionRoot, VersionCsFileneme);
