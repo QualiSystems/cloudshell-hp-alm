@@ -1,21 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reflection;
 using System.Windows.Forms;
 using TsCloudShellApi;
 using TsTestType;
+using TsTestType.DeveloperTools;
 
 namespace Tester
 {
     public partial class Form1 : Form, IRunTestWaiter
     {
-        private ScriptViewer m_Script = null;
+        private readonly ScriptViewer m_Script = null;
         private readonly Api m_Api;
+        private readonly Logger m_Logger = new Logger("Tester");
+
         public Form1()
         {   
             InitializeComponent();
+
+            HookDeveloperWindow.HookOnce(m_Logger);
+            StartupHelper.ReportStart(m_Logger, "Tester", Assembly.GetExecutingAssembly());
+
             try
             {
-                m_Api = new Api("http://192.168.42.35:9000", null, null, "admin", "admin", AuthenticationMode.User, "Global");
+                m_Api = new Api(m_Logger, "http://192.168.42.35:9000", null, null, "admin", "admin", AuthenticationMode.User, "Global");
             }
             catch (Exception ex)
             {
@@ -41,7 +48,7 @@ namespace Tester
             {
                 MessageBox.Show("Result Test = \"" + runGuid + '\"', "Returned Key", MessageBoxButtons.OK);
 
-                new RunTestThread(m_Api, runGuid, this);
+                new RunTestThread(m_Logger, m_Api, runGuid, this);
                 ButtonRunTest.Enabled = false;
             }
             else
@@ -71,7 +78,7 @@ namespace Tester
                 try
                 {
 
-                    var runResultStatus = ResultsHelper.GetRunResult(suiteDetails);
+                    var runResultStatus = new ResultsHelper(m_Logger).GetRunResult(suiteDetails);
                     var almRunStatus = ResultsHelper.ConvertTestShellResultToAlmRunStatus(runResultStatus);
                     var reportLink = suiteDetails.JobsDetails[0].Tests[0].ReportLink;
                     MessageBox.Show(string.Format("Test ended.\n\nResult: {0}\nLink: {1}", almRunStatus, reportLink));
@@ -85,7 +92,7 @@ namespace Tester
 
         private void btnRegisterAgent_Click(object sender, EventArgs e)
         {
-            RegisterAgent.RegisterIfNeeded();
+            new RegisterAgent(m_Logger).RegisterIfNeeded();
         }
     }
 }

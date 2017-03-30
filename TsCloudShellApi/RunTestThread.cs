@@ -5,13 +5,15 @@ namespace TsCloudShellApi
 {
     public class RunTestThread
     {
+        private readonly Logger m_Logger;
         private readonly Api m_Api;
         private readonly string m_RunGuid;
         private readonly IRunTestWaiter m_RunTestWaiter;
         private readonly Thread m_Thread;
 
-        public RunTestThread(Api api, string runGuid, IRunTestWaiter runTestWaiter)
+        public RunTestThread(Logger logger, Api api, string runGuid, IRunTestWaiter runTestWaiter)
         {
+            m_Logger = logger;
             m_Api = api;
             m_RunGuid = runGuid;
             m_RunTestWaiter = runTestWaiter;
@@ -50,11 +52,10 @@ namespace TsCloudShellApi
                 m_RunTestWaiter.OnTestRunEnded(suiteDetails, null);
             }
             catch (ThreadAbortException)
-            {
-            }
+            {}
             catch (Exception ex)
             {
-                Logger.Error("Unexpected error in RunTestThread: {0}", ex);
+                m_Logger.Error("Unexpected error in RunTestThread: {0}", ex);
 
                 try
                 {
@@ -64,16 +65,16 @@ namespace TsCloudShellApi
             }
         }
 
-        private static bool HasRunEnded(ApiSuiteStatusDetails apiSuiteStatusDetails)
+        private bool HasRunEnded(ApiSuiteStatusDetails apiSuiteStatusDetails)
         {
             if (apiSuiteStatusDetails == null)
             {
-                Logger.Error("RunTestThread.HasRunEnded ApiSuiteStatusDetails = null");
+                m_Logger.Error("RunTestThread.HasRunEnded ApiSuiteStatusDetails = null");
                 //throw new Exception
                 return true;
             }
 
-            Logger.Debug("RunTestThread.HasRunEnded ApiSuiteStatusDetails.SuiteStatus = {0}", apiSuiteStatusDetails.SuiteStatus);
+            m_Logger.Debug("RunTestThread.HasRunEnded ApiSuiteStatusDetails.SuiteStatus = {0}", apiSuiteStatusDetails.SuiteStatus);
 
             if (apiSuiteStatusDetails.SuiteStatus == "Ended")
             {
@@ -96,7 +97,26 @@ namespace TsCloudShellApi
 
         public void Abort()
         {
-            m_Thread.Abort();
+            try
+            {
+                m_Thread.Abort();
+            }
+            catch {}
+
+            try
+            {
+                string contentError;
+                bool isSuccess;
+                m_Api.StopTest(m_RunGuid, out contentError, out isSuccess);
+                if (!isSuccess)
+                {
+                    m_Logger.Error(contentError);
+                }
+            }
+            catch //In case trying abort thread in case when it yet ended
+            {
+            }
+
         }
     }
 

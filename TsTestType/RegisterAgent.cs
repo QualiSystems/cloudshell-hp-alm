@@ -6,13 +6,20 @@ using TsCloudShellApi;
 
 namespace TsTestType
 {
-    public static class RegisterAgent
+    public class RegisterAgent
     {
+        private readonly Logger m_Logger;
+
         private enum RegisterResult
         {
             Success,
             Error,
             Canceled
+        }
+
+        public RegisterAgent(Logger logger)
+        {
+            m_Logger = logger;
         }
 
         //private static bool HasAdminPrivileges()
@@ -40,7 +47,7 @@ namespace TsTestType
             get { return Path.Combine(SubFolderResovler.TestShellSubFolder, "TsAlmRunner.dll"); }
         }
 
-        public static void RegisterIfNeeded()
+        public void RegisterIfNeeded()
         {
             var tlbPath = Path.Combine(SubFolderResovler.TestShellSubFolder, "TsAlmRunner.tlb");
 
@@ -50,7 +57,12 @@ namespace TsTestType
             RegisterInLoop();
         }
 
-        private static void RegisterInLoop()
+        public void ForceRegister()
+        {
+            RegisterInLoop();
+        }
+
+        private void RegisterInLoop()
         {
             while (true)
             {
@@ -88,7 +100,7 @@ namespace TsTestType
             return false;
         }
 
-        private static RegisterResult Register(out string error)
+        private RegisterResult Register(out string error)
         {
             if (!File.Exists(DllPath))
             {
@@ -115,7 +127,7 @@ namespace TsTestType
             }
             catch (Exception ex)
             {
-                Logger.Error("RegisterAgent: " + ex);
+                m_Logger.Error("RegisterAgent: " + ex);
 
                 if (UserCanceldUacDialog(ex))
                 {

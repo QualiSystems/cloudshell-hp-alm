@@ -1,6 +1,6 @@
 ﻿using HP.ALM.QC.UI.Modules.Shared.Api;
 using System.Diagnostics;
-using System.IO;
+using System.Reflection;
 using TsCloudShellApi;
 using TsTestType.DeveloperTools;
 
@@ -16,6 +16,9 @@ namespace TsTestType
           // The "ImageProvider" ctor is called in a very early stage of the integration, just before the user is logged into ALM project.
           // We use this point to hook the sub folder resolver
           SubFolderResovler.Hook();
+
+          // DON'T PUT ANY CODE HERE!
+          // WHEN RUNNING INSIDE ALM ALL THE REFERENCES ARE IN A SUB FOLDER. SO TYPES FROM THESE REFERENCES CANNOT BE USED IN THIS METHOD.
       }
 
         /// <summary>
@@ -37,9 +40,11 @@ namespace TsTestType
             if (SettingsFile.DebugMode)
                 Debugger.Launch();
 
-            HookDeveloperWindow.HookOnce();
+            StartupHelper.ReportStart(TestTypeLogger.Instance, "CustomTest", Assembly.GetExecutingAssembly());
 
-            RegisterAgent.RegisterIfNeeded();
+            HookDeveloperWindow.HookOnce(TestTypeLogger.Instance);
+
+            new RegisterAgent(TestTypeLogger.Instance).RegisterIfNeeded();
 
             return Resource.TestTypeImage;
         }

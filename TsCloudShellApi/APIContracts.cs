@@ -42,7 +42,6 @@ namespace TsCloudShellApi
             {
                 Type = TypeNode.Test;
             }
-            Logger.Debug("Method QS.ALM.CloudShellApi.TestNode.TestNode(APIExplorerResult) apiExplorerResult.Type = {0}", apiExplorerResult.Type);
         }
         public static TestNode[] ConvertFromArrAPIExplorerResult(ArrAPIExplorerResult arrAPIExplorerResult)
         {
@@ -88,12 +87,21 @@ namespace TsCloudShellApi
         Terminated,
         Unknown
     }
+
+    public enum NotificationsLevelOptions
+    {
+        None,
+        ErrorsOnly,
+        SuiteAndErrors,
+        All
+    }
     
     public class ApiSuiteTemplateDetails
     {
-        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, TimeSpan estimatedDuration, TestParameters[] parameters)
+        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, TimeSpan estimatedDuration, NotificationsLevelOptions notificationsLevelOptions, TestParameters[] parameters)
         {
             SuiteName = suiteName;
+            EmailNotifications = notificationsLevelOptions.ToString();
             JobsDetails = new[] { new ApiJobTemplate(jobName, testPath, estimatedDuration, parameters) };
         }
 
@@ -101,7 +109,7 @@ namespace TsCloudShellApi
         public string SuiteName { get; set; }
         public string Description {get; set;}
         public string Type { get { return Config.TestShell; } }
-        public string EmailNotifications { get { return "None"; } }
+        public string EmailNotifications { get; set; }
         public int RemoveJobsFromQueueAfter { get { return (int)Config.QueueTimeout.TotalMinutes; } }
         public bool EndReservationOnEnd { get { return true; } }
         public ApiJobTemplate[] JobsDetails {get; private set;}

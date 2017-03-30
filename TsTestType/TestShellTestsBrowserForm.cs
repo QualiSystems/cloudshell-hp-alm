@@ -97,7 +97,7 @@ namespace TsTestType
 
                 if (tmpNode != null)
                 {
-                    tmpNode.Node.Selected = true;
+                    m_TreeProvider.SelectedNode = tmpNode.Node;
                 }
             }
             return true;
@@ -146,9 +146,9 @@ namespace TsTestType
             ////////////////////////////////FOR TEST CANCELED EXPAND
             /*if (path == "Shared" && node.Status == StatusNode.NotFilled)
             {
-                
-                UltraTreeNode node1 = m_TestsBrouserQcTree.AddRow(node.Node, "Shared/NodeTestCollaps", "NodeTestCollaps");
-                m_DictonaryNodes.Add("Shared/NodeTestCollaps", new UltraTreeNodeWithStatus(node1, StatusNode.NotFilled));
+
+                ITreeNode node1 = m_TreeProvider.AddNode(node.Node, "Shared/NodeTestCollaps", "NodeTestCollaps");
+                m_DictonaryNodes.Add("Shared/NodeTestCollaps", new TreeNodeWithStatus(node1, StatusNode.NotFilled));
             }*/
             if (node == null || node.Status == StatusNode.NotFilled)//Or root or data about it layer yet not read from server.
             {
@@ -189,28 +189,28 @@ namespace TsTestType
                     {
                         string nameNode = nodeTmp.Name;                       
                         string newPath = path + nameNode;
-                        ITreeNode ultraTreeNode;
+                        ITreeNode treeNode;
                         if(node == null)
                         {
-                            ultraTreeNode = m_TreeProvider.AddNode(newPath, nameNode); //add layer root
+                            treeNode = m_TreeProvider.AddNode(newPath, nameNode); //add layer root
                         }
                         else
                         {
-                            ultraTreeNode = m_TreeProvider.AddNode(node.Node, newPath, nameNode); //Insert node to tree control under node.Node.
+                            treeNode = m_TreeProvider.AddNode(node.Node, newPath, nameNode); //Insert node to tree control under node.Node.
                         }
 
                         if (nodeTmp.Type == TypeNode.Folder)
                         {
-                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.NotFilled));
+                            m_DictonaryNodes.Add(newPath, new TreeNodeWithStatus(treeNode, StatusNode.NotFilled));
                             if(node != null)
-                                ultraTreeNode.ImageIndex = 2;
+                                m_TreeProvider.SetNodeImage(treeNode, TreeImage.Folder);
                         }
                         else
                         {
-                            m_DictonaryNodes.Add(newPath, new UltraTreeNodeWithStatus(ultraTreeNode, StatusNode.Test));
-                            ultraTreeNode.Expanded = true;//For remove picture plus near node in tree control.
+                            m_DictonaryNodes.Add(newPath, new TreeNodeWithStatus(treeNode, StatusNode.Test));
+                            treeNode.Expanded = true;//For remove picture plus near node in tree control.
                             if (node != null)
-                                ultraTreeNode.ImageIndex = 3;
+                                m_TreeProvider.SetNodeImage(treeNode, TreeImage.Test);
                         }
                     }
                 }
@@ -238,7 +238,7 @@ namespace TsTestType
                         curPath += "/";
                     }
                     curPath = curPath + arrPath[i];
-                    m_DictonaryNodes.Add(curPath, new UltraTreeNodeWithStatus(m_TreeProvider.CreateNewNode(), StatusNode.Filled));
+                    m_DictonaryNodes.Add(curPath, new TreeNodeWithStatus(m_TreeProvider.CreateNewNode(), StatusNode.Filled));
                 }                
             }
         }

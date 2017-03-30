@@ -52,13 +52,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PanelScriptView.Location = new System.Drawing.Point(0, 0);
             this.PanelScriptView.Name = "PanelScriptView";
-            this.PanelScriptView.Size = new System.Drawing.Size(626, 248);
+            this.PanelScriptView.Size = new System.Drawing.Size(626, 326);
             this.PanelScriptView.TabIndex = 6;
             // 
             // ButtonRunTest
             // 
             this.ButtonRunTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ButtonRunTest.Location = new System.Drawing.Point(277, 261);
+            this.ButtonRunTest.Location = new System.Drawing.Point(277, 339);
             this.ButtonRunTest.Name = "ButtonRunTest";
             this.ButtonRunTest.Size = new System.Drawing.Size(75, 54);
             this.ButtonRunTest.TabIndex = 8;
@@ -70,7 +70,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(237, 318);
+            this.label1.Location = new System.Drawing.Point(237, 396);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 13);
             this.label1.TabIndex = 9;
@@ -80,7 +80,7 @@
             // 
             this.lblTestRunStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblTestRunStatus.AutoSize = true;
-            this.lblTestRunStatus.Location = new System.Drawing.Point(323, 318);
+            this.lblTestRunStatus.Location = new System.Drawing.Point(323, 396);
             this.lblTestRunStatus.Name = "lblTestRunStatus";
             this.lblTestRunStatus.Size = new System.Drawing.Size(65, 13);
             this.lblTestRunStatus.TabIndex = 10;
@@ -89,7 +89,7 @@
             // btnRegisterAgent
             // 
             this.btnRegisterAgent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRegisterAgent.Location = new System.Drawing.Point(12, 261);
+            this.btnRegisterAgent.Location = new System.Drawing.Point(12, 339);
             this.btnRegisterAgent.Name = "btnRegisterAgent";
             this.btnRegisterAgent.Size = new System.Drawing.Size(75, 54);
             this.btnRegisterAgent.TabIndex = 11;
@@ -101,7 +101,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(626, 357);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(626, 435);
             this.Controls.Add(this.btnRegisterAgent);
             this.Controls.Add(this.lblTestRunStatus);
             this.Controls.Add(this.label1);

@@ -72,8 +72,7 @@ namespace TsCloudShellApi
             }
             catch (Exception ex)
             {
-                EventLog.WriteEntry("AlmCloudShell", "Failed to open configuration: " + ex.Message,
-                    EventLogEntryType.Error);
+                Logger.EventLogError("Failed to open configuration: {0}", ex.Message);
                 return new KeyValueConfigurationCollection();
             }
         }
