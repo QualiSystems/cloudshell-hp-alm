@@ -11,7 +11,7 @@ namespace QS.ALM.Deploy
     {
         private const string VersionCsFileneme = "AlmCloudShellVersion.cs";
 
-        public static void VerifyVersion(List<string> files)
+        public static Version VerifyVersion(List<string> files)
         {
             var qualiFiles = new List<string>();
 
@@ -22,28 +22,34 @@ namespace QS.ALM.Deploy
                 if (versionInfo.CompanyName == "Quali")
                     qualiFiles.Add(file);
             }
-
-            if (!qualiFiles.Any())
-                throw new Exception("None of the files for deploy was created by Quali");
+            
+            var qualiVersions = new HashSet<Version>();
 
             foreach (var file in qualiFiles)
-                VerifyVersionIncremented(file);
+                qualiVersions.Add(VerifyVersionIncremented(file));
+
+            if (!qualiVersions.Any())
+                throw new Exception("None of the files for deploy was created by Quali");
+            
+            if (qualiVersions.Count > 1)
+                throw new Exception("Quali files must have the same version. Found: " + string.Join(", ", qualiVersions));
+
+            return qualiVersions.First();
         }
 
-        private static void VerifyVersionIncremented(string file)
+        private static Version VerifyVersionIncremented(string file)
         {
             var versionInfo = FileVersionInfo.GetVersionInfo(file);
             var fileVersion = Version.Parse(versionInfo.FileVersion);
             var lastDeployedVersion = GetLastDeployVersion();
 
             var versionFile = Path.Combine(DeployHelper.SolutionRoot, VersionCsFileneme);
-            var reg2 = new Regex("AssemblyFileVersion\\(.*\\)");
-            var text2 = File.ReadAllText(versionFile);
-            string match2 = reg2.Match(text2).Value;
-            string ver2 = match2.Substring(match2.IndexOf('\"')+1, match2.LastIndexOf('\"') - match2.IndexOf('\"')-1);
+            var regex = new Regex("AssemblyFileVersion\\(.*\\)");
+            var text = File.ReadAllText(versionFile);
+            string match = regex.Match(text).Value;
+            var codeVersion = match.Substring(match.IndexOf('\"')+1, match.LastIndexOf('\"') - match.IndexOf('\"')-1);
 
-
-            if (fileVersion.ToString() != ver2)
+            if (fileVersion.ToString() != codeVersion)
                 throw new Exception("You forgot to build the solution (version in .dll doesn't match version in .cs).\nPLEASE BUILD THE SOLUTION.");
 
             if (fileVersion <= lastDeployedVersion)
@@ -64,6 +70,8 @@ namespace QS.ALM.Deploy
 
                 throw new Exception(string.Empty);
             }
+
+            return fileVersion;
         }
 
         private static void IncrementVersionInQualiAssemblies()
