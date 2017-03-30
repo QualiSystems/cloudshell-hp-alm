@@ -8,6 +8,7 @@ namespace QS.ALM.Deploy
     static class DeployHelper
     {
         public const string TestShell = "TestShell";
+        public const string CabVersion = "CabVersion";
         public const string TestTypeDllName = "TsTestType.dll";
         public const string RunnerDllName = "TsAlmRunner.dll";
 

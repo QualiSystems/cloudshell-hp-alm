@@ -12,13 +12,20 @@ namespace QS.ALM.Deploy
 
         public static void Deploy(List<string> files, string flavor)
         {
+
             VersionHelper.VerifyVersion(files);
             VerifyAlmNotRunning();
-          
+
             var cabFolder = Path.Combine(DeployHelper.SolutionRoot, "Binaries", flavor, "Cab");
+            var txtPath = Path.Combine(cabFolder, DeployHelper.CabVersion + VersionHelper.Lastversion+ ".txt") ;
+            CreateVerFile(txtPath, VersionHelper.Lastversion);
+            files.Add(txtPath);
+
+          
             Directory.CreateDirectory(cabFolder);
             var cabPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".cab");
             var iniPath = Path.Combine(cabFolder, DeployHelper.TestShell + ".ini");
+            
             CreateIniFile(files, iniPath);
             CreateCabFile(cabPath, iniPath);
 
@@ -71,7 +78,9 @@ namespace QS.ALM.Deploy
 
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
                 File.Copy(file, targetFile, true);
-                Sign(targetFile);
+                string[] str = file.Split('.');
+                if(str[str.Length - 1].ToUpper() != "TXT")
+                    Sign(targetFile);
             }
         }
 
@@ -102,20 +111,27 @@ namespace QS.ALM.Deploy
             var index = 0;
 
             foreach (var file in files)
-                contentIni += AddFileToIni(file, ++index);
-
+            {
+                string[] str = file.Split('.');
+                if (str[str.Length - 1].ToUpper() != "TXT")
+                    contentIni += AddFileToIni(file, ++index);
+            }
             File.WriteAllText(iniPath, contentIni);
         }
 
         private static void CreateCabFile(string cabPath, string iniPath)
         {            
-            RunExecOperation("makecab", string.Format(" {0} {1}", iniPath, cabPath), "Create Cab File");
+            RunExecOperation("makecab", string.Format(" {0} {1}", iniPath,  cabPath), "Create Cab File");
 
             if (!File.Exists(cabPath))
                 throw new Exception(string.Format("Creating {0} file error", cabPath));
         }
 
-
+        private static void CreateVerFile(string txtPath, string version)
+        {
+            //version = "version = 1.1.1.1";
+            File.WriteAllText(txtPath, version);
+        }
         private static void RunExecOperation(string nameRunFile, string arguments, string nameOperationForExeption)
         {
             try

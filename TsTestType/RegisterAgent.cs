@@ -141,9 +141,10 @@ namespace TsTestType
             return error == null ? RegisterResult.Success : RegisterResult.Error;
         }
 
-        private static bool UserCanceldUacDialog(Exception exception)
+        private static bool UserCanceldUacDialog( Exception exception)
         {
-            //TODO: handle user canceled UAC dialog 
+            if (exception.Message.ToUpper() == "THE OPERATION WAS CANCELED BY THE USER")
+                return true;
             return false;
         }
 
