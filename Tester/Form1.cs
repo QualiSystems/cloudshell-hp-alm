@@ -48,7 +48,7 @@ namespace Tester
             {
                 MessageBox.Show("Result Test = \"" + runGuid + '\"', "Returned Key", MessageBoxButtons.OK);
 
-                new RunTestThread(m_Logger, m_Api, runGuid, this);
+                new RunTestThread(m_Logger, m_Api, runGuid, new string[0], this);
                 ButtonRunTest.Enabled = false;
             }
             else

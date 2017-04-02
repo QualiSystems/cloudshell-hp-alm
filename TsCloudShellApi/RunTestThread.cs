@@ -8,14 +8,16 @@ namespace TsCloudShellApi
         private readonly Logger m_Logger;
         private readonly Api m_Api;
         private readonly string m_RunGuid;
+        private readonly string[] m_ExecutionServers;
         private readonly IRunTestWaiter m_RunTestWaiter;
         private readonly Thread m_Thread;
 
-        public RunTestThread(Logger logger, Api api, string runGuid, IRunTestWaiter runTestWaiter)
+        public RunTestThread(Logger logger, Api api, string runGuid, string[] executionServers, IRunTestWaiter runTestWaiter)
         {
             m_Logger = logger;
             m_Api = api;
             m_RunGuid = runGuid;
+            m_ExecutionServers = executionServers;
             m_RunTestWaiter = runTestWaiter;
             m_Thread = new Thread(ThreadLoop);
             m_Thread.IsBackground = true;
@@ -42,7 +44,10 @@ namespace TsCloudShellApi
                         break;
 
                     if (apiSuiteStatusDetails != null)
-                        m_RunTestWaiter.OnTestRunStatusChanged(apiSuiteStatusDetails.SuiteStatus);
+                    {
+                        var onServer = m_ExecutionServers.Length == 1 ? string.Format(" on '{0}'", m_ExecutionServers[0]) : string.Empty;
+                        m_RunTestWaiter.OnTestRunStatusChanged(apiSuiteStatusDetails.SuiteStatus + onServer);
+                    }
 
                     Thread.Sleep(TimeSpan.FromSeconds(int.Parse(SettingsFile.RunStatusSleepSeconds)));
                 }
