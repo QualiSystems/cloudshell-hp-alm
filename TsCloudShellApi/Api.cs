@@ -27,7 +27,7 @@ namespace TsCloudShellApi
             Init(urlString, globalUsername, globalPassword, loggedInUsername, loggedInPassword, authenticationMode, domain, "ALM Suite", "ALM Job", null);
         }
 
-        public Api(Logger logger, ITDConnection tdConnection, string loggedInUsername = null, string loggedInPassword = null)
+        public Api(Logger logger, ITDConnection tdConnection, string hostName = null, string loggedInUsername = null, string loggedInPassword = null)
         {
             m_Logger = logger;
             var conectionServant = new TDConnectionServant(tdConnection);
@@ -49,13 +49,14 @@ namespace TsCloudShellApi
             Init(url, globalUsername, globalPassword, loggedInUsername, loggedInPassword, mode, domain, suiteName, jobName, estimatedDuration);
         }
 
-        private void Init(string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain, string suiteName, string jobName, TimeSpan? estimatedDuration)
+        private void Init(string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain, string suiteName, string jobName, TimeSpan? estimatedDuration)// CloudShellExecutionServer isExecutionServerLocal, 
         {
             m_UrlStringServer = urlString;
             m_Domain = domain;
             m_SuiteName = suiteName;
             m_JobName = jobName;
             m_EstimatedDuration = estimatedDuration ?? TimeSpan.FromDays(365);
+            
 
             // Ignore AuthenticationMode in design mode. Only in run mode we have the password of the logged-in user
             if (string.IsNullOrEmpty(loggedInPassword))
@@ -82,6 +83,8 @@ namespace TsCloudShellApi
 
             if (string.IsNullOrEmpty(m_UserName) || string.IsNullOrEmpty(m_UserPassword))
                 throw new Exception(string.Format("Authentication mode is '{0}' but username or password are empty.", authenticationMode));
+
+            
         }
 
         private string CurrentUrl
@@ -110,6 +113,8 @@ namespace TsCloudShellApi
                 return password ?? m_UserPassword;
             }
         }
+
+        
 
         private void Login(out RestClient client, out string authorization, out string contentError, out bool isSuccess)
         {
@@ -203,7 +208,7 @@ namespace TsCloudShellApi
             m_Logger.Error("QS.ALM.CloudShellApi.Api.{0}: ContentError = '{1}'" + Environment.NewLine + "ErrorMessage = '{2}'" + Environment.NewLine + "ErrorException = '{3}'" + Environment.NewLine + "StatusCode = '{4}'", method, contentError, res.ErrorMessage, res.ErrorException == null ? "null" : res.ErrorException.ToString(), ((int)res.StatusCode).ToString());
         }
 
-        public string RunTest(string testPath, TestParameters[] parameters, out string contentError, out bool isSuccess)
+        public string RunTest(string testPath, TestParameters[] parameters, string[] executionServers, out string contentError, out bool isSuccess)
         {
             string authorization;
             RestClient client;
@@ -228,7 +233,7 @@ namespace TsCloudShellApi
             request.AddHeader("Authorization", authorization);
             request.AddHeader("Content-Type", "application/json");
             testPath = "TestShell\\Tests\\" + testPath.Replace('/', '\\');
-            request.AddJsonBody(new ApiSuiteTemplateDetails(m_SuiteName, m_JobName, testPath, m_EstimatedDuration, m_NotificationsLevelOptions, parameters));
+            request.AddJsonBody(new ApiSuiteTemplateDetails(m_SuiteName, m_JobName, executionServers, testPath, m_EstimatedDuration, m_NotificationsLevelOptions, parameters));
             string content = ExecuteServerRequest(client, request, "RunTest", out contentError, out isSuccess);
             if (content == null)
             {

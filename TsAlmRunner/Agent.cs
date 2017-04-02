@@ -20,6 +20,8 @@ namespace TsAlmRunner
         private AlmRunStatus m_Status;
         private string m_StatusDesc;
         private RunTestThread m_RunTestThread;
+        private string m_ToServer;
+        private string m_OnServer;
 
         public Agent()
         {
@@ -79,21 +81,22 @@ namespace TsAlmRunner
                 var almTestHelper = new AlmTest();
                 var test = almTestHelper.FindTest(almConnection, m_AlmParameters);
                 var testPath = almTestHelper.GetTestPath(almConnection,test);
-                var testParameters = almTestHelper.GetTestParameters(test);
-
-                var api = new Api(m_Logger, almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password);
+                var testParameters = almTestHelper.GetTestParameters(test);                
+               
+                string[] executionServers = SetExecutionServers(almConnection.Connection);
+                var api = new Api(m_Logger, almConnection.Connection, m_AlmParameters.UserName, m_AlmParameters.Password, m_AlmParameters.HostName);
 
                 string contentError;
                 bool isSuccess;
-                var runGuid = api.RunTest(testPath, testParameters.ToArray(), out contentError, out isSuccess);
+                string runGuId = api.RunTest(testPath, testParameters.ToArray(), executionServers, out contentError, out isSuccess);
 
                 if (!isSuccess)
                     throw new Exception(contentError);
 
                 // Start the Run Test Thread
-                m_RunTestThread = new RunTestThread(m_Logger, api, runGuid, this);
-
-                SetStatus(AlmRunStatus.LogicalRunning, "Started");
+                m_RunTestThread = new RunTestThread(m_Logger, api, runGuId, this);
+                
+               SetStatus(AlmRunStatus.LogicalRunning, "Sending Test" + m_ToServer);               
             }
             catch (Exception ex)
             {
@@ -117,14 +120,14 @@ namespace TsAlmRunner
 
         public void OnTestRunStatusChanged(string suiteStatus)
         {
-            SetStatus(AlmRunStatus.LogicalRunning, suiteStatus + " " + DateTime.Now.ToString("T"));
+            SetStatus(AlmRunStatus.LogicalRunning, suiteStatus + m_OnServer + DateTime.Now.ToString("T"));
         }
 
         public void OnTestRunEnded(ApiSuiteDetails suiteDetails, string unexpectedError)
         {
             if (!string.IsNullOrEmpty(unexpectedError))
             {
-                SetStatus(AlmRunStatus.Failed, "Test ended unexpectedly: " + unexpectedError);
+                SetStatus(AlmRunStatus.Failed, "Test ended unexpectedly:" + m_OnServer + unexpectedError);
                 return;
             }
 
@@ -168,6 +171,41 @@ namespace TsAlmRunner
             {
                 SetStatus(AlmRunStatus.Failed, ex.Message);
             }
+        }
+
+        private string[] SetExecutionServers(ITDConnection tdConnection)
+        {
+            TDConnectionServant conectionServant = new TDConnectionServant(tdConnection);
+            string isExecutionServerLocal = conectionServant.GetTdParam("CLOUDSHELL_EXECUTION_SERVER", "SpecificHost");
+            string executionServerName = Config.ExecutionServerName;
+            string[] executionServers = null;
+            if (string.IsNullOrWhiteSpace(executionServerName) && isExecutionServerLocal.ToLower() =="any")
+            {
+                executionServers = new string[0];
+            }
+            else
+            {
+                executionServers = new string[1];
+                if (!string.IsNullOrWhiteSpace(executionServerName))
+                {
+                    executionServers[0] = executionServerName;
+                }
+                else
+                {
+                    executionServers[0] = m_AlmParameters.HostName;
+                }
+            }
+            if (executionServers.Length == 1)
+            {
+                m_ToServer = " to '" + executionServers[0] + "' ";
+                m_OnServer = " on '" + executionServers[0] + "' ";
+            }
+            else
+            {
+                m_ToServer = " ";
+                m_OnServer = " ";
+            }
+            return executionServers;
         }
     }
 }
