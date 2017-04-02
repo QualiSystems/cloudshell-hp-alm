@@ -42,7 +42,7 @@ namespace Tester
             //List<TestParameters> parameters = new List<TestParameters>(); //for testing test parameters "Shared/Folder 1/Test A empty test"
             //parameters.Add(new TestParameters("Param1", "")); 
             //parameters.Add(new TestParameters("Param2_int", "0"));
-            string runGuid = m_Api.RunTest(m_Script.TestPath, new TestParameters[0], out contentError, out isSuccess);
+            string runGuid = m_Api.RunTest(m_Script.TestPath, new TestParameters[0], new string[0], out contentError, out isSuccess);
 
             if (isSuccess)
             {

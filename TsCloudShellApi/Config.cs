@@ -36,6 +36,8 @@ namespace TsCloudShellApi
 
         public static string TestsRoot { get { return GetEnvVar("CloudShell.TestsRoot", null); } }
 
+        public static string ExecutionServerName { get { return GetEnvVar("CloudShell.ExecutionServerName", null); } }
+
         private static string GetEnvVar(string name, string defaultValue)
         {
             var value = Environment.GetEnvironmentVariable(name);

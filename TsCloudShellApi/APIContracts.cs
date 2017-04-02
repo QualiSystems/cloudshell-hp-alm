@@ -98,11 +98,11 @@ namespace TsCloudShellApi
     
     public class ApiSuiteTemplateDetails
     {
-        public ApiSuiteTemplateDetails(string suiteName, string jobName, string testPath, TimeSpan estimatedDuration, NotificationsLevelOptions notificationsLevelOptions, TestParameters[] parameters)
+        public ApiSuiteTemplateDetails(string suiteName, string jobName, string[] executionServers, string testPath, TimeSpan estimatedDuration, NotificationsLevelOptions notificationsLevelOptions, TestParameters[] parameters)
         {
             SuiteName = suiteName;
             EmailNotifications = notificationsLevelOptions.ToString();
-            JobsDetails = new[] { new ApiJobTemplate(jobName, testPath, estimatedDuration, parameters) };
+            JobsDetails = new[] { new ApiJobTemplate(jobName, executionServers, testPath, estimatedDuration, parameters) };
         }
 
         public string SuiteTemplateName { get; set; }
@@ -118,11 +118,16 @@ namespace TsCloudShellApi
 
     public class ApiJobTemplate
     {
-        public ApiJobTemplate(string jobName, string testPath, TimeSpan estimatedDuration, TestParameters[] parameters)
+        public ApiJobTemplate(string jobName, string[] executionServers, string testPath, TimeSpan estimatedDuration, TestParameters[] parameters)
         {
             Name = jobName;
             EstimatedDuration = (int)estimatedDuration.TotalMinutes;
             Tests = new Test[] {new Test(testPath, parameters)};
+            if(executionServers == null)
+            {
+                executionServers = new string[0];
+            }
+            ExecutionServers = executionServers;
         }
 
         public ApiJobTemplate()
@@ -132,10 +137,7 @@ namespace TsCloudShellApi
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public string[] ExecutionServers
-        {
-            get { return new string[0]; }
-        }
+        public string[] ExecutionServers { get; set; }        
 
         public string LoggingProfile
         {
