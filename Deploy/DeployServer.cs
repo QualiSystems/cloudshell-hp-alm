@@ -42,9 +42,19 @@ namespace QS.ALM.Deploy
             CopyToServerAndSign(files.ToArray(), @"Extensions\" + DeployHelper.TestShell);
             CopyToServerAndSign(new[] { cabPath }, "Extensions");
 
+            CopyTestShellTestTypeXml();
+
             VersionHelper.IncrementLastDeployVersion();
 
             Console.WriteLine("Outputs can be found under: " + AlmServerRoot);
+        }
+
+        private static void CopyTestShellTestTypeXml()
+        {
+            var source = Path.Combine(DeployHelper.SolutionRoot, @"Deploy\TestShellTestType.xml");
+            var target = Path.Combine(AlmServerRoot, @"CustomTestTypes\TestShellTestType.xml");
+            Directory.CreateDirectory(Path.GetDirectoryName(target));
+            File.Copy(source, target);
         }
 
         private static void VerifyAlmNotRunning()
