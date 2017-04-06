@@ -1,0 +1,5 @@
+.OPTION EXPLICIT
+.set CabinetNameTemplate=TestShell.cab
+.set DiskDirectoryTemplate=CDROM
+.set Cabinet=on
+.set Compress=on

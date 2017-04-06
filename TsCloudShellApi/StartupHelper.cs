@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -14,8 +15,9 @@ namespace TsCloudShellApi
         /// <param name="assembly">Assembly of component to get the version</param>
         public static void ReportStart(Logger logger, string componentName, Assembly assembly)
         {
-            var version = assembly.GetName().Version;
-            var runningFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyPath = assembly.Location;
+            var version = FileVersionInfo.GetVersionInfo(assemblyPath).FileVersion;
+            var runningFolder = Path.GetDirectoryName(assemblyPath);
             logger.Info("{0} started: {1}", componentName, runningFolder);
 
             UpdateDeployments(componentName, runningFolder, version);
@@ -24,7 +26,7 @@ namespace TsCloudShellApi
         /// <summary>
         /// The "deployments.txt" file helps tracking where is the ALM-Client running from
         /// </summary>
-        private static void UpdateDeployments(string componentName, string runningFolder, Version version)
+        private static void UpdateDeployments(string componentName, string runningFolder, string version)
         {
             var deploymentsFile = Path.Combine(Constants.TempFolder, "deployments.txt");
             var text = File.Exists(deploymentsFile) ? File.ReadAllText(deploymentsFile) : String.Empty;
@@ -33,7 +35,7 @@ namespace TsCloudShellApi
             // key: value
             var key = string.Format("[{0}] {1}", componentName, runningFolder);
             var keyAndPrefix = key + ": ";
-            var value = version.ToString();
+            var value = version;
             var line = keyAndPrefix + value;
 
             // check if deployment line exists

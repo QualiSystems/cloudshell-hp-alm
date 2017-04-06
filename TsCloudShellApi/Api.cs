@@ -27,7 +27,7 @@ namespace TsCloudShellApi
             Init(urlString, globalUsername, globalPassword, loggedInUsername, loggedInPassword, authenticationMode, domain, "ALM Suite", "ALM Job", null);
         }
 
-        public Api(Logger logger, ITDConnection tdConnection, string hostName = null, string loggedInUsername = null, string loggedInPassword = null)
+        public Api(Logger logger, ITDConnection tdConnection, string loggedInUsername = null, string loggedInPassword = null)
         {
             m_Logger = logger;
             var conectionServant = new TDConnectionServant(tdConnection);
@@ -264,7 +264,10 @@ namespace TsCloudShellApi
                 else if (res.StatusCode == (HttpStatusCode)0 && string.IsNullOrEmpty(res.Content))
                     contentError = string.Format("No connection to CloudShell server.", CurrentUsername);
                 else
-                contentError = res.Content + Environment.NewLine + string.Format("(error code {0})", (int)res.StatusCode);
+                    contentError = res.Content + Environment.NewLine + string.Format("(error code {0})", (int)res.StatusCode);
+
+                contentError = contentError.Trim();
+              
                 isSuccess = false;
                 LoggerRestSharpError(nameCallingMethod, contentError, res);
                 return null;
