@@ -261,11 +261,13 @@ namespace TsCloudShellApi
             {
                 if (res.StatusCode == HttpStatusCode.Unauthorized && string.IsNullOrEmpty(res.Content))
                     contentError = string.Format("User {0} not authorized.", CurrentUsername);
+                else if (res.StatusCode == (HttpStatusCode)0 && string.IsNullOrEmpty(res.Content))
+                    contentError = string.Format("No connection to CloudShell server.", CurrentUsername);
                 else
                     contentError = res.Content + Environment.NewLine + string.Format("(error code {0})", (int)res.StatusCode);
 
                 contentError = contentError.Trim();
-
+              
                 isSuccess = false;
                 LoggerRestSharpError(nameCallingMethod, contentError, res);
                 return null;
