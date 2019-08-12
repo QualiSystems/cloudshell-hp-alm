@@ -33,10 +33,10 @@ namespace QS.ALM.Deploy
                 throw new Exception("Missing files");
 
             var testShellFolder = Path.Combine(AlmServerRoot, @"Extensions\" + DeployHelper.TestShell);
-            
+
             if (Directory.Exists(testShellFolder))
                 Directory.Delete(testShellFolder, true);
-            
+
             Directory.CreateDirectory(testShellFolder);
 
             CopyToServerAndSign(files.ToArray(), @"Extensions\" + DeployHelper.TestShell);
@@ -62,7 +62,7 @@ namespace QS.ALM.Deploy
             if (Process.GetProcessesByName("ALM").Any())
                 throw new Exception("Please close ALM.exe");
         }
-        
+
         private static void CopyToServerAndSign(string[] files, string targetFolder)
         {
             foreach (var file in files)
@@ -83,7 +83,7 @@ namespace QS.ALM.Deploy
         private static void Sign(string file)
         {
             var signTool = @"C:\Program Files (x86)\Windows Kits\8.1\bin\x86\signtool.exe";
-            
+
             if (!File.Exists(signTool))
                 signTool = @"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin\signtool.exe";
 
@@ -100,7 +100,7 @@ namespace QS.ALM.Deploy
 
         private static void CreateIniFile(List<string> files, string iniPath)
         {
-            if(files == null || files.Count == 0)
+            if (files == null || files.Count == 0)
                 throw new Exception("List files is empty");
 
             var contentIni = "";
@@ -108,7 +108,7 @@ namespace QS.ALM.Deploy
 
             foreach (var file in files)
                 contentIni += AddFileToIni(file, ++index);
-            
+
             File.WriteAllText(iniPath, contentIni);
         }
 
@@ -124,7 +124,7 @@ namespace QS.ALM.Deploy
 
             CreateIniFile(files, iniPath);
             CreateVersionFile(versionFilePath, version);
-            
+
             CreateCabDdfFile(ddfPath, cabFolder, iniPath, versionFilePath);
 
             if (File.Exists(cabPath))
@@ -152,10 +152,10 @@ namespace QS.ALM.Deploy
             var ddfTemplatePath = Path.Combine(DeployHelper.SolutionRoot, @"Deploy\CabTemplate.ddf");
             var ddfText = File.ReadAllText(ddfTemplatePath);
 
-            ddfText += 
+            ddfText +=
                 Environment.NewLine +
-                ".set DiskDirectory1=" + "\"" + cabFolder + "\"" + Environment.NewLine + 
-                "\"" + iniPath + "\"" + Environment.NewLine + 
+                ".set DiskDirectory1=" + "\"" + cabFolder + "\"" + Environment.NewLine +
+                "\"" + iniPath + "\"" + Environment.NewLine +
                 "\"" + versionFilePath + "\"";
 
             File.WriteAllText(ddfPath, ddfText);
@@ -191,7 +191,7 @@ namespace QS.ALM.Deploy
             var extension = Path.GetExtension(filename).Substring(1);
             var arr = extension.ToCharArray();
             Array.Reverse(arr);
-            var extensionReversed = new string (arr);
+            var extensionReversed = new string(arr);
             var subFolder = DeployHelper.DeployToTestShellFolder(filename) ? DeployHelper.TestShell + "\\" : "";
 
             var versionString = string.Empty;
@@ -213,7 +213,7 @@ namespace QS.ALM.Deploy
 
             return contentIni;
         }
-        
+
         /// <summary>
         /// see options here:
         /// http://helpfiles.intactcloud.com/ALM/11.52/hp_man_ALM11.52_Custom_TestType_Dev_zip/CustomTestTypeNET/Content/cttIniFileParams.htm

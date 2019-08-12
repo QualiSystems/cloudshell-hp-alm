@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using RestSharp;
 using TDAPIOLELib;
@@ -19,11 +21,16 @@ namespace TsCloudShellApi
         private string m_JobName;
         private TimeSpan m_EstimatedDuration;
         private readonly NotificationsLevelOptions m_NotificationsLevelOptions;
-      
-        public Api(Logger logger, string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain)
+
+        public Api(Logger logger, string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain, bool ignoreSslErrors)
         {
             m_NotificationsLevelOptions = NotificationsLevelOptions.SuiteAndErrors;
             m_Logger = logger;
+            if (ignoreSslErrors)
+            {
+                ServicePointManager.ServerCertificateValidationCallback -= ValidateSslCertificate;
+                ServicePointManager.ServerCertificateValidationCallback += ValidateSslCertificate;
+            }
             Init(urlString, globalUsername, globalPassword, loggedInUsername, loggedInPassword, authenticationMode, domain, "ALM Suite", "ALM Job", null);
         }
 
@@ -32,6 +39,7 @@ namespace TsCloudShellApi
             m_Logger = logger;
             var conectionServant = new TDConnectionServant(tdConnection);
             var url = conectionServant.GetTdParam("CLOUDSHELL_SERVER_URL");
+            Boolean.TryParse(conectionServant.GetTdParam("CLOUDSHELL_IGNORE_SSL_ERRORS"), out var ignoreSslErrors);
             var globalUsername = conectionServant.GetTdParam("CLOUDSHELL_USERNAME");
             var globalPassword = conectionServant.GetTdParam("CLOUDSHELL_PASSWORD");
             var domain = conectionServant.GetTdParam("CLOUDSHELL_DOMAIN");
@@ -45,8 +53,17 @@ namespace TsCloudShellApi
             int estimatedDurationNumberMinutes;
             if (int.TryParse(conectionServant.GetTdParam("CLOUDSHELL_ESTIMATED_DURATION", "0"), out estimatedDurationNumberMinutes) && estimatedDurationNumberMinutes != 0)
                 estimatedDuration = TimeSpan.FromMinutes(estimatedDurationNumberMinutes);
-
+            if (ignoreSslErrors)
+            {
+                ServicePointManager.ServerCertificateValidationCallback -= ValidateSslCertificate;
+                ServicePointManager.ServerCertificateValidationCallback += ValidateSslCertificate;
+            }
             Init(url, globalUsername, globalPassword, loggedInUsername, loggedInPassword, mode, domain, suiteName, jobName, estimatedDuration);
+        }
+
+        private bool ValidateSslCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslpolicyerrors)
+        {
+            return true;
         }
 
         private void Init(string urlString, string globalUsername, string globalPassword, string loggedInUsername, string loggedInPassword, AuthenticationMode authenticationMode, string domain, string suiteName, string jobName, TimeSpan? estimatedDuration)// CloudShellExecutionServer isExecutionServerLocal, 

@@ -13,3 +13,4 @@ pfx/*
 binaries/*
 !repositories.config
 *.suo
+.vs/*

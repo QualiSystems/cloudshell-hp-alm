@@ -22,7 +22,7 @@ namespace Tester
 
             try
             {
-                m_Api = new Api(m_Logger, "http://192.168.42.35:9000", null, null, "admin", "admin", AuthenticationMode.User, "Global");
+                m_Api = new Api(m_Logger, "https://localhost:9000", null, null, "admin", "admin", AuthenticationMode.User, "Global",true);
             }
             catch (Exception ex)
             {

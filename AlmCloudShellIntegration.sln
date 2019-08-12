@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.89
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DADB9393-E97E-4E59-8589-A0DD43C5A308}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,6 +24,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsTestType", "TsTestType\TsTestType.csproj", "{E645EFAC-A997-4078-8A3C-87F2E80A77EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsAlmRunner", "TsAlmRunner\TsAlmRunner.csproj", "{264C25DD-BC50-4F64-BC49-ABC5FCAB3580}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Script", "Script", "{B8EAC8CE-F1C9-4E4C-99BA-DB524175D95B}"
+	ProjectSection(SolutionItems) = preProject
+		Script\BindMockCertificateToALM.ps1 = Script\BindMockCertificateToALM.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,5 +59,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2BC11FF2-7181-4139-B799-CAEF340F0C00}
 	EndGlobalSection
 EndGlobal
